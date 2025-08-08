@@ -1,0 +1,38 @@
+package com.travel.uzoefuapp.activities
+
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.dashboard.DashboardActivity
+import com.travel.uzoefuapp.databinding.ActivityLoginBinding
+
+class LoginActivity : AppCompatActivity() {
+    lateinit var binding: ActivityLoginBinding
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = ActivityLoginBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        playBackgroundVideo()
+
+        binding.signInButton.setOnClickListener {
+            val intent = Intent(this@LoginActivity, DashboardActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    private fun playBackgroundVideo() {
+        val videoUri = Uri.parse("android.resource://${packageName}/${R.raw.onboard1}")
+
+        binding.videoView.setVideoURI(videoUri)
+        binding.videoView.setOnPreparedListener { mediaPlayer ->
+            mediaPlayer.isLooping = true // loop forever
+            mediaPlayer.start()
+        }
+    }
+}
