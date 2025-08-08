@@ -1,3 +1,5 @@
+package com.travel.uzoefuapp.adapter
+
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -15,13 +17,11 @@ import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activities.CreateAccountActivity
-import com.travel.uzoefuapp.activities.LoginActivity
-import com.travel.uzoefuapp.adapter.OnboardingItem
 
 class OnboardingAdapter(
     private val context: Context,
     private val items: List<OnboardingItem>,
-    private val viewPager: ViewPager // ViewPager reference
+    private val viewPager: ViewPager
 ) : PagerAdapter() {
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
@@ -35,7 +35,6 @@ class OnboardingAdapter(
 
         val item = items[position]
 
-        // 🎥 Video setup
         val uri = Uri.parse("android.resource://${context.packageName}/${item.videoResId}")
         videoView.setVideoURI(uri)
         videoView.setOnPreparedListener { mp ->
@@ -44,36 +43,26 @@ class OnboardingAdapter(
             videoView.start()
         }
 
-        // 📝 Title
         titleText.text = item.title
 
-        // ✨ First word bold in description
         val desc = item.description
         val spannable = SpannableString(desc)
         val firstSpace = desc.indexOf(" ")
         if (firstSpace != -1) {
-            spannable.setSpan(
-                StyleSpan(Typeface.BOLD),
-                0,
-                firstSpace,
-                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+            spannable.setSpan(StyleSpan(Typeface.BOLD),0, firstSpace, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         descriptionText.text = spannable
 
         skipText.setOnClickListener {
             if (position < items.size - 1) {
-                // Go to next page
                 viewPager.currentItem = position + 1
             } else {
-                // Last screen → Go to LoginActivity
                 context.startActivity(Intent(context, CreateAccountActivity::class.java))
                 if (context is Activity) {
-                    (context as Activity).finish() // close onboarding
+                    (context as Activity).finish()
                 }
             }
         }
-
 
         container.addView(view)
         return view

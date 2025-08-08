@@ -19,7 +19,7 @@ class DashboardActivity : AppCompatActivity() {
         binding = ActivityDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        HomeFragment()
+        replaceFragment(HomeFragment(), true)
 
         binding.homeIconUser.setOnClickListener {
             binding.homeIconUser.setImageResource(R.drawable.dashboard)
@@ -76,7 +76,6 @@ class DashboardActivity : AppCompatActivity() {
 
             replaceFragment(ProfileFragment(), true)
         }
-
     }
 
     private fun replaceFragment(fragment: Fragment, addToBackStack: Boolean) {
@@ -86,8 +85,6 @@ class DashboardActivity : AppCompatActivity() {
         if (addToBackStack) {
             fragmentTransaction.addToBackStack(null)
         }
-
         fragmentTransaction.commit()
     }
-
 }

@@ -24,7 +24,7 @@ class CreateAccountActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        binding.signInButton.setOnClickListener {
+        binding.alreadyHaveAccount.setOnClickListener {
             val intent = Intent(this@CreateAccountActivity, LoginActivity::class.java)
             startActivity(intent)
         }
@@ -46,15 +46,15 @@ class CreateAccountActivity : AppCompatActivity() {
                 val hasLower = password.any { it.isLowerCase() }
                 updateRuleIcon(binding.iconUpperLower, hasUpper && hasLower)
 
-                updateRuleIcon(binding.iconNoSpaces, password.isNotEmpty() && !password.contains(" "))
+                updateRuleIcon(binding.iconNoSpaces,password.isNotEmpty() && !password.contains(" "))
 
-                updateRuleIcon(binding.iconNoEmailParts, password.isNotEmpty() && !emailPartFound(password, email))
+                updateRuleIcon(binding.iconNoEmailParts,password.isNotEmpty() && !emailPartFound(password, email))
 
             }
+
             override fun afterTextChanged(s: Editable?) {}
 
         })
-
     }
 
     private fun playBackgroundVideo() {
