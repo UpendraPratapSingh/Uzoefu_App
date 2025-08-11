@@ -8,12 +8,14 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.travel.uzoefuapp.R
 import android.text.Editable
+import android.view.View
 import com.travel.uzoefuapp.databinding.ActivityCreateAccountBinding
 
 class CreateAccountActivity : AppCompatActivity() {
     lateinit var binding: ActivityCreateAccountBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        makeFullScreen()
         binding = ActivityCreateAccountBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
@@ -46,15 +48,20 @@ class CreateAccountActivity : AppCompatActivity() {
                 val hasLower = password.any { it.isLowerCase() }
                 updateRuleIcon(binding.iconUpperLower, hasUpper && hasLower)
 
-                updateRuleIcon(binding.iconNoSpaces,password.isNotEmpty() && !password.contains(" "))
+                updateRuleIcon(binding.iconNoSpaces, password.isNotEmpty() && !password.contains(" "))
 
-                updateRuleIcon(binding.iconNoEmailParts,password.isNotEmpty() && !emailPartFound(password, email))
-
+                updateRuleIcon(binding.iconNoEmailParts, password.isNotEmpty() && !emailPartFound(password, email))
             }
 
             override fun afterTextChanged(s: Editable?) {}
-
         })
+    }
+
+    @Suppress("DEPRECATION")
+    private fun makeFullScreen() {
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        window.statusBarColor = android.graphics.Color.TRANSPARENT
     }
 
     private fun playBackgroundVideo() {
@@ -85,5 +92,4 @@ class CreateAccountActivity : AppCompatActivity() {
         }
         return false
     }
-
 }

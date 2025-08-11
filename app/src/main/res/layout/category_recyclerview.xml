@@ -1,0 +1,30 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="40dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="12dp"
+    android:layout_marginBottom="10dp"
+    android:background="@drawable/category_background"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="12dp">
+
+    <ImageView
+        android:id="@+id/categoryIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:src="@drawable/tours"
+        app:tint="@color/gray" />
+
+    <TextView
+        android:id="@+id/categoryText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:text="Tours"
+        android:textColor="@color/gray"
+        android:textSize="14sp" />
+
+</LinearLayout>

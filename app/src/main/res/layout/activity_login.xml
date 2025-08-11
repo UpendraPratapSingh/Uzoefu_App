@@ -23,8 +23,8 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginTop="-20dp"
-        app:cardElevation="8dp"
         android:background="@color/white"
+        app:cardElevation="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -47,21 +47,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:text="Sign In"
                     android:textColor="#000000"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/roboto_regular"/>
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/textEmail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:text="Email"
                     android:textColor="@color/nuetral_bold_color"
-                    android:textSize="18sp"
-                    android:fontFamily="@font/roboto_regular"/>
+                    android:textSize="18sp" />
 
                 <EditText
                     android:id="@+id/emailEdit"
@@ -69,21 +69,21 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/edittext_background"
                     android:drawablePadding="6dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:hint="Email address"
                     android:inputType="textEmailAddress"
-                    android:padding="10dp"
-                    android:fontFamily="@font/roboto_regular"/>
+                    android:padding="10dp" />
 
                 <TextView
                     android:id="@+id/textPassword"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="10dp"
                     android:layout_marginBottom="5dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:text="Password"
                     android:textColor="@color/nuetral_bold_color"
-                    android:textSize="18sp"
-                    android:fontFamily="@font/roboto_regular"/>
+                    android:textSize="18sp" />
 
                 <EditText
                     android:id="@+id/passwordEdit"
@@ -92,10 +92,10 @@
                     android:background="@drawable/edittext_background"
                     android:drawableEnd="@drawable/lock"
                     android:drawablePadding="6dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:hint="Secure Password"
                     android:inputType="textPassword"
-                    android:padding="6dp"
-                    android:fontFamily="@font/roboto_regular"/>
+                    android:padding="6dp" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -116,10 +116,10 @@
                         android:id="@+id/forgotText"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_regular"
                         android:text="@string/forgotten_password"
                         android:textColor="@color/dark_black"
                         android:textSize="14sp"
-                        android:fontFamily="@font/roboto_regular"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -133,11 +133,9 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"
                     android:background="@drawable/button_rounded"
-                    android:text="Sign In"
-                    android:fontFamily="@font/roboto_regular"/>
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Sign In" />
             </LinearLayout>
         </ScrollView>
     </com.google.android.material.card.MaterialCardView>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

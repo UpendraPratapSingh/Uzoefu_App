@@ -33,6 +33,7 @@ class DashboardActivity : AppCompatActivity() {
             binding.profileTextViewUser.setTextColor(ContextCompat.getColor(this, R.color.black))
 
             replaceFragment(HomeFragment(), true)
+
         }
 
         binding.destinationFragmentUser.setOnClickListener {
@@ -42,7 +43,7 @@ class DashboardActivity : AppCompatActivity() {
             binding.profileIconUser.setImageResource(R.drawable.profile)
 
             binding.destinationTxtUSer.setTextColor(ContextCompat.getColor(this, R.color.black))
-            binding.homeTextUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
+            binding.homeTextUser.setTextColor(ContextCompat.getColor(this,R.color.nuetral_bold_color))
             binding.pastOrderTextUser.setTextColor(ContextCompat.getColor(this, R.color.black))
             binding.profileTextViewUser.setTextColor(ContextCompat.getColor(this, R.color.black))
 
@@ -57,7 +58,7 @@ class DashboardActivity : AppCompatActivity() {
 
             binding.destinationTxtUSer.setTextColor(ContextCompat.getColor(this, R.color.black))
             binding.homeTextUser.setTextColor(ContextCompat.getColor(this, R.color.black))
-            binding.pastOrderTextUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
+            binding.pastOrderTextUser.setTextColor(ContextCompat.getColor(this,R.color.nuetral_bold_color))
             binding.profileTextViewUser.setTextColor(ContextCompat.getColor(this, R.color.black))
 
             replaceFragment(WishlistFragment(), true)
@@ -72,7 +73,7 @@ class DashboardActivity : AppCompatActivity() {
             binding.destinationTxtUSer.setTextColor(ContextCompat.getColor(this, R.color.black))
             binding.homeTextUser.setTextColor(ContextCompat.getColor(this, R.color.black))
             binding.pastOrderTextUser.setTextColor(ContextCompat.getColor(this, R.color.black))
-            binding.profileTextViewUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
+            binding.profileTextViewUser.setTextColor(ContextCompat.getColor(this,R.color.nuetral_bold_color))
 
             replaceFragment(ProfileFragment(), true)
         }

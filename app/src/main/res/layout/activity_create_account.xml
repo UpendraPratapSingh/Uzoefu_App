@@ -45,21 +45,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:text="Create Account"
                     android:textColor="@color/nuetral_bold_color"
-                    android:textSize="20sp"
-                    android:fontFamily="@font/roboto_regular"/>
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/textUserName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:layout_marginBottom="5dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:text="Contact Name"
                     android:textColor="@color/nuetral_bold_color"
-                    android:textSize="18sp"
-                    android:fontFamily="@font/roboto_regular"/>
+                    android:textSize="18sp" />
 
                 <EditText
                     android:id="@+id/userNameEdit"
@@ -67,22 +66,21 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/edittext_background"
                     android:drawablePadding="6dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:hint="First Name"
                     android:inputType="textPersonName"
-                    android:padding="10dp"
-                    android:fontFamily="@font/roboto_regular"/>
-
+                    android:padding="10dp" />
 
                 <TextView
                     android:id="@+id/textUserLastName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:text="Last Name"
                     android:textColor="@color/nuetral_bold_color"
-                    android:textSize="18sp"
-                    android:fontFamily="@font/roboto_regular"/>
+                    android:textSize="18sp" />
 
                 <EditText
                     android:id="@+id/userNameLastEdit"
@@ -90,22 +88,21 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/edittext_background"
                     android:drawablePadding="6dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:hint="Last Name"
                     android:inputType="textPersonName"
-                    android:padding="10dp"
-                    android:fontFamily="@font/roboto_regular"/>
-
+                    android:padding="10dp" />
 
                 <TextView
                     android:id="@+id/textEmail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:text="Email"
                     android:textColor="@color/nuetral_bold_color"
-                    android:textSize="18sp"
-                    android:fontFamily="@font/roboto_regular"/>
+                    android:textSize="18sp" />
 
                 <EditText
                     android:id="@+id/emailEdit"
@@ -113,21 +110,21 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/edittext_background"
                     android:drawablePadding="6dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:hint="Email Address"
                     android:inputType="textPersonName"
-                    android:padding="10dp"
-                    android:fontFamily="@font/roboto_regular"/>
+                    android:padding="10dp" />
 
                 <TextView
                     android:id="@+id/textPassword"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginBottom="5dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:text="Password"
                     android:textColor="@color/nuetral_bold_color"
-                    android:textSize="18sp"
-                    android:fontFamily="@font/roboto_regular"/>
+                    android:textSize="18sp" />
 
                 <EditText
                     android:id="@+id/passwordEdit"
@@ -136,18 +133,18 @@
                     android:background="@drawable/edittext_background"
                     android:drawableEnd="@drawable/lock"
                     android:drawablePadding="6dp"
+                    android:fontFamily="@font/roboto_regular"
                     android:hint="Secure Password"
                     android:inputType="textPassword"
-                    android:padding="6dp"
-                    android:fontFamily="@font/roboto_regular"/>
+                    android:padding="6dp" />
 
                 <!-- Rule 1 -->
                 <LinearLayout
                     android:id="@+id/rule_length"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
                     android:layout_marginTop="10dp"
+                    android:layout_marginBottom="8dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
@@ -162,10 +159,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
+                        android:fontFamily="@font/roboto_regular"
                         android:text="Between 8 and 30 characters"
                         android:textColor="@color/gray"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/roboto_regular"/>
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <!-- Rule 2 -->
@@ -181,17 +178,17 @@
                         android:id="@+id/icon_number_special"
                         android:layout_width="18dp"
                         android:layout_height="18dp"
-                        android:src="@drawable/uncheckcircle"/>
+                        android:src="@drawable/uncheckcircle" />
 
                     <TextView
                         android:id="@+id/text_number_special"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
+                        android:fontFamily="@font/roboto_regular"
                         android:text="Include a number (1234) and one special character (#%!.^)"
                         android:textColor="@color/gray"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/roboto_regular"/>
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <!-- Rule 3 -->
@@ -214,10 +211,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
+                        android:fontFamily="@font/roboto_regular"
                         android:text="Uppercase (ABC) and lowercase (abc) letters"
                         android:textColor="@color/gray"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/roboto_regular"/>
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <!-- Rule 4 -->
@@ -233,17 +230,17 @@
                         android:id="@+id/icon_no_spaces"
                         android:layout_width="18dp"
                         android:layout_height="18dp"
-                        android:src="@drawable/uncheckcircle"/>
+                        android:src="@drawable/uncheckcircle" />
 
                     <TextView
                         android:id="@+id/text_no_spaces"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
+                        android:fontFamily="@font/roboto_regular"
                         android:text="No blank spaces"
                         android:textColor="@color/gray"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/roboto_regular"/>
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <!-- Rule 5 -->
@@ -259,17 +256,17 @@
                         android:id="@+id/icon_no_email_parts"
                         android:layout_width="18dp"
                         android:layout_height="18dp"
-                        android:src="@drawable/uncheckcircle"/>
+                        android:src="@drawable/uncheckcircle" />
 
                     <TextView
                         android:id="@+id/text_no_email_parts"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
+                        android:fontFamily="@font/roboto_regular"
                         android:text="It cannot contain parts of your email address"
                         android:textColor="@color/gray"
-                        android:textSize="14sp"
-                        android:fontFamily="@font/roboto_regular"/>
+                        android:textSize="14sp" />
                 </LinearLayout>
 
                 <Button
@@ -279,18 +276,18 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="20dp"
                     android:background="@drawable/button_rounded"
-                    android:text="Create Account"
-                    android:fontFamily="@font/roboto_regular"/>
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Create Account" />
 
                 <TextView
                     android:id="@+id/alreadyHaveAccount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="12dp"
-                    android:layout_marginTop="15dp"
-                    android:text="@string/already_have_an_account"
                     android:layout_gravity="center"
-                    android:fontFamily="@font/roboto_regular"/>
+                    android:layout_marginTop="15dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="@string/already_have_an_account"
+                    android:textSize="12dp" />
 
 
             </LinearLayout>
