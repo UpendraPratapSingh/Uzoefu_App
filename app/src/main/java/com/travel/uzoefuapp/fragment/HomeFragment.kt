@@ -2,6 +2,7 @@ package com.travel.uzoefuapp.fragment
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -19,6 +20,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.activities.ExploreActivity
+import com.travel.uzoefuapp.activities.ExploreCategoriesActivity
 import com.travel.uzoefuapp.adapter.CategoryAdapter
 import com.travel.uzoefuapp.adapter.DiscoverAdapter
 import com.travel.uzoefuapp.adapter.ExperienceAdapter
@@ -58,6 +61,21 @@ class HomeFragment : Fragment() {
 
         binding.searchData.setOnClickListener { searchExperience() }
 
+        binding.viewMoreArrow.setOnClickListener {
+            val intent = Intent(requireContext(), ExploreActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.viewMoreArrow1.setOnClickListener {
+            val intent = Intent(requireContext(), ExploreActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.rightArrow2.setOnClickListener {
+            val intent = Intent(requireContext(), ExploreCategoriesActivity::class.java)
+            startActivity(intent)
+        }
+
         return binding.root
     }
 
@@ -77,7 +95,6 @@ class HomeFragment : Fragment() {
         bottomSheet?.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
 
         bottomSheet?.setBackgroundResource(R.drawable.bg_bottom_sheet_rounded)
-
         val behavior = BottomSheetBehavior.from(bottomSheet!!)
         behavior.state = BottomSheetBehavior.STATE_EXPANDED
         behavior.skipCollapsed = true
@@ -94,13 +111,14 @@ class HomeFragment : Fragment() {
             SearchItem(R.drawable.food, "Magaliesburg Eatery", "Food & Cuisine · Magaliesburg"),
             SearchItem(R.drawable.ic_paw, "Magaliesburg Spa", "Food & Cuisine · Magaliesburg"),
             SearchItem(R.drawable.food,"Magaliesburg Sports Club","Food & Cuisine · Magaliesburg"),
-            SearchItem(R.drawable.ic_paw, "Magaliesburg Swimming Pool","Food & Cuisine · Magaliesburg")
+            SearchItem(R.drawable.ic_paw,"Magaliesburg Swimming Pool","Food & Cuisine · Magaliesburg")
         )
 
         // ✅ Show keyboard automatically
         bottomSheetDialog.setOnShowListener {
             etSearch.requestFocus()
-            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm =
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(etSearch, InputMethodManager.SHOW_IMPLICIT)
         }
 
@@ -147,7 +165,7 @@ class HomeFragment : Fragment() {
             decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                         View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            statusBarColor = android.graphics.Color.TRANSPARENT
+            statusBarColor = Color.TRANSPARENT
         }
     }
 

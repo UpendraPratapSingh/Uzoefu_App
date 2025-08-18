@@ -48,9 +48,15 @@ class CreateAccountActivity : AppCompatActivity() {
                 val hasLower = password.any { it.isLowerCase() }
                 updateRuleIcon(binding.iconUpperLower, hasUpper && hasLower)
 
-                updateRuleIcon(binding.iconNoSpaces, password.isNotEmpty() && !password.contains(" "))
+                updateRuleIcon(
+                    binding.iconNoSpaces,
+                    password.isNotEmpty() && !password.contains(" ")
+                )
 
-                updateRuleIcon(binding.iconNoEmailParts, password.isNotEmpty() && !emailPartFound(password, email))
+                updateRuleIcon(
+                    binding.iconNoEmailParts,
+                    password.isNotEmpty() && !emailPartFound(password, email)
+                )
             }
 
             override fun afterTextChanged(s: Editable?) {}

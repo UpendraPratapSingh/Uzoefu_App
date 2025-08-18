@@ -123,7 +123,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/rightArrow"
+                    android:id="@+id/viewMoreArrow"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_marginEnd="15dp"
@@ -181,7 +181,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/rightArrow1"
+                    android:id="@+id/viewMoreArrow1"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_marginEnd="15dp"
