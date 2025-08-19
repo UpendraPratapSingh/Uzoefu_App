@@ -3,8 +3,9 @@ package com.travel.uzoefuapp.activities
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
-import com.travel.uzoefuapp.adapter.CategoriesAdapter
-import com.travel.uzoefuapp.adapter.DestinationAdapter
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.travel.uzoefuapp.adapter.ExploreAdapter
+import com.travel.uzoefuapp.adapter.ExploreResultAdapter
 import com.travel.uzoefuapp.databinding.ActivityExploreBinding
 
 class ExploreActivity : AppCompatActivity() {
@@ -16,12 +17,11 @@ class ExploreActivity : AppCompatActivity() {
 
         binding.forYouArrowImg.setOnClickListener { finish() }
 
-        binding.destinationRecycler.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
-        binding.destinationRecycler.adapter = DestinationAdapter(this)
+        binding.destinationRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.destinationRecycler.adapter = ExploreAdapter(this)
 
-        binding.categoriesRecycler.layoutManager =
-            GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
-        binding.categoriesRecycler.adapter = CategoriesAdapter(this)
+        binding.categoriesRecycler.layoutManager = GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false)
+        binding.categoriesRecycler.adapter = ExploreResultAdapter(this)
 
     }
 }

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/forYouCountryImg"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/experience"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/favIcon"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/heart_bg"
+            android:padding="6dp"
+            android:src="@drawable/ic_wishlist"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@android:color/white" />
+
+        <TextView
+            android:id="@+id/forYouDestName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="4dp"
+            android:fontFamily="@font/roboto_semi_bold"
+            android:text="Birders Haven"
+            android:textColor="@color/nuetral_bold_color"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/daysName"
+            app:layout_constraintStart_toEndOf="@+id/forYouCountryImg"
+            app:layout_constraintTop_toTopOf="@+id/forYouCountryImg" />
+
+        <TextView
+            android:id="@+id/daysName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:text="Open · 27 mins"
+            android:textColor="@color/dark_black"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/forYouDestName"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/starIcon"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:src="@drawable/star"
+            app:layout_constraintBottom_toBottomOf="@+id/ratingText"
+            app:layout_constraintStart_toStartOf="@id/daysName"
+            app:layout_constraintTop_toTopOf="@+id/ratingText" />
+
+        <TextView
+            android:id="@+id/ratingText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/roboto_regular"
+            android:text="4.2 (33)"
+            android:textColor="@color/dark_black"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@id/starIcon"
+            app:layout_constraintTop_toBottomOf="@id/daysName" />
+
+        <TextView
+            android:id="@+id/fullPriceText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:text="from"
+            android:textColor="@color/dark_black"
+            android:textSize="12sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/priceTxt1"
+            app:layout_constraintEnd_toStartOf="@id/priceTxt1"
+            app:layout_constraintTop_toBottomOf="@id/daysName" />
+
+        <TextView
+            android:id="@+id/priceTxt1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:fontFamily="@font/roboto_semi_bold"
+            android:text="R1055"
+            android:textColor="@color/nuetral_bold_color"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ratingText" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

@@ -13,7 +13,6 @@ import com.travel.uzoefuapp.R
 
 class CategoryAdapter(val context: Context) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
-    // To keep track of selected position
     private val selectedPositions = mutableSetOf<Int>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -29,7 +28,7 @@ class CategoryAdapter(val context: Context) : RecyclerView.Adapter<CategoryAdapt
 
         // Change background & text color if selected
         if (selectedPositions.contains(position)) {
-            holder.itemView.setBackgroundResource(R.drawable.category_selected_background) // your selected drawable
+            holder.itemView.setBackgroundResource(R.drawable.category_selected_background)
             holder.categoryText.setTextColor(ContextCompat.getColor(context, R.color.dark_cyan))
             holder.categoryIcon.setColorFilter(ContextCompat.getColor(context, R.color.dark_cyan))
         } else {

@@ -15,6 +15,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -28,6 +29,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.activities.ExploreActivity
 import com.travel.uzoefuapp.activities.ExploreCategoriesActivity
 import com.travel.uzoefuapp.adapter.CategoryAdapter
 import com.travel.uzoefuapp.adapter.DiscoverAdapter
@@ -35,6 +37,7 @@ import com.travel.uzoefuapp.adapter.ExperienceAdapter
 import com.travel.uzoefuapp.adapter.ExploreAdapter
 import com.travel.uzoefuapp.adapter.SearchAdapter
 import com.travel.uzoefuapp.adapter.SearchItem
+import com.travel.uzoefuapp.adapter.SelectPriceAdapter
 import com.travel.uzoefuapp.databinding.FragmentHomeBinding
 
 
@@ -102,7 +105,8 @@ class HomeFragment : Fragment() {
         val btnClose = view.findViewById<ImageView>(R.id.btnClose)
 
         // Make it fullscreen
-        val bottomSheet = bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        val bottomSheet =
+            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
         bottomSheet?.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
 
         bottomSheet?.setBackgroundResource(R.drawable.bg_bottom_sheet_rounded)
@@ -172,16 +176,43 @@ class HomeFragment : Fragment() {
 
         val ivToggleDistance = view.findViewById<ConstraintLayout>(R.id.distanceLayout)
         val categoryLayout = view.findViewById<ConstraintLayout>(R.id.categoryLayout)
+        val ratingLayout = view.findViewById<ConstraintLayout>(R.id.ratingLayout)
+        val priceLayout = view.findViewById<ConstraintLayout>(R.id.priceLayout)
 
         val plusImageView = view.findViewById<ImageView>(R.id.plusImageView)
         val plusCategory = view.findViewById<ImageView>(R.id.plusCategory)
+        val plusRating = view.findViewById<ImageView>(R.id.plusRating)
+        val plusPrice = view.findViewById<ImageView>(R.id.plusPrice)
         val layoutCityRadius = view.findViewById<LinearLayout>(R.id.layoutCityRadius)
         val categoriesSection = view.findViewById<ConstraintLayout>(R.id.categoriesSection)
+        val ratingFilterContainer = view.findViewById<LinearLayout>(R.id.ratingFilterContainer)
 
         val rvCategories = view.findViewById<RecyclerView>(R.id.rvCategories)
+        val rvSelectPrice = view.findViewById<RecyclerView>(R.id.rvSelectPrice)
 
         val spinnerCity = view.findViewById<AppCompatSpinner>(R.id.spinnerCity)
         val spinnerRadius = view.findViewById<Spinner>(R.id.spinnerRadius)
+
+        val cbAllRatings = view.findViewById<CheckBox>(R.id.cbAllRatings)
+        val cbRating1 = view.findViewById<CheckBox>(R.id.cbRating1)
+        val cbRating2 = view.findViewById<CheckBox>(R.id.cbRating2)
+        val cbRating3 = view.findViewById<CheckBox>(R.id.cbRating3)
+        val cbRating4 = view.findViewById<CheckBox>(R.id.cbRating4)
+        val cbRating5 = view.findViewById<CheckBox>(R.id.cbRating5)
+
+        val ratingCheckboxes = listOf(cbRating1, cbRating2, cbRating3, cbRating4, cbRating5)
+
+        // ✅ When All Ratings is clicked
+        cbAllRatings.setOnCheckedChangeListener { _, isChecked ->
+            ratingCheckboxes.forEach { it.isChecked = isChecked }
+        }
+
+        // ✅ If user unchecks any rating, uncheck All Ratings automatically
+        ratingCheckboxes.forEach { cb ->
+            cb.setOnCheckedChangeListener { _, _ ->
+                cbAllRatings.isChecked = ratingCheckboxes.all { it.isChecked }
+            }
+        }
 
         // Setup City Spinner
         val cities = arrayOf("Select City", "Johannesburg", "Cape Town", "Durban", "Pretoria")
@@ -253,8 +284,38 @@ class HomeFragment : Fragment() {
             }
         }
 
+        ratingLayout.setOnClickListener {
+            if (ratingFilterContainer.visibility == View.GONE) {
+                ratingFilterContainer.visibility = View.VISIBLE
+                plusRating.setImageResource(R.drawable.baseline_remove) // change + to -
+            } else {
+                ratingFilterContainer.visibility = View.GONE
+                plusRating.setImageResource(R.drawable.baseline_add_24) // back to +
+            }
+        }
+
+        priceLayout.setOnClickListener {
+            if (rvSelectPrice.visibility == View.GONE) {
+                rvSelectPrice.visibility = View.VISIBLE
+                plusPrice.setImageResource(R.drawable.baseline_remove) // change + to -
+            } else {
+                rvSelectPrice.visibility = View.GONE
+                plusPrice.setImageResource(R.drawable.baseline_add_24) // back to +
+            }
+        }
+
         rvCategories.layoutManager = GridLayoutManager(requireContext(), 3)
         rvCategories.adapter = CategoryAdapter(requireContext())
+
+
+        rvSelectPrice.layoutManager = GridLayoutManager(requireContext(), 1)
+        rvSelectPrice.adapter = SelectPriceAdapter(requireContext())
+
+        /*   binding.btnApply.setOnClickListener {
+               val selectedPrices = adapter.getSelectedFilters()
+               Toast.makeText(requireContext(), "Selected: $selectedPrices", Toast.LENGTH_SHORT).show()
+           }*/
+
 
         // Back & Close buttons
         backIcon.setOnClickListener { bottomSheetDialog.dismiss() }
@@ -262,11 +323,8 @@ class HomeFragment : Fragment() {
 
         // Apply button
         btnApply.setOnClickListener {
-            Toast.makeText(
-                requireContext(),
-                "Filters: $selectedCity, $selectedRadius",
-                Toast.LENGTH_SHORT
-            ).show()
+            val intent = Intent(requireContext(), ExploreActivity::class.java)
+            startActivity(intent)
             bottomSheetDialog.dismiss()
         }
 
