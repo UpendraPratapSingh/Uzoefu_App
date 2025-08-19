@@ -21,10 +21,6 @@ class ExploreFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentExploreBinding.inflate(inflater, container, false)
 
-        binding.forYouArrowImg.setOnClickListener {
-            parentFragmentManager.popBackStack() // use can back to previous activity
-        }
-
         binding.destinationRecycler.layoutManager =
             GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         binding.destinationRecycler.adapter = DestinationAdapter(requireContext())

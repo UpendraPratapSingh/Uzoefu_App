@@ -21,7 +21,7 @@ class DashboardActivity : AppCompatActivity() {
 
         replaceFragment(HomeFragment(), true)
 
-        binding.homeIconUser.setOnClickListener {
+        binding.HomeFragmentUser.setOnClickListener {
             binding.homeIconUser.setImageResource(R.drawable.dashboard)
             binding.destinationIconUsers.setImageResource(R.drawable.explore)
             binding.pastOrderIconUsers.setImageResource(R.drawable.wishlist)

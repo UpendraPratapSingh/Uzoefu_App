@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".fragment.HomeFragment">
 
+
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/videoView"
         android:layout_width="0dp"
@@ -39,23 +40,34 @@
             android:src="@drawable/filter"
             app:tint="@android:color/darker_gray" />
 
-        <TextView
-            android:id="@+id/searchData"
-            android:layout_width="0dp"
+        <RelativeLayout
+            android:id="@+id/exploreExp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@null"
-            android:hint="Explore experiences"
-            android:imeOptions="actionSearch"
-            android:paddingHorizontal="8dp"
-            android:textColor="@android:color/black"
-            android:textColorHint="@android:color/darker_gray" />
+            android:paddingHorizontal="5dp">
 
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:src="@drawable/ic_search"
-            app:tint="@android:color/darker_gray" />
+            <TextView
+                android:id="@+id/searchData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@null"
+                android:hint="Explore experiences"
+                android:imeOptions="actionSearch"
+                android:paddingHorizontal="8dp"
+                android:textColor="@android:color/black"
+                android:textColorHint="@android:color/darker_gray" />
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_search"
+                app:tint="@android:color/darker_gray" />
+        </RelativeLayout>
+
+
     </LinearLayout>
 
     <TextView
@@ -76,7 +88,7 @@
         android:id="@+id/topScrollview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -91,7 +103,6 @@
                 android:id="@+id/trendingConst"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
@@ -103,7 +114,7 @@
                     android:layout_marginStart="11dp"
                     android:fontFamily="@font/roboto_regular"
                     android:text="Discover"
-                    android:textColor="@color/black"
+                    android:textColor="@color/nuetral_bold_color"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
@@ -116,7 +127,7 @@
                     android:layout_marginStart="5dp"
                     android:fontFamily="@font/roboto_light"
                     android:text="destinations"
-                    android:textColor="@color/black"
+                    android:textColor="@color/nuetral_bold_color"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintStart_toEndOf="@+id/discoverTxt"
@@ -159,7 +170,7 @@
                     android:layout_marginStart="11dp"
                     android:fontFamily="@font/roboto_regular"
                     android:text="Experience"
-                    android:textColor="@color/black"
+                    android:textColor="@color/nuetral_bold_color"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -173,7 +184,7 @@
                     android:layout_marginStart="5dp"
                     android:fontFamily="@font/roboto_light"
                     android:text="activities"
-                    android:textColor="@color/black"
+                    android:textColor="@color/nuetral_bold_color"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -217,7 +228,7 @@
                     android:layout_marginStart="11dp"
                     android:fontFamily="@font/roboto_regular"
                     android:text="Explore"
-                    android:textColor="@color/black"
+                    android:textColor="@color/nuetral_bold_color"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -231,7 +242,7 @@
                     android:layout_marginStart="5dp"
                     android:fontFamily="@font/roboto_light"
                     android:text="Categories"
-                    android:textColor="@color/black"
+                    android:textColor="@color/nuetral_bold_color"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"

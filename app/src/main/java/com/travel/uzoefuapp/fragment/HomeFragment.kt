@@ -12,15 +12,22 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.Spinner
+import android.widget.Toast
+import androidx.appcompat.widget.AppCompatSpinner
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.R
-import com.travel.uzoefuapp.activities.ExploreActivity
 import com.travel.uzoefuapp.activities.ExploreCategoriesActivity
 import com.travel.uzoefuapp.adapter.CategoryAdapter
 import com.travel.uzoefuapp.adapter.DiscoverAdapter
@@ -59,16 +66,14 @@ class HomeFragment : Fragment() {
 
         binding.filterData.setOnClickListener { showFilterPopup() }
 
-        binding.searchData.setOnClickListener { searchExperience() }
+        binding.exploreExp.setOnClickListener { searchExperience() }
 
         binding.viewMoreArrow.setOnClickListener {
-            val intent = Intent(requireContext(), ExploreActivity::class.java)
-            startActivity(intent)
+            openFragment(ExploreFragment())
         }
 
         binding.viewMoreArrow1.setOnClickListener {
-            val intent = Intent(requireContext(), ExploreActivity::class.java)
-            startActivity(intent)
+            openFragment(ExploreFragment())
         }
 
         binding.rightArrow2.setOnClickListener {
@@ -77,6 +82,13 @@ class HomeFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun openFragment(fragment: Fragment) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.userFrameLayout, fragment) // this id must match FrameLayout from Activity
+            .addToBackStack(null) // allows going back
+            .commit()
     }
 
     @SuppressLint("CutPasteId")
@@ -90,8 +102,7 @@ class HomeFragment : Fragment() {
         val btnClose = view.findViewById<ImageView>(R.id.btnClose)
 
         // Make it fullscreen
-        val bottomSheet =
-            bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+        val bottomSheet = bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
         bottomSheet?.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
 
         bottomSheet?.setBackgroundResource(R.drawable.bg_bottom_sheet_rounded)
@@ -110,8 +121,16 @@ class HomeFragment : Fragment() {
             SearchItem(R.drawable.ic_paw, "Magaliesburg Game Reserve", "Wildlife · Magaliesburg"),
             SearchItem(R.drawable.food, "Magaliesburg Eatery", "Food & Cuisine · Magaliesburg"),
             SearchItem(R.drawable.ic_paw, "Magaliesburg Spa", "Food & Cuisine · Magaliesburg"),
-            SearchItem(R.drawable.food,"Magaliesburg Sports Club","Food & Cuisine · Magaliesburg"),
-            SearchItem(R.drawable.ic_paw,"Magaliesburg Swimming Pool","Food & Cuisine · Magaliesburg")
+            SearchItem(
+                R.drawable.food,
+                "Magaliesburg Sports Club",
+                "Food & Cuisine · Magaliesburg"
+            ),
+            SearchItem(
+                R.drawable.ic_paw,
+                "Magaliesburg Swimming Pool",
+                "Food & Cuisine · Magaliesburg"
+            )
         )
 
         // ✅ Show keyboard automatically
@@ -133,8 +152,8 @@ class HomeFragment : Fragment() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(R.layout.filter_bottom_sheet, null)
         bottomSheetDialog.setContentView(view)
-        // Apply blur to the background
-        // Make sure it draws over navigation bar
+
+        // Transparent background
         bottomSheetDialog.window?.apply {
             clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
@@ -146,13 +165,110 @@ class HomeFragment : Fragment() {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
 
+        // Views
         val btnApply = view.findViewById<Button>(R.id.btnApplyFilters)
         val backIcon = view.findViewById<ImageView>(R.id.imageView)
         val closePopup = view.findViewById<ImageView>(R.id.closePopup)
 
-        backIcon.setOnClickListener { bottomSheetDialog.dismiss() }
+        val ivToggleDistance = view.findViewById<ConstraintLayout>(R.id.distanceLayout)
+        val categoryLayout = view.findViewById<ConstraintLayout>(R.id.categoryLayout)
 
+        val plusImageView = view.findViewById<ImageView>(R.id.plusImageView)
+        val plusCategory = view.findViewById<ImageView>(R.id.plusCategory)
+        val layoutCityRadius = view.findViewById<LinearLayout>(R.id.layoutCityRadius)
+        val categoriesSection = view.findViewById<ConstraintLayout>(R.id.categoriesSection)
+
+        val rvCategories = view.findViewById<RecyclerView>(R.id.rvCategories)
+
+        val spinnerCity = view.findViewById<AppCompatSpinner>(R.id.spinnerCity)
+        val spinnerRadius = view.findViewById<Spinner>(R.id.spinnerRadius)
+
+        // Setup City Spinner
+        val cities = arrayOf("Select City", "Johannesburg", "Cape Town", "Durban", "Pretoria")
+        val cityAdapter =
+            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, cities)
+        spinnerCity.adapter = cityAdapter
+
+        var selectedCity = ""
+        spinnerCity.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                selectedCity = if (position > 0) cities[position] else ""
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        val radiusOptions = arrayOf(
+            "Select Radius",
+            "2 Kilometres",
+            "5 Kilometres",
+            "10 Kilometres",
+            "20 Kilometres"
+        )
+        val radiusAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item,
+            radiusOptions
+        )
+        spinnerRadius.adapter = radiusAdapter
+
+        var selectedRadius = ""
+        spinnerRadius.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                selectedRadius = if (position > 0) radiusOptions[position] else ""
+            }
+
+            override fun onNothingSelected(parent: AdapterView<*>?) {}
+        }
+
+        // Toggle expand/collapse Distance section
+        ivToggleDistance.setOnClickListener {
+            if (layoutCityRadius.visibility == View.GONE) {
+                layoutCityRadius.visibility = View.VISIBLE
+                plusImageView.setImageResource(R.drawable.baseline_remove) // change + to -
+            } else {
+                layoutCityRadius.visibility = View.GONE
+                plusImageView.setImageResource(R.drawable.baseline_add_24) // back to +
+            }
+        }
+
+        // Toggle expand/collapse Distance section
+        categoryLayout.setOnClickListener {
+            if (categoriesSection.visibility == View.GONE) {
+                categoriesSection.visibility = View.VISIBLE
+                plusCategory.setImageResource(R.drawable.baseline_remove) // change + to -
+            } else {
+                categoriesSection.visibility = View.GONE
+                plusCategory.setImageResource(R.drawable.baseline_add_24) // back to +
+            }
+        }
+
+        rvCategories.layoutManager = GridLayoutManager(requireContext(), 3)
+        rvCategories.adapter = CategoryAdapter(requireContext())
+
+        // Back & Close buttons
+        backIcon.setOnClickListener { bottomSheetDialog.dismiss() }
         closePopup.setOnClickListener { bottomSheetDialog.dismiss() }
+
+        // Apply button
+        btnApply.setOnClickListener {
+            Toast.makeText(
+                requireContext(),
+                "Filters: $selectedCity, $selectedRadius",
+                Toast.LENGTH_SHORT
+            ).show()
+            bottomSheetDialog.dismiss()
+        }
 
         bottomSheetDialog.show()
     }
