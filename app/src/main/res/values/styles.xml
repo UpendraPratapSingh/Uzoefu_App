@@ -33,5 +33,9 @@
         <item name="android:background">@drawable/bg_bottom_sheet_rounded</item>
     </style>
 
+    <style name="RoundedImageStyle">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">12dp</item> <!-- adjust radius -->
+    </style>
 
 </resources>
