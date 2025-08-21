@@ -27,7 +27,6 @@
                 android:orientation="horizontal"
                 android:weightSum="2">
 
-                <!-- First Name -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -42,13 +41,11 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
+                        android:background="@null"
                         android:inputType="textPersonName"
-                        android:textSize="14sp"
-                        android:background="@null"/>
+                        android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-
-                <!-- Surname -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -63,9 +60,9 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="50dp"
+                        android:background="@null"
                         android:inputType="textPersonName"
-                        android:textSize="14sp"
-                        android:background="@null"/>
+                        android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 
@@ -84,10 +81,10 @@
                     android:id="@+id/et_username"
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
-                    android:gravity="center_vertical"
-                    android:textSize="14sp"
                     android:background="@null"
-                    android:inputType="textPersonName" />
+                    android:gravity="center_vertical"
+                    android:inputType="textPersonName"
+                    android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -106,9 +103,9 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:background="@null"
                     android:inputType="textPersonName"
-                    android:textSize="14sp"
-                    android:background="@null"/>
+                    android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -125,9 +122,9 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:background="@null"
                     android:inputType="textPersonName"
-                    android:textSize="14sp"
-                    android:background="@null"/>
+                    android:textSize="14sp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -144,9 +141,9 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:background="@null"
                     android:inputType="textPersonName"
-                    android:textSize="14sp"
-                    android:background="@null"/>
+                    android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -164,9 +161,9 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="50dp"
+                    android:background="@null"
                     android:inputType="textPersonName"
-                    android:textSize="14sp"
-                    android:background="@null"/>
+                    android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -187,7 +184,6 @@
                     android:focusable="false"
                     android:inputType="none"
                     android:paddingStart="10dp" />
-
 
             </com.google.android.material.textfield.TextInputLayout>
 
