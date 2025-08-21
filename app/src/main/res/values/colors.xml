@@ -10,5 +10,6 @@
     <color name="nuetral_bold_color">#60686B</color>
     <color name="gray">#9E9E9E</color>
     <color name="dark_cyan">#006940</color>
+    <color name="light_white">#F5F6F6</color>
 
 </resources>

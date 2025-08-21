@@ -63,4 +63,13 @@ dependencies {
 
     implementation ("com.google.android.material:material:1.12.0")
 
+    implementation ("com.google.android.material:material:1.10.0")
+
+    //view pager
+    implementation ("androidx.viewpager2:viewpager2:1.1.0")
+    //circle image
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
+
+    implementation ("com.google.android.material:material:1.1.0-alpha09")
+
 }

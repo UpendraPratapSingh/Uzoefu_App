@@ -6,6 +6,7 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="12dp"
+    app:cardBackgroundColor="@color/light_white"
     app:cardElevation="2dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -13,34 +14,29 @@
         android:layout_height="wrap_content"
         android:padding="8dp">
 
-        <!-- Image -->
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/itemImage"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:scaleType="centerCrop"
             android:src="@drawable/birds"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:shapeAppearanceOverlay="@style/RoundedImageStyle" />
 
-        <ImageView
+        <CheckBox
             android:id="@+id/deleteIcon"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_margin="10dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/bg_round_red"
-            android:padding="6dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_delete"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/itemTitle"
-            app:tint="@android:color/white"
-             />
-
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_margin="5dp"
+            android:background="@drawable/checkbox_background"
+            android:button="@null"
+            android:gravity="center"
+            android:text=""
+            android:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
         <!-- Title -->
@@ -48,15 +44,15 @@
             android:id="@+id/itemTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:text="Birders Haven"
-            android:textStyle="bold"
-            android:textSize="16sp"
             android:textColor="@android:color/black"
-            app:layout_constraintStart_toEndOf="@id/itemImage"
-            app:layout_constraintTop_toTopOf="@id/itemImage"
+            android:textSize="16sp"
+            android:textStyle="bold"
             app:layout_constraintEnd_toStartOf="@id/favIcon"
             app:layout_constraintHorizontal_bias="0"
-            android:layout_marginStart="8dp"/>
+            app:layout_constraintStart_toEndOf="@id/itemImage"
+            app:layout_constraintTop_toTopOf="@id/itemImage" />
 
         <!-- Favourite Icon -->
         <ImageView
@@ -66,42 +62,42 @@
             android:layout_gravity="top|end"
             android:padding="6dp"
             android:src="@drawable/wishlist_color"
-            app:layout_constraintTop_toTopOf="@id/itemTitle"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/itemTitle" />
 
         <!-- Rating + Count -->
         <LinearLayout
             android:id="@+id/ratingLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="@id/itemTitle"
-            app:layout_constraintTop_toBottomOf="@id/itemTitle"
-            android:layout_marginTop="4dp">
+            app:layout_constraintTop_toBottomOf="@id/itemTitle">
 
             <RatingBar
                 android:id="@+id/ratingBar"
+                style="?android:attr/ratingBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:isIndicator="true"
                 android:numStars="3"
                 android:rating="3"
-                android:stepSize="1"
-                android:isIndicator="true"
                 android:scaleX="0.7"
                 android:scaleY="0.7"
-                style="?android:attr/ratingBarStyleSmall"
+                android:stepSize="1"
                 app:layout_constraintStart_toStartOf="@id/itemTitle"
-                app:layout_constraintTop_toBottomOf="@id/itemTitle"
-                android:layout_marginTop="4dp"/>
+                app:layout_constraintTop_toBottomOf="@id/itemTitle" />
 
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
                 android:text="(120)"
-                android:textSize="14sp"
                 android:textColor="@android:color/holo_green_light"
-                android:layout_marginStart="4dp"/>
+                android:textSize="14sp" />
         </LinearLayout>
 
         <!-- Price -->

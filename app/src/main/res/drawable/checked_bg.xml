@@ -1,0 +1,16 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Background shape with corner radius -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@color/green_color" />
+            <corners android:radius="12dp" />
+            <stroke android:width="2dp" android:color="@color/green_color" />
+        </shape>
+    </item>
+
+    <!-- Center check icon -->
+    <item
+        android:gravity="center"
+        android:drawable="@drawable/checkcircle"/>
+</layer-list>
