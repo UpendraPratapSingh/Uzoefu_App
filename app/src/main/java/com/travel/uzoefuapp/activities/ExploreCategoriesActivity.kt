@@ -3,7 +3,9 @@ package com.travel.uzoefuapp.activities
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.adapter.CategoriesAdapter
+import com.travel.uzoefuapp.adapter.Category
 import com.travel.uzoefuapp.databinding.ActivityExploreCategoriesBinding
 
 class ExploreCategoriesActivity : AppCompatActivity() {
@@ -15,8 +17,28 @@ class ExploreCategoriesActivity : AppCompatActivity() {
 
         binding.forYouArrowImg.setOnClickListener { finish() }
 
-        binding.categoriesRecycler.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
-        binding.categoriesRecycler.adapter = CategoriesAdapter(this)
+        val categoriesList = listOf(
+            Category("Near Me", 400, R.drawable.tours),
+            Category("Adventure", 600, R.drawable.tours),
+            Category("Culture", 450, R.drawable.tours),
+            Category("Food", 1700, R.drawable.tours),
+            Category("Entertainment", 350, R.drawable.tours),
+            Category("Family Fun", 18, R.drawable.tours),
+            Category("Services", 250, R.drawable.tours),
+            Category("Religion", 66, R.drawable.tours),
+            Category("Outdoors", 131, R.drawable.tours),
+            Category("Wildlife", 65, R.drawable.tours),
+            Category("Wellness", 50, R.drawable.tours),
+            Category("Historical", 67, R.drawable.tours),
+            Category("Sport", 47, R.drawable.tours),
+            Category("Urban", 32, R.drawable.tours),
+            Category("Nature", 200, R.drawable.tours),
+            Category("Tours", 123, R.drawable.tours)
+        )
+
+        binding.categoriesRecycler.layoutManager =
+            GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
+        binding.categoriesRecycler.adapter = CategoriesAdapter(this, categoriesList)
 
     }
 }

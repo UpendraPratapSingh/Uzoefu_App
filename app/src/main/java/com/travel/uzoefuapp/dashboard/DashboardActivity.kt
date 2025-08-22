@@ -32,7 +32,6 @@ class DashboardActivity : AppCompatActivity() {
             binding.pastOrderIconUsers.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
             binding.profileIconUser.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
 
-
             binding.destinationTxtUSer.setTextColor(ContextCompat.getColor(this,R.color.nuetral_bold_color))
             binding.homeTextUser.setTextColor(ContextCompat.getColor(this, R.color.black))
             binding.pastOrderTextUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
@@ -54,7 +53,6 @@ class DashboardActivity : AppCompatActivity() {
             binding.pastOrderIconUsers.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
             binding.profileIconUser.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
 
-
             binding.destinationTxtUSer.setTextColor(ContextCompat.getColor(this, R.color.black))
             binding.homeTextUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
             binding.pastOrderTextUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
@@ -73,7 +71,6 @@ class DashboardActivity : AppCompatActivity() {
             binding.homeIconUser.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
             binding.destinationIconUsers.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
             binding.profileIconUser.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-
 
             binding.destinationTxtUSer.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
             binding.homeTextUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))

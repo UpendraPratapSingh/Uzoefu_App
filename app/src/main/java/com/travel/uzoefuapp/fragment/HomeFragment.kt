@@ -20,7 +20,6 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Spinner
-import android.widget.Toast
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
@@ -31,6 +30,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activities.ExploreActivity
 import com.travel.uzoefuapp.activities.ExploreCategoriesActivity
+import com.travel.uzoefuapp.adapter.Category
 import com.travel.uzoefuapp.adapter.CategoryAdapter
 import com.travel.uzoefuapp.adapter.DiscoverAdapter
 import com.travel.uzoefuapp.adapter.ExperienceAdapter
@@ -44,6 +44,23 @@ import com.travel.uzoefuapp.databinding.FragmentHomeBinding
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
+
+    private val categoriesList = listOf(
+        Category("Near Me", 400, R.drawable.tours),
+        Category("Adventure", 600, R.drawable.tours),
+        Category("Culture", 450, R.drawable.tours),
+        Category("Food", 1700, R.drawable.tours),
+        Category("Entertainment", 350, R.drawable.tours),
+        Category("Family Fun", 18, R.drawable.tours),
+        Category("Services", 250, R.drawable.tours),
+        Category("Religion", 66, R.drawable.tours),
+        Category("Outdoors", 131, R.drawable.tours),
+        Category("Wildlife", 65, R.drawable.tours),
+        Category("Wellness", 50, R.drawable.tours),
+        Category("Historical", 67, R.drawable.tours),
+        Category("Sport", 47, R.drawable.tours),
+        Category("Urban", 32, R.drawable.tours),
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,7 +78,7 @@ class HomeFragment : Fragment() {
 
         binding.categoriesRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.categoriesRecyclerView.adapter = CategoryAdapter(requireContext())
+        binding.categoriesRecyclerView.adapter = CategoryAdapter(requireContext(), categoriesList)
 
         binding.popularcontryRecyclerView.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -89,15 +106,14 @@ class HomeFragment : Fragment() {
 
     private fun openFragment(fragment: Fragment) {
         parentFragmentManager.beginTransaction()
-            .replace(R.id.userFrameLayout, fragment) // this id must match FrameLayout from Activity
-            .addToBackStack(null) // allows going back
+            .replace(R.id.userFrameLayout, fragment)
+            .addToBackStack(null)
             .commit()
     }
 
     @SuppressLint("CutPasteId")
     private fun searchExperience() {
-        val bottomSheetDialog =
-            BottomSheetDialog(requireContext(), R.style.FullScreenRoundedBottomSheetDialog)
+        val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.FullScreenRoundedBottomSheetDialog)
         val view = layoutInflater.inflate(R.layout.search_bottom_sheet, null)
         bottomSheetDialog.setContentView(view)
 
@@ -125,23 +141,14 @@ class HomeFragment : Fragment() {
             SearchItem(R.drawable.ic_paw, "Magaliesburg Game Reserve", "Wildlife · Magaliesburg"),
             SearchItem(R.drawable.food, "Magaliesburg Eatery", "Food & Cuisine · Magaliesburg"),
             SearchItem(R.drawable.ic_paw, "Magaliesburg Spa", "Food & Cuisine · Magaliesburg"),
-            SearchItem(
-                R.drawable.food,
-                "Magaliesburg Sports Club",
-                "Food & Cuisine · Magaliesburg"
-            ),
-            SearchItem(
-                R.drawable.ic_paw,
-                "Magaliesburg Swimming Pool",
-                "Food & Cuisine · Magaliesburg"
-            )
+            SearchItem(R.drawable.food,"Magaliesburg Sports Club","Food & Cuisine · Magaliesburg"),
+            SearchItem(R.drawable.ic_paw,"Magaliesburg Swimming Pool","Food & Cuisine · Magaliesburg")
         )
 
         // ✅ Show keyboard automatically
         bottomSheetDialog.setOnShowListener {
             etSearch.requestFocus()
-            val imm =
-                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(etSearch, InputMethodManager.SHOW_IMPLICIT)
         }
 
@@ -157,7 +164,6 @@ class HomeFragment : Fragment() {
         val view = layoutInflater.inflate(R.layout.filter_bottom_sheet, null)
         bottomSheetDialog.setContentView(view)
 
-        // Transparent background
         bottomSheetDialog.window?.apply {
             clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
@@ -169,7 +175,6 @@ class HomeFragment : Fragment() {
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
 
-        // Views
         val btnApply = view.findViewById<Button>(R.id.btnApplyFilters)
         val backIcon = view.findViewById<ImageView>(R.id.imageView)
         val closePopup = view.findViewById<ImageView>(R.id.closePopup)
@@ -202,19 +207,16 @@ class HomeFragment : Fragment() {
 
         val ratingCheckboxes = listOf(cbRating1, cbRating2, cbRating3, cbRating4, cbRating5)
 
-        // ✅ When All Ratings is clicked
         cbAllRatings.setOnCheckedChangeListener { _, isChecked ->
             ratingCheckboxes.forEach { it.isChecked = isChecked }
         }
 
-        // ✅ If user unchecks any rating, uncheck All Ratings automatically
         ratingCheckboxes.forEach { cb ->
             cb.setOnCheckedChangeListener { _, _ ->
                 cbAllRatings.isChecked = ratingCheckboxes.all { it.isChecked }
             }
         }
 
-        // Setup City Spinner
         val cities = arrayOf("Select City", "Johannesburg", "Cape Town", "Durban", "Pretoria")
         val cityAdapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, cities)
@@ -262,50 +264,48 @@ class HomeFragment : Fragment() {
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
 
-        // Toggle expand/collapse Distance section
         ivToggleDistance.setOnClickListener {
             if (layoutCityRadius.visibility == View.GONE) {
                 layoutCityRadius.visibility = View.VISIBLE
-                plusImageView.setImageResource(R.drawable.baseline_remove) // change + to -
+                plusImageView.setImageResource(R.drawable.baseline_remove)
             } else {
                 layoutCityRadius.visibility = View.GONE
-                plusImageView.setImageResource(R.drawable.baseline_add_24) // back to +
+                plusImageView.setImageResource(R.drawable.baseline_add_24)
             }
         }
 
-        // Toggle expand/collapse Distance section
         categoryLayout.setOnClickListener {
             if (categoriesSection.visibility == View.GONE) {
                 categoriesSection.visibility = View.VISIBLE
-                plusCategory.setImageResource(R.drawable.baseline_remove) // change + to -
+                plusCategory.setImageResource(R.drawable.baseline_remove)
             } else {
                 categoriesSection.visibility = View.GONE
-                plusCategory.setImageResource(R.drawable.baseline_add_24) // back to +
+                plusCategory.setImageResource(R.drawable.baseline_add_24)
             }
         }
 
         ratingLayout.setOnClickListener {
             if (ratingFilterContainer.visibility == View.GONE) {
                 ratingFilterContainer.visibility = View.VISIBLE
-                plusRating.setImageResource(R.drawable.baseline_remove) // change + to -
+                plusRating.setImageResource(R.drawable.baseline_remove)
             } else {
                 ratingFilterContainer.visibility = View.GONE
-                plusRating.setImageResource(R.drawable.baseline_add_24) // back to +
+                plusRating.setImageResource(R.drawable.baseline_add_24)
             }
         }
 
         priceLayout.setOnClickListener {
             if (rvSelectPrice.visibility == View.GONE) {
                 rvSelectPrice.visibility = View.VISIBLE
-                plusPrice.setImageResource(R.drawable.baseline_remove) // change + to -
+                plusPrice.setImageResource(R.drawable.baseline_remove)
             } else {
                 rvSelectPrice.visibility = View.GONE
-                plusPrice.setImageResource(R.drawable.baseline_add_24) // back to +
+                plusPrice.setImageResource(R.drawable.baseline_add_24)
             }
         }
 
         rvCategories.layoutManager = GridLayoutManager(requireContext(), 3)
-        rvCategories.adapter = CategoryAdapter(requireContext())
+        rvCategories.adapter = CategoryAdapter(requireContext(), categoriesList)
 
 
         rvSelectPrice.layoutManager = GridLayoutManager(requireContext(), 1)
@@ -316,12 +316,9 @@ class HomeFragment : Fragment() {
                Toast.makeText(requireContext(), "Selected: $selectedPrices", Toast.LENGTH_SHORT).show()
            }*/
 
-
-        // Back & Close buttons
         backIcon.setOnClickListener { bottomSheetDialog.dismiss() }
         closePopup.setOnClickListener { bottomSheetDialog.dismiss() }
 
-        // Apply button
         btnApply.setOnClickListener {
             val intent = Intent(requireContext(), ExploreActivity::class.java)
             startActivity(intent)
@@ -334,7 +331,6 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Make fragment draw behind status bar
         requireActivity().window.apply {
             decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or

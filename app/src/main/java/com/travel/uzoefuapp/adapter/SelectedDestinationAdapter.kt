@@ -9,15 +9,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activities.SelectDestinationActivity
 
-class DestinationAdapter(val context: Context) : RecyclerView.Adapter<DestinationAdapter.ViewHolder>() {
+class SelectedDestinationAdapter(val context: Context) : RecyclerView.Adapter<SelectedDestinationAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int, ): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.destination_recyclerview, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.selected_destination_recyclerview, parent, false)
         return ViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.setOnClickListener {
             val intent = Intent(context, SelectDestinationActivity::class.java)
+            intent.putExtra("type", "1")
+            intent.putExtra("Name", "Cape Town")
             context.startActivity(intent)
         }
     }

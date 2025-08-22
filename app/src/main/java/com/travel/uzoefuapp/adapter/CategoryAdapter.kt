@@ -1,6 +1,5 @@
 package com.travel.uzoefuapp.adapter
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +10,11 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.travel.uzoefuapp.R
 
-class CategoryAdapter(val context: Context) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
+
+class CategoryAdapter(
+    private val context: Context,
+    private val categories: List<Category>
+) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
     private val selectedPositions = mutableSetOf<Int>()
 
@@ -21,34 +24,34 @@ class CategoryAdapter(val context: Context) : RecyclerView.Adapter<CategoryAdapt
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, @SuppressLint("RecyclerView") position: Int) {
-        val categoryName = "Food ${position + 1}"
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val category = categories[position]
 
-        holder.categoryText.text = categoryName
+        holder.categoryText.text = category.name
 
-        // Change background & text color if selected
+        holder.categoryIcon.setImageResource(category.iconRes)
+
         if (selectedPositions.contains(position)) {
             holder.itemView.setBackgroundResource(R.drawable.category_selected_background)
             holder.categoryText.setTextColor(ContextCompat.getColor(context, R.color.dark_cyan))
             holder.categoryIcon.setColorFilter(ContextCompat.getColor(context, R.color.dark_cyan))
         } else {
-            holder.itemView.setBackgroundResource(R.drawable.category_background) // default
+            holder.itemView.setBackgroundResource(R.drawable.category_background)
             holder.categoryText.setTextColor(ContextCompat.getColor(context, R.color.gray))
             holder.categoryIcon.setColorFilter(ContextCompat.getColor(context, R.color.gray))
         }
 
-        // Click listener for multiple selection
         holder.itemView.setOnClickListener {
             if (selectedPositions.contains(position)) {
-                selectedPositions.remove(position)  // deselect
+                selectedPositions.remove(position)
             } else {
-                selectedPositions.add(position)     // select
+                selectedPositions.add(position)
             }
             notifyItemChanged(position)
         }
     }
 
-    override fun getItemCount(): Int = 9
+    override fun getItemCount(): Int = categories.size
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val categoryIcon: ImageView = itemView.findViewById(R.id.categoryIcon)

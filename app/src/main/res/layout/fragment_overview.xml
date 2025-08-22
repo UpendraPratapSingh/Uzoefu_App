@@ -44,7 +44,7 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_medium"
                             android:text="Thandeka Madlanga"
-                            android:textSize="16sp"/>
+                            android:textSize="16sp" />
 
                         <ImageView
                             android:id="@+id/ivEditProfile"
@@ -143,6 +143,7 @@
                         android:id="@+id/tvWishlist"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:text="3"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -158,6 +159,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
                         android:fontFamily="@font/roboto_regular"
                         android:text="Wishlist"
                         android:textColor="@color/gray"
@@ -179,6 +181,7 @@
                         android:id="@+id/tvBookings"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:text="3"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -194,6 +197,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
                         android:fontFamily="@font/roboto_regular"
                         android:text="Bookings"
                         android:textColor="@color/gray"
@@ -214,6 +218,7 @@
                         android:id="@+id/tvTrips"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:text="2"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -229,6 +234,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
                         android:fontFamily="@font/roboto_regular"
                         android:text="Trips"
                         android:textColor="@color/gray"
@@ -249,6 +255,7 @@
                         android:id="@+id/tvVisited"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:text="6"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -264,6 +271,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
                         android:fontFamily="@font/roboto_regular"
                         android:text="Visited"
                         android:textColor="@color/gray"
@@ -285,6 +293,7 @@
                         android:id="@+id/tvReviews"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:text="16"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -300,6 +309,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
                         android:fontFamily="@font/roboto_regular"
                         android:text="Reviews"
                         android:textColor="@color/gray"
@@ -321,6 +331,7 @@
                         android:id="@+id/tvRewards"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:text="450"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -336,6 +347,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
                         android:fontFamily="@font/roboto_regular"
                         android:text="Rewards"
                         android:textColor="@color/gray"
@@ -357,6 +369,7 @@
                         android:id="@+id/tvPhotos"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
                         android:text="48"
                         android:textSize="16sp"
                         android:textStyle="bold" />
@@ -372,6 +385,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
+                        android:layout_marginBottom="10dp"
                         android:fontFamily="@font/roboto_regular"
                         android:text="Photos"
                         android:textColor="@color/gray"
@@ -383,8 +397,7 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:gravity="center"
-                    android:orientation="vertical">
-                </LinearLayout>
+                    android:orientation="vertical"></LinearLayout>
 
             </GridLayout>
 

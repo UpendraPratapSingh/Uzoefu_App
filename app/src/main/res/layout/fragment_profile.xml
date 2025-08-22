@@ -5,15 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    android:background="@color/green_color"
+    android:background="@color/soft_mint_green"
     tools:context=".fragment.ProfileFragment">
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/forYouDestConst"
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:background="@color/green_color"
+        android:background="@color/soft_mint_green"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -25,7 +24,7 @@
             android:layout_marginStart="20dp"
             android:fontFamily="@font/roboto_light"
             android:text="Profile Details"
-            android:textColor="@color/white"
+            android:textColor="@color/dark_cyan"
             android:textFontWeight="500"
             android:textSize="20sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -49,7 +48,7 @@
                 android:layout_height="24dp"
                 android:layout_gravity="center"
                 android:src="@drawable/notification"
-                app:tint="@android:color/white" />
+                app:tint="@color/dark_black" />
 
             <TextView
                 android:id="@+id/notificationBadge"
@@ -73,7 +72,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@android:color/white" />
+            app:tint="@color/dark_black" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

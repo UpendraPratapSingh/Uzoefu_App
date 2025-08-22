@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onAnimationEnd(animation: Animation?) {
                 Handler(Looper.getMainLooper()).postDelayed({
-                    val intent = Intent(activity, OnboardActivity::class.java)
+                    val intent = Intent(activity, DashboardActivity::class.java)
                     startActivity(intent)
                     finish()
                 }, 1500)
