@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    android:background="@drawable/light_gray">
+    android:background="@drawable/companies_background">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
         <ImageView
             android:id="@+id/itemImage"
             android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_height="55dp"
             android:background="@drawable/rounded_image_background"
             android:clipToOutline="true"
             android:scaleType="centerCrop"
@@ -40,6 +40,7 @@
             android:id="@+id/itemSubtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:text="3 Activities"
             android:textColor="@android:color/darker_gray"
             android:textSize="14sp"

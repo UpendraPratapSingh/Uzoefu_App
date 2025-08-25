@@ -8,7 +8,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
+import android.widget.Button
+import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.adapter.WishlistAdapter
 import com.travel.uzoefuapp.databinding.FragmentWishlistBinding
 
@@ -47,7 +51,37 @@ class WishlistFragment : Fragment() {
             binding.iconLayout.visibility = View.VISIBLE
         }
 
+        binding.copyIcon.setOnClickListener { openBottomSheetTrip() }
+
         return binding.root
+    }
+
+    private fun openBottomSheetTrip() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_layout, null)
+        bottomSheetDialog.setContentView(view)
+
+        // Handle clicks
+        // val deleteBtn = view.findViewById<Button>(R.id.btnDelete)
+        // val cancelBtn = view.findViewById<Button>(R.id.btnCancel)
+
+        val closeBtn = view.findViewById<ImageView>(R.id.tvCloseBtn)
+
+        /*deleteBtn.setOnClickListener {
+            Toast.makeText(this, "Delete clicked", Toast.LENGTH_SHORT).show()
+            bottomSheetDialog.dismiss()
+        }*/
+
+        /*cancelBtn.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }*/
+
+        closeBtn.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
+        bottomSheetDialog.show()
+
     }
 
     override fun onDestroyView() {

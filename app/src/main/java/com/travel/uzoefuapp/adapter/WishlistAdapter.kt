@@ -28,6 +28,12 @@ class WishlistAdapter(val context: Context) : RecyclerView.Adapter<WishlistAdapt
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.title.text = "Birders Haven $position"
 
+        holder.itemView.setOnClickListener {
+            val checkBox = holder.deleteIcon
+            checkBox.isChecked = !checkBox.isChecked
+
+        }
+
         holder.deleteIcon.visibility = if (isEditMode) View.VISIBLE else View.GONE
 
         holder.deleteIcon.setOnClickListener {

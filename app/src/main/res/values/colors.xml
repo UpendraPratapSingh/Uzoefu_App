@@ -13,5 +13,6 @@
     <color name="light_white">#F5F6F6</color>
     <color name="light_black">#202123</color>
     <color name="soft_mint_green">#E9F4F0</color>
+    <color name="red">#F92C2C</color>
 
 </resources>
