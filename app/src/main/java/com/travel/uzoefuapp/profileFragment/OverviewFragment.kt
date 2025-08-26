@@ -6,8 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.bookingActivities.BookListActivity
 import com.travel.uzoefuapp.databinding.FragmentOverviewBinding
+import com.travel.uzoefuapp.fragment.WishlistFragment
 
 
 class OverviewFragment : Fragment() {
@@ -24,6 +26,17 @@ class OverviewFragment : Fragment() {
             startActivity(intent)
         }
 
+        binding.wishlistLayout.setOnClickListener {
+            openFragment(WishlistFragment())
+        }
+
         return binding.root
+    }
+
+    private fun openFragment(fragment: Fragment) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.userFrameLayout, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 }
