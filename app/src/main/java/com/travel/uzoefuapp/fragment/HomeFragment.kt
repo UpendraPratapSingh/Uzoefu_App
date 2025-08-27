@@ -335,11 +335,13 @@ class HomeFragment : Fragment() {
             decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                         View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-            statusBarColor = Color.TRANSPARENT
+
+            statusBarColor = Color.TRANSPARENT  // status bar transparent
+            // navigationBarColor yaha mat change karo
         }
     }
 
-    override fun onDestroyView() {
+        override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }

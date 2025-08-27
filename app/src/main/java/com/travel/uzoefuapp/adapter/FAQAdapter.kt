@@ -26,7 +26,8 @@ class FAQAdapter(private val faqList: List<FAQ>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FAQViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.faq_recyclerview, parent, false)
+        val view =
+            LayoutInflater.from(parent.context).inflate(R.layout.faq_recyclerview, parent, false)
         return FAQViewHolder(view)
     }
 

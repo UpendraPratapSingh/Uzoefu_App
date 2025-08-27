@@ -9,6 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.travel.uzoefuapp.R
 import android.text.Editable
 import android.view.View
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.travel.uzoefuapp.databinding.ActivityCreateAccountBinding
 
 class CreateAccountActivity : AppCompatActivity() {

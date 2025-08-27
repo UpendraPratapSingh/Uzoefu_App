@@ -1,5 +1,6 @@
 package com.travel.uzoefuapp.productFragment
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.travel.uzoefuapp.adapter.FAQ
 import com.travel.uzoefuapp.adapter.FAQAdapter
+import com.travel.uzoefuapp.bookingActivities.BookingDetailStep1Activity
 import com.travel.uzoefuapp.databinding.FragmentFAQBinding
 
 
@@ -20,6 +22,8 @@ class FAQFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentFAQBinding.inflate(inflater, container, false)
+
+
 
         val faqList = listOf(
             FAQ("What is the cancellation policy?", "You can cancel 24 hours before."),

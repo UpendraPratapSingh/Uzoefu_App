@@ -1,9 +1,13 @@
 package com.travel.uzoefuapp.dashboard
 
 import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.databinding.ActivityDashboardBinding
@@ -19,6 +23,26 @@ class DashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        /*enableEdgeToEdge()
+
+        // Handle insets for bottom nav
+        ViewCompat.setOnApplyWindowInsetsListener(binding.limeee) { view, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+            // add bottom padding so nav bar sits above gesture area
+            view.setPadding(
+                view.paddingLeft,
+                view.paddingTop,
+                view.paddingRight,
+                systemBars.bottom
+            )
+
+            insets
+        }*/
+
+        // Status bar aur navigation bar ko transparent kar do
+        window.statusBarColor = Color.TRANSPARENT
+        window.navigationBarColor = Color.TRANSPARENT
 
         replaceFragment(HomeFragment(), true)
 

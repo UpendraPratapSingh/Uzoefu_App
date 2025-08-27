@@ -17,6 +17,10 @@
         <item>5 Kilometres</item>
         <item>10 Kilometres</item>
     </string-array>
+    <string name="title_activity_booking_detail_step1">BookingDetailStep1Activity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
 
 
 </resources>

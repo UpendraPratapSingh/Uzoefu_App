@@ -1,5 +1,6 @@
 package com.travel.uzoefuapp.fragment
 
+import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater

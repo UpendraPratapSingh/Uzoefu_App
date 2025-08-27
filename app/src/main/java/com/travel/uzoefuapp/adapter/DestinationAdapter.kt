@@ -23,7 +23,7 @@ class DestinationAdapter(val context: Context) : RecyclerView.Adapter<Destinatio
     }
 
     override fun getItemCount(): Int {
-        return 6
+        return 4
     }
 
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) { }

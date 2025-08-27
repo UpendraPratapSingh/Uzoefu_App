@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="false"
     tools:context=".dashboard.DashboardActivity">
 
     <FrameLayout
@@ -34,6 +35,7 @@
         android:elevation="10dp"
         android:orientation="horizontal"
         android:weightSum="8"
+        android:fitsSystemWindows="false"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout
@@ -158,4 +160,6 @@
 
         </LinearLayout>
     </androidx.appcompat.widget.LinearLayoutCompat>
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

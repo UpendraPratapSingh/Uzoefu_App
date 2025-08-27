@@ -1,5 +1,6 @@
 package com.travel.uzoefuapp.companyActivities
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
@@ -15,6 +16,8 @@ import com.travel.uzoefuapp.adapter.ActionAdapter
 import com.travel.uzoefuapp.adapter.ProductSliderAdapter
 import com.travel.uzoefuapp.adapter.ProductTabAdapter
 import com.travel.uzoefuapp.adapter.SliderAdapter
+import com.travel.uzoefuapp.bookingActivities.BookSummaryActivity
+import com.travel.uzoefuapp.bookingActivities.BookingDetailStep1Activity
 import com.travel.uzoefuapp.databinding.ActivityBookingProductBinding
 import me.relex.circleindicator.CircleIndicator3
 
@@ -51,6 +54,12 @@ class BookingProductActivity : AppCompatActivity() {
         }
 
         binding.btnBack.setOnClickListener { finish() }
+
+        binding.button2.setOnClickListener {
+            val intent = Intent(this@BookingProductActivity, BookingDetailStep1Activity::class.java)
+            startActivity(intent)
+        }
+
 
         viewPager = findViewById(R.id.viewPager)
         indicator = findViewById(R.id.dotsIndicator)
