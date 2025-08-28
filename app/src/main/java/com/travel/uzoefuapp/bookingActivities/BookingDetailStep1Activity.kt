@@ -23,7 +23,6 @@ class BookingDetailStep1Activity : AppCompatActivity() {
     private lateinit var steps: List<TextView>
     private lateinit var lines: List<View>
     private lateinit var nextBtn: Button
-
     private var currentStep = 1
 
     @SuppressLint("MissingInflatedId")
@@ -31,14 +30,12 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = ActivityBookingDetailStep1Binding.inflate(layoutInflater)
-        setContentView(R.layout.activity_booking_detail_step1)
+        setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        binding.btnBack.setOnClickListener { finish() }
 
         steps = listOf(
             findViewById(R.id.step1),
@@ -56,6 +53,8 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         )
 
         nextBtn = findViewById(R.id.nextButton)
+
+        binding.btnBack.setOnClickListener { finish() }
 
         openFragment(Step1Fragment())
         updateStepper()
@@ -85,7 +84,7 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         for (i in steps.indices) {
             if (i < currentStep) {
                 steps[i].setBackgroundResource(R.drawable.circle_active)
-                steps[i].setTextColor(resources.getColor(android.R.color.white, theme))
+                steps[i].setTextColor(resources.getColor(R.color.green_color, theme))
             } else {
                 steps[i].setBackgroundResource(R.drawable.circle_inactive)
                 steps[i].setTextColor(resources.getColor(android.R.color.darker_gray, theme))
@@ -93,11 +92,28 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         }
 
         for (i in lines.indices) {
-            if (i < currentStep - 1) {
+            if (i < currentStep) {
                 lines[i].setBackgroundResource(R.color.line_active)
             } else {
                 lines[i].setBackgroundResource(R.color.line_inactive)
             }
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        if (currentStep > 1) {
+            currentStep--
+            when (currentStep) {
+                1 -> openFragment(Step1Fragment())
+                2 -> openFragment(Step2Fragment())
+                3 -> openFragment(Step3Fragment())
+                4 -> openFragment(Step4Fragment())
+            }
+            updateStepper()
+        } else {
+            // At first step, close the activity
+            finish()
         }
     }
 }

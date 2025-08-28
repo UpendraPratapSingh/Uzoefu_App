@@ -128,6 +128,19 @@ class BookingProductActivity : AppCompatActivity() {
                 else -> ""
             }
         }.attach()
+
+        binding.viewPagerData.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+
+                // Hide Book button on Reviews tab (position 2)
+                binding.button2.visibility = if (position == 2) {
+                    View.GONE
+                } else {
+                    View.VISIBLE
+                }
+            }
+        })
     }
 
 

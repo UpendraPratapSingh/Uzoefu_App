@@ -9,7 +9,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
 import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.Toast
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.R
@@ -29,18 +32,16 @@ class WishlistFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentWishlistBinding.inflate(inflater, container, false)
 
-        // Setup RecyclerView
         binding.wishlistRecycler.layoutManager =
             GridLayoutManager(requireContext(), 1, GridLayoutManager.VERTICAL, false)
 
         adapter = WishlistAdapter(requireContext())
         binding.wishlistRecycler.adapter = adapter
 
-        // Edit button click → Show delete icons
         binding.editText.setOnClickListener {
             val transition = AutoTransition().apply {
                 duration = 300
-                interpolator = DecelerateInterpolator() // ease out
+                interpolator = DecelerateInterpolator()
             }
             TransitionManager.beginDelayedTransition(binding.root, transition)
 
@@ -61,23 +62,38 @@ class WishlistFragment : Fragment() {
         val view = layoutInflater.inflate(R.layout.bottom_sheet_layout, null)
         bottomSheetDialog.setContentView(view)
 
-        // Handle clicks
-        // val deleteBtn = view.findViewById<Button>(R.id.btnDelete)
-        // val cancelBtn = view.findViewById<Button>(R.id.btnCancel)
-
         val closeBtn = view.findViewById<ImageView>(R.id.tvCloseBtn)
-
-        /*deleteBtn.setOnClickListener {
-            Toast.makeText(this, "Delete clicked", Toast.LENGTH_SHORT).show()
-            bottomSheetDialog.dismiss()
-        }*/
-
-        /*cancelBtn.setOnClickListener {
-            bottomSheetDialog.dismiss()
-        }*/
+        val createNewTrip = view.findViewById<LinearLayout>(R.id.createNewTrip)
 
         closeBtn.setOnClickListener {
             bottomSheetDialog.dismiss()
+        }
+
+        createNewTrip.setOnClickListener {
+            val bottomSheetDialog = BottomSheetDialog(requireContext())
+            val view = layoutInflater.inflate(R.layout.bottom_sheet_create_trip, null)
+            bottomSheetDialog.setContentView(view)
+
+            val closeBtn = view.findViewById<ImageView>(R.id.tvCloseBtn)
+            val etTripTitle = view.findViewById<EditText>(R.id.etTripTitle)
+            val etTripDestination = view.findViewById<EditText>(R.id.etTripDestination)
+            val btnSaveTrip = view.findViewById<Button>(R.id.btnSaveTrip)
+
+            closeBtn.setOnClickListener { bottomSheetDialog.dismiss() }
+
+            btnSaveTrip.setOnClickListener {
+                val title = etTripTitle.text.toString().trim()
+                val destination = etTripDestination.text.toString().trim()
+
+                if (title.isEmpty() || destination.isEmpty()) {
+                    Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
+                } else {
+                    Toast.makeText(requireContext(), "Trip Created: $title → $destination", Toast.LENGTH_SHORT).show()
+                    bottomSheetDialog.dismiss()
+                }
+            }
+
+            bottomSheetDialog.show()
         }
 
         bottomSheetDialog.show()
