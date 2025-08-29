@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.bookingActivities.BookListActivity
+import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.FragmentOverviewBinding
 import com.travel.uzoefuapp.fragment.WishlistFragment
 
@@ -26,9 +27,14 @@ class OverviewFragment : Fragment() {
             startActivity(intent)
         }
 
-        binding.wishlistLayout.setOnClickListener {
+    /*    binding.wishlistLayout.setOnClickListener {
             openFragment(WishlistFragment())
+        }*/
+
+        binding.wishlistLayout.setOnClickListener {
+            (activity as? DashboardActivity)?.selectWishlistTab()
         }
+
 
         return binding.root
     }

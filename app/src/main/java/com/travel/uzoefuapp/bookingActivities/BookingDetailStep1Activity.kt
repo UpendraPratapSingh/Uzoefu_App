@@ -1,6 +1,7 @@
 package com.travel.uzoefuapp.bookingActivities
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
@@ -17,6 +18,7 @@ import com.travel.uzoefuapp.bookingDetailFragment.Step3Fragment
 import com.travel.uzoefuapp.bookingDetailFragment.Step4Fragment
 import com.travel.uzoefuapp.bookingDetailFragment.Step5Fragment
 import com.travel.uzoefuapp.databinding.ActivityBookingDetailStep1Binding
+import com.travel.uzoefuapp.globalSettings.SettingsActivity
 
 class BookingDetailStep1Activity : AppCompatActivity() {
     lateinit var binding: ActivityBookingDetailStep1Binding
@@ -55,6 +57,11 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         nextBtn = findViewById(R.id.nextButton)
 
         binding.btnBack.setOnClickListener { finish() }
+
+        binding.menuIcon.setOnClickListener {
+            val intent = Intent(this@BookingDetailStep1Activity, SettingsActivity::class.java)
+            startActivity(intent)
+        }
 
         openFragment(Step1Fragment())
         updateStepper()

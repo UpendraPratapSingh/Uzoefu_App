@@ -29,9 +29,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:text="Magalies Adventures"
-            android:textColor="@android:color/black"
+            android:textColor="@color/nuetral_bold_color"
             android:textSize="16sp"
-            android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/itemImage"
             app:layout_constraintTop_toTopOf="@id/itemImage" />

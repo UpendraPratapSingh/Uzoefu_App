@@ -3,9 +3,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    app:layout_constraintTop_toTopOf="parent"
+    android:background="@drawable/bottom_sheet_background">
 
-    <!-- Search Bar -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
@@ -33,13 +33,11 @@
             app:layout_constraintBottom_toBottomOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- Divider -->
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="#E0E0E0" />
 
-    <!-- Search Results -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvResults"
         android:layout_width="match_parent"

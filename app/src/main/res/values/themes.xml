@@ -1,16 +1,19 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.UzoefuApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <item name="colorPrimary">@color/green_color</item>
-        <item name="android:statusBarColor">@color/green_color</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="colorPrimary">@color/green_color</item>
+        <item name="colorPrimaryVariant">@color/green_color</item>
+        <item name="colorOnPrimary">@color/white</item>
 
-        <!-- Optional: Set light/dark icons -->
-        <item name="android:windowLightStatusBar">true</item> <!-- for dark icons -->
+        <!-- Status bar color -->
+        <item name="android:statusBarColor">@color/green_color</item>
 
+        <item name="android:fitsSystemWindows">false</item>
+
+        <!-- Icons color -->
+        <item name="android:windowLightStatusBar">true</item> <!-- true = dark icons, false = white icons -->
     </style>
 
     <style name="Theme.UzoefuApp" parent="Base.Theme.UzoefuApp" />
-
 </resources>

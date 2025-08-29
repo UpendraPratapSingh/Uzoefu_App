@@ -5,6 +5,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.ActivityLoginBinding
@@ -16,6 +18,11 @@ class LoginActivity : AppCompatActivity() {
         makeFullScreen()
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         playBackgroundVideo()
 

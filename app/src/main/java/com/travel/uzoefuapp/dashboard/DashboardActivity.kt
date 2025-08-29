@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import com.travel.uzoefuapp.R
@@ -23,105 +24,151 @@ class DashboardActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        /*enableEdgeToEdge()
-
-        // Handle insets for bottom nav
-        ViewCompat.setOnApplyWindowInsetsListener(binding.limeee) { view, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            // add bottom padding so nav bar sits above gesture area
-            view.setPadding(
-                view.paddingLeft,
-                view.paddingTop,
-                view.paddingRight,
-                systemBars.bottom
-            )
+            // Apply only left, right, and bottom padding
+            v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
 
             insets
-        }*/
+        }
 
-        // Status bar aur navigation bar ko transparent kar do
+        WindowCompat.setDecorFitsSystemWindows(window, false)
         window.statusBarColor = Color.TRANSPARENT
         window.navigationBarColor = Color.TRANSPARENT
 
+        window.statusBarColor = Color.TRANSPARENT
+        window.navigationBarColor = Color.TRANSPARENT
+
+        selectedHome()
+
+        binding.HomeFragmentUser.setOnClickListener { selectedHome() }
+
+        binding.destinationFragmentUser.setOnClickListener { selectedDestination() }
+
+        binding.pastOrderFragmentUser.setOnClickListener { selectWishlistTab() }
+
+        binding.profileFragmentUser.setOnClickListener { selectedProfile() }
+    }
+
+    private fun selectedHome() {
+        binding.homeIconUser.imageTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.dark_cyan))
+        binding.destinationIconUsers.imageTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
+        binding.pastOrderIconUsers.imageTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
+        binding.profileIconUser.imageTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
+
+        binding.destinationTxtUSer.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.nuetral_bold_color
+            )
+        )
+        binding.homeTextUser.setTextColor(ContextCompat.getColor(this, R.color.black))
+        binding.pastOrderTextUser.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.nuetral_bold_color
+            )
+        )
+        binding.profileTextViewUser.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.nuetral_bold_color
+            )
+        )
+
         replaceFragment(HomeFragment(), true)
+    }
 
-        binding.HomeFragmentUser.setOnClickListener {
-           // binding.homeIconUser.setImageResource(R.drawable.dashboard)
-            binding.homeIconUser.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.dark_cyan))
-         /*   binding.destinationIconUsers.setImageResource(R.drawable.explore)
-            binding.pastOrderIconUsers.setImageResource(R.drawable.wishlist)
-            binding.profileIconUser.setImageResource(R.drawable.profile)*/
-            binding.destinationIconUsers.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-            binding.pastOrderIconUsers.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-            binding.profileIconUser.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
+    fun selectedDestination() {
+        binding.destinationIconUsers.imageTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.dark_cyan))
+        binding.homeIconUser.imageTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
+        binding.pastOrderIconUsers.imageTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
+        binding.profileIconUser.imageTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
 
-            binding.destinationTxtUSer.setTextColor(ContextCompat.getColor(this,R.color.nuetral_bold_color))
-            binding.homeTextUser.setTextColor(ContextCompat.getColor(this, R.color.black))
-            binding.pastOrderTextUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-            binding.profileTextViewUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
+        binding.destinationTxtUSer.setTextColor(ContextCompat.getColor(this, R.color.black))
+        binding.homeTextUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
+        binding.pastOrderTextUser.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.nuetral_bold_color
+            )
+        )
+        binding.profileTextViewUser.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.nuetral_bold_color
+            )
+        )
 
-            replaceFragment(HomeFragment(), true)
+        replaceFragment(ExploreFragment(), true)
+    }
 
-        }
+    fun selectWishlistTab() {
+        // Set Wishlist icon active
+        binding.pastOrderIconUsers.imageTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.dark_cyan))
+        binding.homeIconUser.imageTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
+        binding.destinationIconUsers.imageTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
+        binding.profileIconUser.imageTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
 
-        binding.destinationFragmentUser.setOnClickListener {
-           // binding.homeIconUser.setImageResource(R.drawable.dashboard)
-          //  binding.destinationIconUsers.setImageResource(R.drawable.explore)
-            binding.destinationIconUsers.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.dark_cyan))
+        // Set text colors
+        binding.pastOrderTextUser.setTextColor(ContextCompat.getColor(this, R.color.black))
+        binding.homeTextUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
+        binding.destinationTxtUSer.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.nuetral_bold_color
+            )
+        )
+        binding.profileTextViewUser.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.nuetral_bold_color
+            )
+        )
 
-           // binding.pastOrderIconUsers.setImageResource(R.drawable.wishlist)
-          //  binding.profileIconUser.setImageResource(R.drawable.profile)
+        // Replace fragment
+        replaceFragment(WishlistFragment(), true)
+    }
 
-            binding.homeIconUser.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-            binding.pastOrderIconUsers.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-            binding.profileIconUser.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
+    private fun selectedProfile() {
+        binding.profileIconUser.imageTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.dark_cyan))
+        binding.homeIconUser.imageTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
+        binding.destinationIconUsers.imageTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
+        binding.pastOrderIconUsers.imageTintList =
+            ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
 
-            binding.destinationTxtUSer.setTextColor(ContextCompat.getColor(this, R.color.black))
-            binding.homeTextUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-            binding.pastOrderTextUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-            binding.profileTextViewUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
+        binding.profileTextViewUser.setTextColor(ContextCompat.getColor(this, R.color.black))
+        binding.homeTextUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
+        binding.destinationTxtUSer.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.nuetral_bold_color
+            )
+        )
+        binding.pastOrderTextUser.setTextColor(
+            ContextCompat.getColor(
+                this,
+                R.color.nuetral_bold_color
+            )
+        )
 
-            replaceFragment(ExploreFragment(), true)
-        }
-
-        binding.pastOrderFragmentUser.setOnClickListener {
-          //  binding.homeIconUser.setImageResource(R.drawable.dashboard)
-          //  binding.destinationIconUsers.setImageResource(R.drawable.explore)
-           // binding.pastOrderIconUsers.setImageResource(R.drawable.wishlist)
-            binding.pastOrderIconUsers.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.dark_cyan))
-          //  binding.profileIconUser.setImageResource(R.drawable.profile)
-
-            binding.homeIconUser.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-            binding.destinationIconUsers.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-            binding.profileIconUser.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-
-            binding.destinationTxtUSer.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-            binding.homeTextUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-            binding.pastOrderTextUser.setTextColor(ContextCompat.getColor(this, R.color.black))
-            binding.profileTextViewUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-
-            replaceFragment(WishlistFragment(), true)
-        }
-
-        binding.profileFragmentUser.setOnClickListener {
-           // binding.homeIconUser.setImageResource(R.drawable.dashboard)
-           // binding.destinationIconUsers.setImageResource(R.drawable.explore)
-           // binding.pastOrderIconUsers.setImageResource(R.drawable.wishlist)
-           // binding.profileIconUser.setImageResource(R.drawable.profile)
-            binding.profileIconUser.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.dark_cyan))
-
-            binding.homeIconUser.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-            binding.destinationIconUsers.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-            binding.pastOrderIconUsers.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-
-            binding.destinationTxtUSer.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-            binding.homeTextUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-            binding.pastOrderTextUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
-            binding.profileTextViewUser.setTextColor(ContextCompat.getColor(this, R.color.black))
-
-            replaceFragment(ProfileFragment(), true)
-        }
+        replaceFragment(ProfileFragment(), true)
     }
 
     private fun replaceFragment(fragment: Fragment, addToBackStack: Boolean) {

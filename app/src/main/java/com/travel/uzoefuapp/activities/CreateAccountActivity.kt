@@ -21,6 +21,11 @@ class CreateAccountActivity : AppCompatActivity() {
         makeFullScreen()
         binding = ActivityCreateAccountBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         playBackgroundVideo()
 

@@ -5,7 +5,6 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="false"
     tools:context=".dashboard.DashboardActivity">
 
     <FrameLayout
@@ -33,9 +32,9 @@
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:elevation="10dp"
+        android:fitsSystemWindows="false"
         android:orientation="horizontal"
         android:weightSum="8"
-        android:fitsSystemWindows="false"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <LinearLayout

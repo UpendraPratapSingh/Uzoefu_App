@@ -22,6 +22,8 @@ import android.widget.LinearLayout
 import android.widget.Spinner
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,6 +40,7 @@ import com.travel.uzoefuapp.adapter.ExploreAdapter
 import com.travel.uzoefuapp.adapter.SearchAdapter
 import com.travel.uzoefuapp.adapter.SearchItem
 import com.travel.uzoefuapp.adapter.SelectPriceAdapter
+import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.FragmentHomeBinding
 
 
@@ -67,6 +70,12 @@ class HomeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, 0, systemBars.right, 0)
+            insets
+        }
+
 
         binding.trendingRecyclerview.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -89,31 +98,24 @@ class HomeFragment : Fragment() {
         binding.exploreExp.setOnClickListener { searchExperience() }
 
         binding.viewMoreArrow.setOnClickListener {
-            openFragment(ExploreFragment())
+            (activity as? DashboardActivity)?.selectedDestination()
         }
 
         binding.viewMoreArrow1.setOnClickListener {
-            openFragment(ExploreFragment())
+            (activity as? DashboardActivity)?.selectedDestination()
         }
 
         binding.rightArrow2.setOnClickListener {
             val intent = Intent(requireContext(), ExploreCategoriesActivity::class.java)
             startActivity(intent)
         }
-
         return binding.root
-    }
-
-    private fun openFragment(fragment: Fragment) {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.userFrameLayout, fragment)
-            .addToBackStack(null)
-            .commit()
     }
 
     @SuppressLint("CutPasteId")
     private fun searchExperience() {
-        val bottomSheetDialog = BottomSheetDialog(requireContext(), R.style.FullScreenRoundedBottomSheetDialog)
+        val bottomSheetDialog =
+            BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(R.layout.search_bottom_sheet, null)
         bottomSheetDialog.setContentView(view)
 
@@ -123,7 +125,13 @@ class HomeFragment : Fragment() {
         // Make it fullscreen
         val bottomSheet =
             bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-        bottomSheet?.layoutParams?.height = ViewGroup.LayoutParams.MATCH_PARENT
+
+        bottomSheet?.let {
+            val params = it.layoutParams as ViewGroup.MarginLayoutParams
+            params.height = ViewGroup.LayoutParams.MATCH_PARENT
+            params.topMargin = (30 * resources.displayMetrics.density).toInt() // 100dp top margin
+            it.layoutParams = params
+        }
 
         bottomSheet?.setBackgroundResource(R.drawable.bg_bottom_sheet_rounded)
         val behavior = BottomSheetBehavior.from(bottomSheet!!)
@@ -141,16 +149,25 @@ class HomeFragment : Fragment() {
             SearchItem(R.drawable.ic_paw, "Magaliesburg Game Reserve", "Wildlife · Magaliesburg"),
             SearchItem(R.drawable.food, "Magaliesburg Eatery", "Food & Cuisine · Magaliesburg"),
             SearchItem(R.drawable.ic_paw, "Magaliesburg Spa", "Food & Cuisine · Magaliesburg"),
-            SearchItem(R.drawable.food,"Magaliesburg Sports Club","Food & Cuisine · Magaliesburg"),
-            SearchItem(R.drawable.ic_paw,"Magaliesburg Swimming Pool","Food & Cuisine · Magaliesburg")
+            SearchItem(
+                R.drawable.food,
+                "Magaliesburg Sports Club",
+                "Food & Cuisine · Magaliesburg"
+            ),
+            SearchItem(
+                R.drawable.ic_paw,
+                "Magaliesburg Swimming Pool",
+                "Food & Cuisine · Magaliesburg"
+            )
         )
 
-        // ✅ Show keyboard automatically
+/*        // ✅ Show keyboard automatically
         bottomSheetDialog.setOnShowListener {
             etSearch.requestFocus()
-            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm =
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(etSearch, InputMethodManager.SHOW_IMPLICIT)
-        }
+        }*/
 
         val adapter = SearchAdapter(sampleData)
         recycler.adapter = adapter
@@ -331,17 +348,22 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        requireActivity().window.apply {
-            decorView.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-
-            statusBarColor = Color.TRANSPARENT  // status bar transparent
-            // navigationBarColor yaha mat change karo
-        }
+        // Apply status bar padding only to searchBar
+        /*
+                ViewCompat.setOnApplyWindowInsetsListener(binding.searchBar) { v, insets ->
+                    val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
+                    v.setPadding(
+                        v.paddingLeft,
+                        statusBarInsets.top, // push down under status bar
+                        v.paddingRight,
+                        v.paddingBottom
+                    )
+                    insets
+                }
+        */
     }
 
-        override fun onDestroyView() {
+    override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }

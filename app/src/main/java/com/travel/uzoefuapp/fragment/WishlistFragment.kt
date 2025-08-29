@@ -1,5 +1,6 @@
 package com.travel.uzoefuapp.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.transition.AutoTransition
 import android.transition.TransitionManager
@@ -13,11 +14,14 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.adapter.WishlistAdapter
 import com.travel.uzoefuapp.databinding.FragmentWishlistBinding
+import com.travel.uzoefuapp.globalSettings.SettingsActivity
 
 class WishlistFragment : Fragment() {
     private var _binding: FragmentWishlistBinding? = null
@@ -31,6 +35,17 @@ class WishlistFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentWishlistBinding.inflate(inflater, container, false)
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
+            insets
+        }
+
+        binding.menuIcon.setOnClickListener {
+            val intent = Intent(requireContext(), SettingsActivity::class.java)
+            startActivity(intent)
+        }
+
 
         binding.wishlistRecycler.layoutManager =
             GridLayoutManager(requireContext(), 1, GridLayoutManager.VERTICAL, false)

@@ -6,7 +6,10 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
@@ -16,9 +19,9 @@ import com.travel.uzoefuapp.adapter.ActionAdapter
 import com.travel.uzoefuapp.adapter.ProductSliderAdapter
 import com.travel.uzoefuapp.adapter.ProductTabAdapter
 import com.travel.uzoefuapp.adapter.SliderAdapter
-import com.travel.uzoefuapp.bookingActivities.BookSummaryActivity
 import com.travel.uzoefuapp.bookingActivities.BookingDetailStep1Activity
 import com.travel.uzoefuapp.databinding.ActivityBookingProductBinding
+import com.travel.uzoefuapp.globalSettings.SettingsActivity
 import me.relex.circleindicator.CircleIndicator3
 
 class BookingProductActivity : AppCompatActivity() {
@@ -43,8 +46,15 @@ class BookingProductActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         binding = ActivityBookingProductBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
+            insets
+        }
+
 
         this.window.apply {
             decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
@@ -60,6 +70,10 @@ class BookingProductActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.btnMore.setOnClickListener {
+            val intent = Intent(this@BookingProductActivity, SettingsActivity::class.java)
+            startActivity(intent)
+        }
 
         viewPager = findViewById(R.id.viewPager)
         indicator = findViewById(R.id.dotsIndicator)

@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="false"
     tools:context=".fragment.HomeFragment">
 
 
@@ -13,6 +14,7 @@
         android:layout_height="0dp"
         android:scaleType="centerCrop"
         android:src="@drawable/cycleimage"
+        android:fitsSystemWindows="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.3"
         app:layout_constraintStart_toStartOf="parent"

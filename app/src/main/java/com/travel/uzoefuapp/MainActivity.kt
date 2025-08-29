@@ -8,7 +8,6 @@ import android.os.Handler
 import android.os.Looper
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
-import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.ActivityMainBinding
 import com.travel.uzoefuapp.onboardScreen.OnboardActivity
 
@@ -31,7 +30,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onAnimationEnd(animation: Animation?) {
                 Handler(Looper.getMainLooper()).postDelayed({
-                    val intent = Intent(activity, DashboardActivity::class.java)
+                    val intent = Intent(activity, OnboardActivity::class.java)
                     startActivity(intent)
                     finish()
                 }, 1500)
