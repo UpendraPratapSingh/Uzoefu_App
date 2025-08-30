@@ -19,13 +19,14 @@
 
         <ImageView
             android:id="@+id/imageView2"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginStart="10dp"
             android:src="@drawable/ic_backicon"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/dark_cyan" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -108,8 +109,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
+                    android:fontFamily="@font/roboto_medium"
                     android:text="Summary"
-                    android:textColor="@android:color/black"
+                    android:textColor="@color/nuetral_bold_color"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -117,8 +119,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
+                    android:fontFamily="@font/roboto_medium"
                     android:text="Hot Air Balloon Flight along Magalies Valley"
-                    android:textColor="@color/black"
+                    android:textColor="@color/nuetral_bold_color"
                     android:textSize="14sp" />
 
                 <LinearLayout
@@ -132,8 +135,9 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:fontFamily="@font/roboto_regular"
                         android:text="24 November 2024"
-                        android:textColor="@color/black"
+                        android:textColor="@color/nuetral_bold_color"
                         android:textSize="14dp" />
 
                     <TextView
@@ -141,17 +145,19 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="30dp"
                         android:layout_weight="1"
+                        android:fontFamily="@font/roboto_light"
                         android:text="Booking Reference"
-                        android:textColor="@color/black"
+                        android:textColor="@color/nuetral_bold_color"
                         android:textSize="14dp" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:fontFamily="@font/roboto_regular"
                         android:gravity="end"
                         android:text="UB0000001"
-                        android:textColor="@color/black"
+                        android:textColor="@color/nuetral_bold_color"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -170,14 +176,16 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:fontFamily="@font/roboto_light"
                         android:text="Contact Name:"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/nuetral_bold_color" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_regular"
                         android:text="James Mackelton"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/nuetral_bold_color" />
 
                 </LinearLayout>
 
@@ -191,14 +199,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:fontFamily="@font/roboto_light"
                         android:text="Contact Number:"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/nuetral_bold_color" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_regular"
                         android:text="+2773528900"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/nuetral_bold_color" />
 
                 </LinearLayout>
 
@@ -212,14 +222,16 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:fontFamily="@font/roboto_light"
                         android:text="Email:"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/nuetral_bold_color" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_regular"
                         android:text="jmack@gmail.com"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/nuetral_bold_color" />
 
                 </LinearLayout>
 
@@ -234,15 +246,17 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
                         android:layout_weight="1"
+                        android:fontFamily="@font/roboto_light"
                         android:text="Billing Address:"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/nuetral_bold_color" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
+                        android:fontFamily="@font/roboto_regular"
                         android:text="27 Fairmont Street"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/nuetral_bold_color" />
 
                 </LinearLayout>
 
@@ -259,32 +273,40 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:fontFamily="@font/roboto_medium"
                         android:gravity="start"
                         android:text="Description"
+                        android:textColor="@color/nuetral_bold_color"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:fontFamily="@font/roboto_medium"
                         android:gravity="center"
                         android:text="Group"
+                        android:textColor="@color/nuetral_bold_color"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:fontFamily="@font/roboto_medium"
                         android:gravity="center"
                         android:text="QTY"
+                        android:textColor="@color/nuetral_bold_color"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:fontFamily="@font/roboto_medium"
                         android:gravity="end"
                         android:text="Amount"
+                        android:textColor="@color/nuetral_bold_color"
                         android:textStyle="bold" />
                 </LinearLayout>
 
@@ -299,32 +321,36 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:fontFamily="@font/roboto_light"
                         android:text="Balloon Flight"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/nuetral_bold_color" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:fontFamily="@font/roboto_light"
                         android:gravity="center"
                         android:text="Adult"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/nuetral_bold_color" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:fontFamily="@font/roboto_light"
                         android:gravity="center"
                         android:text="1"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@color/nuetral_bold_color" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:fontFamily="@font/roboto_light"
                         android:gravity="end"
                         android:text="R1,600.00"
-                        android:textColor="@color/black" />
+                        android:textColor="@color/nuetral_bold_color" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -338,29 +364,36 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Balloon Flight" />
+                        android:fontFamily="@font/roboto_light"
+                        android:text="Balloon Flight"
+                        android:textColor="@color/nuetral_bold_color" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:fontFamily="@font/roboto_light"
                         android:gravity="center"
-                        android:text="Kids" />
+                        android:text="Kids"
+                        android:textColor="@color/nuetral_bold_color" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:fontFamily="@font/roboto_light"
                         android:gravity="center"
                         android:text="1"
-                        android:textColor="@android:color/black" />
+                        android:textColor="@color/nuetral_bold_color" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:fontFamily="@font/roboto_light"
                         android:gravity="end"
-                        android:text="R1,600.00" />
+                        android:text="R1,600.00"
+                        android:textColor="@color/nuetral_bold_color" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -444,7 +477,9 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:fontFamily="@font/roboto_light"
                             android:text="Signed Indemnity Form"
+                            android:textColor="@color/nuetral_bold_color"
                             android:textSize="16sp" />
 
                         <TextView
@@ -464,7 +499,9 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:fontFamily="@font/roboto_light"
                             android:text="Receipt"
+                            android:textColor="@color/nuetral_bold_color"
                             android:textSize="16sp" />
 
                         <TextView
@@ -484,7 +521,9 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
+                            android:fontFamily="@font/roboto_light"
                             android:text="Invoice"
+                            android:textColor="@color/nuetral_bold_color"
                             android:textSize="16sp" />
 
                         <TextView

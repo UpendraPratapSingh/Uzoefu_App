@@ -55,7 +55,6 @@ class BookingProductActivity : AppCompatActivity() {
             insets
         }
 
-
         this.window.apply {
             decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -72,6 +71,11 @@ class BookingProductActivity : AppCompatActivity() {
 
         binding.btnMore.setOnClickListener {
             val intent = Intent(this@BookingProductActivity, SettingsActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.tvCategory.setOnClickListener {
+            val intent = Intent(this@BookingProductActivity, CompanyLandingActivity::class.java)
             startActivity(intent)
         }
 
@@ -143,7 +147,8 @@ class BookingProductActivity : AppCompatActivity() {
             }
         }.attach()
 
-        binding.viewPagerData.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.viewPagerData.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 

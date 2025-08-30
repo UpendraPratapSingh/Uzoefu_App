@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.travel.uzoefuapp.R
 import android.text.Editable
 import android.view.View
-import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.travel.uzoefuapp.databinding.ActivityCreateAccountBinding
@@ -55,12 +54,10 @@ class CreateAccountActivity : AppCompatActivity() {
                 val hasUpper = password.any { it.isUpperCase() }
                 val hasLower = password.any { it.isLowerCase() }
                 updateRuleIcon(binding.iconUpperLower, hasUpper && hasLower)
-
                 updateRuleIcon(
                     binding.iconNoSpaces,
                     password.isNotEmpty() && !password.contains(" ")
                 )
-
                 updateRuleIcon(
                     binding.iconNoEmailParts,
                     password.isNotEmpty() && !emailPartFound(password, email)
@@ -90,7 +87,7 @@ class CreateAccountActivity : AppCompatActivity() {
 
     fun updateRuleIcon(imageView: ImageView, isValid: Boolean) {
         imageView.setImageResource(
-            if (isValid) R.drawable.checkcircle else R.drawable.uncheckcircle
+            if (isValid) R.drawable.checkcircle else R.drawable.circlecheckbox
         )
     }
 

@@ -19,6 +19,7 @@
             android:layout_weight="1"
             android:text="What is the cancellation policy?"
             android:textSize="16sp"
+            android:textColor="@color/nuetral_bold_color"
             android:textStyle="bold" />
 
         <ImageView

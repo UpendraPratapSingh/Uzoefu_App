@@ -151,7 +151,7 @@
                     android:layout_marginStart="10dp"
                     android:fontFamily="@font/roboto_semi_bold"
                     android:gravity="right"
-                    android:text="3.4 (160)"
+                    android:text="(160)"
                     android:textColor="@color/dark_black"
                     android:textFontWeight="400"
                     android:textSize="11sp"

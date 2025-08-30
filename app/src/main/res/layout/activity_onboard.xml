@@ -21,7 +21,7 @@
         android:layout_width="0dp"
         android:layout_height="30dp"
         android:padding="20dp"
-        android:layout_marginBottom="100dp"
+        android:layout_marginBottom="150dp"
         app:ci_drawable="@drawable/indicator_slide_circle"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

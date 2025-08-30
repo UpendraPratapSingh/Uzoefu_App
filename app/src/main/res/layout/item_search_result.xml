@@ -34,7 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Magaliesburg Game Reserve"
-            android:textColor="#424242"
+            android:textColor="@color/nuetral_bold_color"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -45,5 +45,6 @@
             android:text="Wildlife · Magaliesburg"
             android:textColor="#757575"
             android:textSize="14sp" />
+
     </LinearLayout>
 </LinearLayout>

@@ -4,7 +4,6 @@
     android:orientation="vertical"
     android:padding="12dp">
 
-    <!-- Title Row -->
     <LinearLayout
         android:id="@+id/faqLayout"
         android:layout_width="match_parent"
@@ -19,6 +18,8 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text=""
+            android:textColor="@color/nuetral_bold_color"
+            android:fontFamily="@font/roboto_medium"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -29,8 +30,6 @@
             android:src="@drawable/baseline_add_24" />
     </LinearLayout>
 
-
-    <!-- Expandable Content -->
     <LinearLayout
         android:id="@+id/containerContent"
         android:layout_width="match_parent"

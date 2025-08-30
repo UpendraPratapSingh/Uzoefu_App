@@ -21,6 +21,9 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+    <string name="onboarding_title">Explore</string>
+    <string name="onboarding_description">Uncover hidden gems and popular activities</string>
+    <string name="skip">Skip</string>
 
 
 </resources>
