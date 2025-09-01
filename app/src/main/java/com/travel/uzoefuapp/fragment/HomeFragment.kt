@@ -1,7 +1,6 @@
 package com.travel.uzoefuapp.fragment
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
@@ -11,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.view.inputmethod.InputMethodManager
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Button
@@ -75,7 +73,6 @@ class HomeFragment : Fragment() {
             v.setPadding(systemBars.left, 0, systemBars.right, 0)
             insets
         }
-
 
         binding.trendingRecyclerview.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -141,7 +138,6 @@ class HomeFragment : Fragment() {
 
         btnClose.setOnClickListener { bottomSheetDialog.dismiss() }
 
-        // RecyclerView setup
         val recycler = view.findViewById<RecyclerView>(R.id.rvResults)
         recycler.layoutManager = LinearLayoutManager(requireContext())
 
@@ -161,13 +157,13 @@ class HomeFragment : Fragment() {
             )
         )
 
-/*        // ✅ Show keyboard automatically
-        bottomSheetDialog.setOnShowListener {
-            etSearch.requestFocus()
-            val imm =
-                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.showSoftInput(etSearch, InputMethodManager.SHOW_IMPLICIT)
-        }*/
+        /*        // ✅ Show keyboard automatically
+                bottomSheetDialog.setOnShowListener {
+                    etSearch.requestFocus()
+                    val imm =
+                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.showSoftInput(etSearch, InputMethodManager.SHOW_IMPLICIT)
+                }*/
 
         val adapter = SearchAdapter(sampleData)
         recycler.adapter = adapter

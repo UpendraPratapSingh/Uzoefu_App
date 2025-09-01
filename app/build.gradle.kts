@@ -83,4 +83,6 @@ dependencies {
 
     implementation ("com.github.gcacace:signature-pad:1.3.1")
 
+    implementation ("com.google.android.gms:play-services-maps:18.2.0")
+
 }

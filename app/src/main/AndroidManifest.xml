@@ -13,6 +13,24 @@
         android:theme="@style/Base.Theme.UzoefuApp"
         tools:targetApi="31">
         <activity
+            android:name=".businessActivities.FinishSetUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".businessActivities.PaymentDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".businessActivities.OperatingHoursActivity"
+            android:exported="false" />
+        <activity
+            android:name=".businessActivities.ContactActivity"
+            android:exported="false" />
+        <activity
+            android:name=".businessActivities.CompanyDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".businessActivities.BusinessProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".globalSettings.SettingsActivity"
             android:exported="false" />
         <activity
@@ -68,6 +86,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Google Maps API Key -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCPmAAbKW3OvAqDoEXdetwiP6X0TF7CJL4" />
+
     </application>
 
 </manifest>

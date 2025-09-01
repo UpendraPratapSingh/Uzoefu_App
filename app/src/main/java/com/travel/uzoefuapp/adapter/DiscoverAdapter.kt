@@ -1,15 +1,18 @@
 package com.travel.uzoefuapp.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.companyActivities.CompanyLandingActivity
 
 class DiscoverAdapter(val context: Context) : RecyclerView.Adapter<DiscoverAdapter.ViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int, ): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.discover_recyclerview, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.discover_recyclerview, parent, false)
         return ViewHolder(view)
     }
 
@@ -21,5 +24,5 @@ class DiscoverAdapter(val context: Context) : RecyclerView.Adapter<DiscoverAdapt
         return 6
     }
 
-    class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) { }
+    class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {}
 }
