@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/soft_mint_green"
-    tools:context=".businessActivities.BusinessProfileActivity">
+    tools:context=".businessActivities.AddActivityActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/forYouDestConst"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:fontFamily="@font/roboto_light"
-            android:text="Profile Details"
+            android:text="Activities"
             android:textColor="@color/dark_cyan"
             android:textFontWeight="500"
             android:textSize="20sp"
@@ -107,7 +107,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/roboto_light"
-                    android:text="Business Profile"
+                    android:text="Add an Activity"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
@@ -116,8 +116,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="Take a moment to complete your business profile."
-                    android:textColor="@android:color/darker_gray"
+                    android:fontFamily="@font/roboto_light"
+                    android:text="Take a moment to complete your profile to personalise your experience."
+                    android:textColor="@color/dark_black"
                     android:textSize="14sp" />
 
                 <LinearLayout
@@ -146,7 +147,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:fontFamily="@font/roboto_regular"
-                            android:text="Company details"
+                            android:text="Activity details"
                             android:textColor="@color/nuetral_bold_color"
                             android:textSize="14sp"
                             android:textStyle="bold"
@@ -195,7 +196,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:fontFamily="@font/roboto_light"
-                            android:text="Contact"
+                            android:text="Description"
                             android:textColor="@color/nuetral_bold_color"
                             android:textSize="14sp"
                             android:textStyle="bold"
@@ -244,7 +245,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:fontFamily="@font/roboto_light"
-                            android:text="Operating Hours"
+                            android:text="Activity Hours"
                             android:textColor="@color/nuetral_bold_color"
                             android:textSize="14sp"
                             android:textStyle="bold"
@@ -293,7 +294,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:fontFamily="@font/roboto_light"
-                            android:text="Payment Details"
+                            android:text="Amenities"
                             android:textColor="@color/nuetral_bold_color"
                             android:textSize="14sp"
                             android:textStyle="bold"
@@ -342,7 +343,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:fontFamily="@font/roboto_light"
-                            android:text="Finish Set Up"
+                            android:text="Term and Condition"
                             android:textColor="@color/nuetral_bold_color"
                             android:textSize="14sp"
                             android:textStyle="bold"
@@ -363,9 +364,206 @@
 
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/faqContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="vertical">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:paddingHorizontal="8dp">
+
+                        <RadioButton
+                            android:id="@+id/stepIcon6"
+                            android:layout_width="30dp"
+                            android:layout_height="20dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/stepText6"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/roboto_light"
+                            android:text="FAQ"
+                            android:textColor="@color/nuetral_bold_color"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/stepArrow6"
+                            app:layout_constraintStart_toEndOf="@id/stepIcon6"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/stepArrow6"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_arrow_right"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="@color/green_color" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/imageContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="vertical">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:paddingHorizontal="8dp">
+
+                        <RadioButton
+                            android:id="@+id/stepIcon7"
+                            android:layout_width="30dp"
+                            android:layout_height="20dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/stepText7"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/roboto_light"
+                            android:text="Photos"
+                            android:textColor="@color/nuetral_bold_color"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/stepArrow7"
+                            app:layout_constraintStart_toEndOf="@id/stepIcon7"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/stepArrow7"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_arrow_right"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="@color/green_color" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/finishSetUpContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="vertical">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:paddingHorizontal="8dp">
+
+                        <RadioButton
+                            android:id="@+id/stepIcon8"
+                            android:layout_width="30dp"
+                            android:layout_height="20dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/stepText8"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:fontFamily="@font/roboto_light"
+                            android:text="Finish Set Up"
+                            android:textColor="@color/nuetral_bold_color"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/stepArrow8"
+                            app:layout_constraintStart_toEndOf="@id/stepIcon8"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/stepArrow8"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_arrow_right"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:tint="@color/green_color" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="20dp"
+                        android:paddingHorizontal="8dp">
+
+                        <ImageView
+                            android:id="@+id/deleteIcon"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_delete_icon"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/deleteActivity"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:fontFamily="@font/roboto_light"
+                            android:text="Delete Activity"
+                            android:textColor="@color/nuetral_bold_color"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@+id/deleteIcon"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/disable"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:layout_marginEnd="5dp"
+                            android:src="@drawable/ic_disable"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@+id/disableActivity"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/disableActivity"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_light"
+                            android:text="Disable Activity"
+                            android:textColor="@color/nuetral_bold_color"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
             </LinearLayout>
         </ScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>

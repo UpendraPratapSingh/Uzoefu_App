@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.adapter.CategoryAdapter
 import com.travel.uzoefuapp.adapter.CompaniesAdapter
+import com.travel.uzoefuapp.businessAccount.BusinessAccountActivity
 import com.travel.uzoefuapp.businessActivities.BusinessProfileActivity
 import com.travel.uzoefuapp.databinding.FragmentCompanyBinding
 import com.travel.uzoefuapp.databinding.FragmentProfileDetailBinding
@@ -27,7 +28,7 @@ class CompanyFragment : Fragment() {
         _binding = FragmentCompanyBinding.inflate(inflater, container, false)
 
         binding.businessProfile.setOnClickListener {
-            val intent = Intent(requireContext() , BusinessProfileActivity::class.java)
+            val intent = Intent(requireContext() , BusinessAccountActivity::class.java)
             startActivity(intent)
         }
 
