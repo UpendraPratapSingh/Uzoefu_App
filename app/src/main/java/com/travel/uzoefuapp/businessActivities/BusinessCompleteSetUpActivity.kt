@@ -1,20 +1,21 @@
 package com.travel.uzoefuapp.businessActivities
 
+import android.content.Intent
 import android.os.Bundle
-import android.widget.ArrayAdapter
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.travel.uzoefuapp.R
-import com.travel.uzoefuapp.databinding.ActivityDetailBinding
+import com.travel.uzoefuapp.businessAccount.BusinessAccountActivity
+import com.travel.uzoefuapp.databinding.ActivityBusinessCompleteSetUpBinding
 
-class ActivityDetail : AppCompatActivity() {
-    lateinit var binding: ActivityDetailBinding
+class BusinessCompleteSetUpActivity : AppCompatActivity() {
+    lateinit var binding: ActivityBusinessCompleteSetUpBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityDetailBinding.inflate(layoutInflater)
+        binding = ActivityBusinessCompleteSetUpBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -24,14 +25,15 @@ class ActivityDetail : AppCompatActivity() {
 
         binding.backArrow.setOnClickListener { finish() }
 
-        val cities = listOf("Delhi", "Mumbai", "Bangalore", "Hyderabad", "Chennai")
+        binding.btnAddActivities.setOnClickListener {
+            val intent = Intent(this@BusinessCompleteSetUpActivity, AddActivityActivity::class.java)
+            startActivity(intent)
+        }
 
-        val adapter = ArrayAdapter(
-            this,
-            android.R.layout.simple_dropdown_item_1line,
-            cities
-        )
-
-        binding.spinnerCity.setAdapter(adapter)
+        binding.btnViewActivities.setOnClickListener {
+            val intent =
+                Intent(this@BusinessCompleteSetUpActivity, BusinessAccountActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

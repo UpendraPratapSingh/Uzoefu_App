@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.travel.uzoefuapp.R
 
 data class FAQ(
-    val question: String,
-    val answer: String,
+    var question: String,
+    var answer: String,
     var isExpanded: Boolean = false
 )
 

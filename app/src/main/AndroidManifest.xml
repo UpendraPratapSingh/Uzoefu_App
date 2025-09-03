@@ -13,6 +13,21 @@
         android:theme="@style/Base.Theme.UzoefuApp"
         tools:targetApi="31">
         <activity
+            android:name=".businessActivities.AmenitiesActivity"
+            android:exported="false" />
+        <activity
+            android:name=".businessActivities.BusinessCompleteSetUpActivity"
+            android:exported="false" />
+        <activity
+            android:name=".businessActivities.BusinessUploadPhotoActivity"
+            android:exported="false" />
+        <activity
+            android:name=".businessActivities.BusinessFAQActivity"
+            android:exported="false" />
+        <activity
+            android:name=".businessActivities.BusinessTermAndConditionActivity"
+            android:exported="false" />
+        <activity
             android:name=".businessActivities.ActivityDecriptionActivity"
             android:exported="false" />
         <activity

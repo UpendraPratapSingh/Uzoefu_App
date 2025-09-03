@@ -33,5 +33,31 @@ class AddActivityActivity : AppCompatActivity() {
             val intent = Intent(this@AddActivityActivity, ActivityDecriptionActivity::class.java)
             startActivity(intent)
         }
+
+        binding.amenitiesContainer.setOnClickListener {
+            val intent = Intent(this@AddActivityActivity, AmenitiesActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.termAndConditionContainer.setOnClickListener {
+            val intent =
+                Intent(this@AddActivityActivity, BusinessTermAndConditionActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.faqContainer.setOnClickListener {
+            val intent = Intent(this@AddActivityActivity, BusinessFAQActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.imageContainer.setOnClickListener {
+            val intent = Intent(this@AddActivityActivity, BusinessUploadPhotoActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.finishSetUpContainer.setOnClickListener {
+            val intent = Intent(this@AddActivityActivity, BusinessCompleteSetUpActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

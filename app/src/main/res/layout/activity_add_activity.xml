@@ -269,7 +269,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/paymentContainer"
+                    android:id="@+id/amenitiesContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
@@ -318,7 +318,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/finishContainer"
+                    android:id="@+id/termAndConditionContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"

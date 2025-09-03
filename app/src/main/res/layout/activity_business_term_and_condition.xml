@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/soft_mint_green"
-    tools:context=".businessActivities.ActivityDetail">
+    tools:context=".businessActivities.BusinessTermAndConditionActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/forYouDestConst"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:fontFamily="@font/roboto_light"
-            android:text="Activity Details"
+            android:text="Terms and Conditions"
             android:textColor="@color/dark_cyan"
             android:textFontWeight="500"
             android:textSize="20sp"
@@ -92,128 +92,109 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/forYouDestConst">
 
-
         <TextView
             android:id="@+id/textView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="16dp"
-            android:text="Update activity details"
-            android:textColor="@color/black"
+            android:text="Term and conditions for the activities"
+            android:fontFamily="@font/roboto_regular"
+            android:textColor="@color/nuetral_bold_color"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@color/white"
-            android:padding="16dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/textView1">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:orientation="vertical"
-                android:spacing="12dp">
+                android:padding="8dp">
 
-                <com.google.android.material.textfield.TextInputLayout
+                <!-- Title -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="@font/roboto_regular"
+                    android:text="Require Indemnity"
+                    android:textColor="@color/black" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Activity Name"
-                    app:boxStrokeColor="@color/green_color">
+                    android:orientation="horizontal"
+                    android:baselineAligned="true">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etName"
-                        android:layout_width="match_parent"
+                    <RadioGroup
+                        android:id="@+id/radioGroupIndemnity"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Hot Air Balloon Flight Along Magalies Valley" />
+                        android:orientation="horizontal">
 
-                </com.google.android.material.textfield.TextInputLayout>
+                        <RadioButton
+                            android:id="@+id/radioYes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/roboto_light"
+                            android:text="Yes"
+                            android:textColor="@color/nuetral_bold_color" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:hint="Contact Full Name"
-                    app:boxStrokeColor="@color/green_color">
+                        <RadioButton
+                            android:id="@+id/radioNo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="15dp"
+                            android:checked="true"
+                            android:fontFamily="@font/roboto_light"
+                            android:text="No"
+                            android:textColor="@color/nuetral_bold_color" />
+                    </RadioGroup>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etEmail"
+                    <TextView
+                        android:id="@+id/tvConfigureIndemnity"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPersonName"
-                        android:text="James Flames" />
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="50dp"
+                        android:layout_gravity="end"
+                        android:text="Configure Indemnity"
+                        android:fontFamily="@font/roboto_regular"
+                        android:textColor="@color/green_color"
+                        android:gravity="center"
+                        android:visibility="gone" />
+                </LinearLayout>
 
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:hint="Telephone Number"
-                    app:boxStrokeColor="@color/green_color">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etPhone"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="8dp"
-                        android:hint="+91 Phone"
-                        android:inputType="number"
-                        android:text="9076692185" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:hint="Mobile Number"
-                    app:boxStrokeColor="@color/green_color">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/etMobile"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:drawablePadding="8dp"
-                        android:hint="+91 Phone"
-                        android:inputType="number"
-                        android:text="9076692185" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textInputLayoutCity"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                <EditText
+                    android:id="@+id/etTermsConditions"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
-                    android:hint="City">
-
-                    <AutoCompleteTextView
-                        android:id="@+id/spinnerCity"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Select Nearest City"
-                        android:inputType="none"
-                        android:text="Bangalore" />
-                </com.google.android.material.textfield.TextInputLayout>
+                    android:background="@drawable/edittext_background"
+                    android:fontFamily="@font/roboto_regular"
+                    android:gravity="top"
+                    android:hint="Enter terms and conditions..."
+                    android:inputType="textMultiLine"
+                    android:minLines="8"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/nuetral_bold_color"
+                    android:visibility="visible" />
 
                 <Button
                     android:id="@+id/btnSave"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="16dp"
                     android:background="@drawable/button_rounded"
-                    android:padding="12dp"
                     android:text="Save"
-                    android:textAllCaps="false"
                     android:textColor="@color/white" />
-
             </LinearLayout>
+
         </ScrollView>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>

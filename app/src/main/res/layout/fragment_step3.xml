@@ -204,7 +204,6 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!--Activity Description-->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/activityDescriptionCons"
                 android:layout_width="match_parent"
@@ -256,7 +255,6 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!--Agreement-->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/agreementCons"
                 android:layout_width="match_parent"
@@ -309,7 +307,6 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!--Waiver and indemnity-->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/indemnityCons"
                 android:layout_width="match_parent"
@@ -361,8 +358,6 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-
-            <!--Declaration-->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/declarationCons"
                 android:layout_width="match_parent"
@@ -414,7 +409,6 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!--Acknowledgement-->
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/acknowledgementCons"
                 android:layout_width="match_parent"
