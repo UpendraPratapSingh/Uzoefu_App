@@ -133,6 +133,26 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/BranchName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                app:endIconMode="custom"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tilCompanyName">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etBranchName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Branch Name"
+                    android:padding="12dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
             <Spinner
                 android:id="@+id/spCountry"
                 android:layout_width="0dp"
@@ -145,7 +165,7 @@
                 android:paddingBottom="12dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tilCompanyName" />
+                app:layout_constraintTop_toBottomOf="@id/BranchName" />
 
             <Spinner
                 android:id="@+id/spProvince"

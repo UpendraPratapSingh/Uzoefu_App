@@ -30,11 +30,15 @@ class CreateAccountActivity : AppCompatActivity() {
 
         binding.signInButton.setOnClickListener {
             val intent = Intent(this@CreateAccountActivity, LoginActivity::class.java)
+            intent.putExtra("USER_TYPE", "Individual")
+
             startActivity(intent)
         }
 
         binding.alreadyHaveAccount.setOnClickListener {
             val intent = Intent(this@CreateAccountActivity, LoginActivity::class.java)
+            intent.putExtra("USER_TYPE", "Individual")
+
             startActivity(intent)
         }
 

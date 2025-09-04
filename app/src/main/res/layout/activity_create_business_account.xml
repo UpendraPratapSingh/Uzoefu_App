@@ -167,7 +167,7 @@
                         android:id="@+id/icon_length"
                         android:layout_width="18dp"
                         android:layout_height="18dp"
-                        android:src="@drawable/uncheckcircle" />
+                        android:src="@drawable/circlecheckbox" />
 
                     <TextView
                         android:id="@+id/text_length"
@@ -192,7 +192,7 @@
                         android:id="@+id/icon_number_special"
                         android:layout_width="18dp"
                         android:layout_height="18dp"
-                        android:src="@drawable/uncheckcircle" />
+                        android:src="@drawable/circlecheckbox" />
 
                     <TextView
                         android:id="@+id/text_number_special"
@@ -217,7 +217,7 @@
                         android:id="@+id/icon_upper_lower"
                         android:layout_width="18dp"
                         android:layout_height="18dp"
-                        android:src="@drawable/uncheckcircle" />
+                        android:src="@drawable/circlecheckbox" />
 
                     <TextView
                         android:id="@+id/text_upper_lower"
@@ -242,7 +242,7 @@
                         android:id="@+id/icon_no_spaces"
                         android:layout_width="18dp"
                         android:layout_height="18dp"
-                        android:src="@drawable/uncheckcircle" />
+                        android:src="@drawable/circlecheckbox" />
 
                     <TextView
                         android:id="@+id/text_no_spaces"
@@ -267,7 +267,7 @@
                         android:id="@+id/icon_no_email_parts"
                         android:layout_width="18dp"
                         android:layout_height="18dp"
-                        android:src="@drawable/uncheckcircle" />
+                        android:src="@drawable/circlecheckbox" />
 
                     <TextView
                         android:id="@+id/text_no_email_parts"

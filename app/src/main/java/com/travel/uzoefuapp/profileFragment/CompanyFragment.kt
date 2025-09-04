@@ -24,11 +24,10 @@ class CompanyFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         _binding = FragmentCompanyBinding.inflate(inflater, container, false)
 
         binding.businessProfile.setOnClickListener {
-            val intent = Intent(requireContext() , BusinessAccountActivity::class.java)
+            val intent = Intent(requireContext() , BusinessProfileActivity::class.java)
             startActivity(intent)
         }
 

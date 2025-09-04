@@ -17,6 +17,7 @@ import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activities.CreateAccountActivity
+import com.travel.uzoefuapp.activities.SelectUserTypeActivity
 
 class OnboardingAdapter(
     private val context: Context,
@@ -57,7 +58,7 @@ class OnboardingAdapter(
             if (position < items.size - 1) {
                 viewPager.currentItem = position + 1
             } else {
-                context.startActivity(Intent(context, CreateAccountActivity::class.java))
+                context.startActivity(Intent(context, SelectUserTypeActivity::class.java))
                 if (context is Activity) {
                     (context as Activity).finish()
                 }

@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activities.CreateAccountActivity
+import com.travel.uzoefuapp.activities.SelectUserTypeActivity
 import com.travel.uzoefuapp.adapter.OnboardingItem
 import com.travel.uzoefuapp.databinding.ActivityOnboardBinding
 import me.relex.circleindicator.CircleIndicator
@@ -62,7 +63,7 @@ class OnboardActivity : AppCompatActivity() {
                         startActivity(
                             Intent(
                                 this@OnboardActivity,
-                                CreateAccountActivity::class.java
+                                SelectUserTypeActivity::class.java
                             )
                         )
                         finish()

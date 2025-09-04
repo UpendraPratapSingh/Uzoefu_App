@@ -39,6 +39,11 @@ class AddActivityActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.operatingContainer.setOnClickListener {
+            val intent = Intent(this@AddActivityActivity, ActivityHours::class.java)
+            startActivity(intent)
+        }
+
         binding.termAndConditionContainer.setOnClickListener {
             val intent =
                 Intent(this@AddActivityActivity, BusinessTermAndConditionActivity::class.java)

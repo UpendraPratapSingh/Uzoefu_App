@@ -18,6 +18,17 @@
         <item>10 Kilometres</item>
     </string-array>
 
+    <string-array name="all_activity">
+        <item>All Activities</item>
+    </string-array>
+
+    <string-array name="all_branches">
+        <item>All Branches</item>
+    </string-array>
+
+    <string-array name="monthly">
+        <item>Monthly</item>
+    </string-array>
 
     <string name="title_activity_booking_detail_step1">BookingDetailStep1Activity</string>
     <string name="title_home">Home</string>

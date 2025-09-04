@@ -1,5 +1,6 @@
 package com.travel.uzoefuapp.businessActivities
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -22,5 +23,10 @@ class FinishSetUpActivity : AppCompatActivity() {
         }
 
         binding.backArrow.setOnClickListener { finish() }
+
+        binding.btnSave.setOnClickListener {
+            val intent = Intent(this@FinishSetUpActivity, AddActivityActivity::class.java)
+            startActivity(intent)
+        }
     }
 }
