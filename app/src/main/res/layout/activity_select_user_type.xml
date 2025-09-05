@@ -46,7 +46,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearance="@style/TopOnlyRoundedCard">
+            app:shapeAppearance="@style/TopOnlyRoundedCardSelectUserType">
 
             <!-- Use ConstraintLayout inside the Card -->
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -113,7 +113,7 @@
                     android:id="@+id/tvLogin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_marginTop="10dp"
                     android:text="Already have an account? Login"
                     android:textColor="@color/nuetral_bold_color"
                     android:textSize="14sp"

@@ -6,11 +6,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.adapter.BusinessTabAdapter
-import com.travel.uzoefuapp.businessActivities.BusinessProfileActivity
 import com.travel.uzoefuapp.databinding.ActivityBusinessAccountBinding
 
 class BusinessAccountActivity : AppCompatActivity() {
@@ -43,19 +41,9 @@ class BusinessAccountActivity : AppCompatActivity() {
             }
         }.attach()
 
-        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab?) {
-                if (tab?.position == 1) {
-                    startActivity(Intent(this@BusinessAccountActivity, BusinessProfileActivity::class.java))
-
-                    binding.tabLayout.post {
-                        binding.tabLayout.getTabAt(0)?.select()
-                    }
-                }
-            }
-
-            override fun onTabUnselected(tab: TabLayout.Tab?) {}
-            override fun onTabReselected(tab: TabLayout.Tab?) {}
-        })
+        val openFragment = intent.getStringExtra("openFragment")
+        if (openFragment == "profile") {
+            binding.viewPager.setCurrentItem(1, false)
+        }
     }
 }

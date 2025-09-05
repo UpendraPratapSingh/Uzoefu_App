@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.businessAccount.BusinessAccountActivity
 import com.travel.uzoefuapp.databinding.ActivityFinishSetUpBinding
 
 class FinishSetUpActivity : AppCompatActivity() {
@@ -24,6 +25,12 @@ class FinishSetUpActivity : AppCompatActivity() {
 
         binding.backArrow.setOnClickListener { finish() }
 
+        binding.btnViewActivities.setOnClickListener {
+            val intent = Intent(this@FinishSetUpActivity, BusinessAccountActivity::class.java)
+            intent.putExtra("openFragment", "profile")
+            startActivity(intent)
+        }
+        
         binding.btnSave.setOnClickListener {
             val intent = Intent(this@FinishSetUpActivity, AddActivityActivity::class.java)
             startActivity(intent)

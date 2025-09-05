@@ -9,6 +9,12 @@
         <item name="cornerSizeBottomRight">0dp</item>
     </style>
 
+    <style name="TopOnlyRoundedCardSelectUserType" parent="ShapeAppearance.MaterialComponents.MediumComponent">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">20dp</item>
+        <item name="cornerSizeTopRight">20dp</item>
+    </style>
+
     <style name="BottomRoundedImage">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSizeTopLeft">0dp</item>

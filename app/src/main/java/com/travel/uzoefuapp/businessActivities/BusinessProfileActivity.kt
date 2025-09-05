@@ -24,6 +24,10 @@ class BusinessProfileActivity : AppCompatActivity() {
 
         binding.backArrow.setOnClickListener { finish() }
 
+        val type = intent.getStringExtra("type")
+
+
+
         binding.stepsContainer.setOnClickListener {
             val intent = Intent(this@BusinessProfileActivity, CompanyDetailActivity::class.java)
             startActivity(intent)
@@ -46,6 +50,7 @@ class BusinessProfileActivity : AppCompatActivity() {
 
         binding.finishContainer.setOnClickListener {
             val intent = Intent(this@BusinessProfileActivity, FinishSetUpActivity::class.java)
+            intent.putExtra("type", "type")
             startActivity(intent)
         }
     }

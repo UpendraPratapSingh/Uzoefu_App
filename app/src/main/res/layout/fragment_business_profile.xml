@@ -1,0 +1,47 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/tvCompanyDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/roboto_light"
+        android:text="Company Details"
+        android:textColor="@color/nuetral_bold_color"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tvContact"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/roboto_light"
+        android:text="Contact"
+        android:textColor="@color/nuetral_bold_color"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tvOperatingHours"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:fontFamily="@font/roboto_light"
+        android:text="Operating Hours"
+        android:textColor="@color/nuetral_bold_color"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tvPaymentInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/roboto_light"
+        android:text="Payment Information"
+        android:textColor="@color/nuetral_bold_color"
+        android:textSize="16sp" />
+
+</LinearLayout>

@@ -15,7 +15,7 @@
         android:background="@drawable/bg_day_grey"
         android:gravity="center"
         android:text="Mon"
-        android:textColor="@color/black"
+        android:textColor="@color/nuetral_bold_color"
         android:textSize="14sp"
         android:layout_marginStart="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -37,13 +37,12 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvDayName"/>
 
-    <TextView
+    <ImageView
         android:id="@+id/subBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
         android:layout_marginHorizontal="6dp"
-        android:text="-"
-        android:textSize="18sp"
+        android:src="@drawable/baseline_remove"
         android:layout_marginStart="20dp"
         app:layout_constraintStart_toEndOf="@+id/etStartTime"
         app:layout_constraintTop_toTopOf="parent"
