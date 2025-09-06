@@ -28,6 +28,11 @@ class LoginActivity : AppCompatActivity() {
 
         playBackgroundVideo()
 
+        binding.signInButton.setOnClickListener {
+            val intent = Intent(this@LoginActivity, DashboardActivity::class.java)
+            startActivity(intent)
+        }
+
         if (userType == "Business") {
             binding.signInButton.setOnClickListener {
                 val intent = Intent(this@LoginActivity, CompleteBusinessProfileSetUpActivity::class.java)

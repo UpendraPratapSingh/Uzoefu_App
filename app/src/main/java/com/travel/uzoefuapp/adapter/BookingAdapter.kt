@@ -5,6 +5,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -37,6 +38,7 @@ class BookingAdapter(
                 // show cancelled design
                 holder.status.text = "Cancelled"
                 holder.status.setTextColor(ContextCompat.getColor(context, R.color.red))
+                holder.layout.setBackgroundColor(ContextCompat.getColor(context, R.color.light_red))
             }
         }
         holder.itemView.setOnClickListener {
@@ -51,5 +53,6 @@ class BookingAdapter(
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val status = itemView.findViewById<TextView>(R.id.txtStatus)
+        val layout = itemView.findViewById<LinearLayout>(R.id.linearLayout)
     }
 }

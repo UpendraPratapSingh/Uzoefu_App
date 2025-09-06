@@ -2,7 +2,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="12dp">
+    android:padding="5dp">
 
     <LinearLayout
         android:id="@+id/faqLayout"
@@ -10,18 +10,19 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:padding="12dp"
+        android:background="@drawable/bg_question_box">
 
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text=""
+            android:text="Question goes here"
             android:textColor="@color/nuetral_bold_color"
             android:fontFamily="@font/roboto_medium"
-            android:textSize="16sp"
-            android:textStyle="bold" />
+            android:textSize="16sp" />
 
         <ImageView
             android:id="@+id/tvIndicator"
@@ -30,6 +31,7 @@
             android:src="@drawable/baseline_add_24" />
     </LinearLayout>
 
+    <!-- Answer content -->
     <LinearLayout
         android:id="@+id/containerContent"
         android:layout_width="match_parent"

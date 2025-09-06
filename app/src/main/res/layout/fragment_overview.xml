@@ -48,8 +48,8 @@
 
                         <ImageView
                             android:id="@+id/ivEditProfile"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:src="@drawable/ic_edit" />
                     </LinearLayout>
@@ -193,7 +193,7 @@
                         android:layout_height="20dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="4dp"
-                        android:src="@drawable/photo" />
+                        android:src="@drawable/ic_copy" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -267,7 +267,7 @@
                         android:layout_height="20dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="4dp"
-                        android:src="@drawable/photo" />
+                        android:src="@drawable/location" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -305,7 +305,7 @@
                         android:layout_height="20dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="4dp"
-                        android:src="@drawable/photo" />
+                        android:src="@drawable/rating_star" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -339,8 +339,8 @@
                         android:textStyle="bold" />
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="4dp"
                         android:src="@drawable/ic_rewards" />
@@ -348,7 +348,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="9dp"
                         android:layout_marginBottom="10dp"
                         android:fontFamily="@font/roboto_regular"
                         android:text="Rewards"
@@ -377,8 +377,8 @@
                         android:textStyle="bold" />
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="4dp"
                         android:src="@drawable/photo" />
@@ -386,7 +386,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="9dp"
                         android:layout_marginBottom="10dp"
                         android:fontFamily="@font/roboto_regular"
                         android:text="Photos"
@@ -399,7 +399,7 @@
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
                     android:gravity="center"
-                    android:orientation="vertical"></LinearLayout>
+                    android:orientation="vertical" />
 
             </GridLayout>
 
@@ -529,31 +529,46 @@
                         android:src="@drawable/ic_arrow_right" />
                 </LinearLayout>
 
+
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:id="@+id/logoutAccount"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
-                    android:layout_marginTop="10dp"
-                    android:background="?attr/selectableItemBackground"
-                    android:clickable="true"
-                    android:focusable="true"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/option_item_bg"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:padding="8dp">
+                    android:padding="16dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
+                            android:src="@drawable/ic_logout" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="Log Out"
+                            android:textColor="@color/green_color"
+                            android:textSize="14sp" />
+                    </LinearLayout>
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:src="@drawable/ic_logout" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="Log Out"
-                        android:textColor="@color/green_color"
-                        android:textSize="14sp" />
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_arrow_right" />
                 </LinearLayout>
+
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

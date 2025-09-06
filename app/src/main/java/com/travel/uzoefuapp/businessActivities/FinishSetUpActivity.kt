@@ -30,7 +30,7 @@ class FinishSetUpActivity : AppCompatActivity() {
             intent.putExtra("openFragment", "profile")
             startActivity(intent)
         }
-        
+
         binding.btnSave.setOnClickListener {
             val intent = Intent(this@FinishSetUpActivity, AddActivityActivity::class.java)
             startActivity(intent)

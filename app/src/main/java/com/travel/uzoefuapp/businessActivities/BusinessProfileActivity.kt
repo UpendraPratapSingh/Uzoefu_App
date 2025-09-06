@@ -21,12 +21,9 @@ class BusinessProfileActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        binding.backArrow.setOnClickListener { finish() }
-
         val type = intent.getStringExtra("type")
 
-
+        binding.backArrow.setOnClickListener { finish() }
 
         binding.stepsContainer.setOnClickListener {
             val intent = Intent(this@BusinessProfileActivity, CompanyDetailActivity::class.java)

@@ -60,12 +60,7 @@ class OnboardActivity : AppCompatActivity() {
             override fun run() {
                 if (::adapter.isInitialized) {
                     if (currentPage == adapter.count - 1) {
-                        startActivity(
-                            Intent(
-                                this@OnboardActivity,
-                                SelectUserTypeActivity::class.java
-                            )
-                        )
+                        startActivity(Intent(this@OnboardActivity, CreateAccountActivity::class.java))
                         finish()
                     } else {
                         currentPage++

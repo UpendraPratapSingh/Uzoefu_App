@@ -17,6 +17,7 @@ import com.travel.uzoefuapp.bookingDetailFragment.Step2Fragment
 import com.travel.uzoefuapp.bookingDetailFragment.Step3Fragment
 import com.travel.uzoefuapp.bookingDetailFragment.Step4Fragment
 import com.travel.uzoefuapp.bookingDetailFragment.Step5Fragment
+import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.ActivityBookingDetailStep1Binding
 import com.travel.uzoefuapp.globalSettings.SettingsActivity
 
@@ -76,6 +77,11 @@ class BookingDetailStep1Activity : AppCompatActivity() {
                     5 -> openFragment(Step5Fragment())
                 }
                 updateStepper()
+            } else {
+                val intent = Intent(this@BookingDetailStep1Activity, DashboardActivity::class.java)
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                startActivity(intent)
+                finish()
             }
         }
     }

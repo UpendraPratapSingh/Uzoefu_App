@@ -82,7 +82,7 @@ class BookingProductActivity : AppCompatActivity() {
         viewPager = findViewById(R.id.viewPager)
         indicator = findViewById(R.id.dotsIndicator)
 
-        val images = listOf(R.drawable.balloonslide, R.drawable.balloon, R.drawable.balloonslide)
+        val images = listOf(R.drawable.balloonslide, R.drawable.balloonslide, R.drawable.balloonslide)
 
         viewPager.adapter = SliderAdapter(images)
         indicator.setViewPager(viewPager)

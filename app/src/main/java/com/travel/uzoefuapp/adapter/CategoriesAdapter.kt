@@ -34,8 +34,9 @@ class CategoriesAdapter(
         holder.bind(category)
 
         holder.itemView.setOnClickListener {
-            val intent = Intent(context, SelectDestinationActivity::class.java )
-            intent.putExtra("categoryName", category.name)
+            val intent = Intent(context, SelectDestinationActivity::class.java)
+            intent.putExtra("categoryName", "${category.name} (${category.count})")
+
             context.startActivity(intent)
         }
     }
