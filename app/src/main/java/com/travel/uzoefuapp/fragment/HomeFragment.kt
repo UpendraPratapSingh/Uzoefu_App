@@ -47,20 +47,20 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val categoriesList = listOf(
-        Category("Near Me", 400, R.drawable.tours),
-        Category("Adventure", 600, R.drawable.tours),
-        Category("Culture", 450, R.drawable.tours),
-        Category("Food", 1700, R.drawable.tours),
-        Category("Entertainment", 350, R.drawable.tours),
-        Category("Family Fun", 18, R.drawable.tours),
-        Category("Services", 250, R.drawable.tours),
-        Category("Religion", 66, R.drawable.tours),
-        Category("Outdoors", 131, R.drawable.tours),
-        Category("Wildlife", 65, R.drawable.tours),
-        Category("Wellness", 50, R.drawable.tours),
-        Category("Historical", 67, R.drawable.tours),
-        Category("Sport", 47, R.drawable.tours),
-        Category("Urban", 32, R.drawable.tours),
+        Category("Near Me", 400, R.drawable.ic_location),
+        Category("Adventure", 600, R.drawable.adventure),
+        Category("Culture", 450, R.drawable.culture),
+        Category("Food", 1700, R.drawable.food),
+        Category("Entertainment", 350, R.drawable.entertainment),
+        Category("Family Fun", 18, R.drawable.family_fun),
+        Category("Services", 250, R.drawable.local_service),
+        Category("Religion", 66, R.drawable.religion),
+        Category("Outdoors", 131, R.drawable.outdoor_adventures),
+        Category("Wildlife", 65, R.drawable.wildlife),
+        Category("Wellness", 50, R.drawable.wellness),
+        Category("Historical", 67, R.drawable.historical),
+        Category("Sport", 47, R.drawable.sports),
+        Category("Urban", 32, R.drawable.urban_discovery),
     )
 
     override fun onCreateView(
@@ -126,7 +126,7 @@ class HomeFragment : Fragment() {
         bottomSheet?.let {
             val params = it.layoutParams as ViewGroup.MarginLayoutParams
             params.height = ViewGroup.LayoutParams.MATCH_PARENT
-            params.topMargin = (30 * resources.displayMetrics.density).toInt() // 100dp top margin
+            params.topMargin = (30 * resources.displayMetrics.density).toInt()
             it.layoutParams = params
         }
 
@@ -145,11 +145,7 @@ class HomeFragment : Fragment() {
             SearchItem(R.drawable.ic_paw, "Magaliesburg Game Reserve", "Wildlife · Magaliesburg"),
             SearchItem(R.drawable.food, "Magaliesburg Eatery", "Food & Cuisine · Magaliesburg"),
             SearchItem(R.drawable.ic_paw, "Magaliesburg Spa", "Food & Cuisine · Magaliesburg"),
-            SearchItem(
-                R.drawable.food,
-                "Magaliesburg Sports Club",
-                "Food & Cuisine · Magaliesburg"
-            ),
+            SearchItem(R.drawable.food,"Magaliesburg Sports Club","Food & Cuisine · Magaliesburg"),
             SearchItem(
                 R.drawable.ic_paw,
                 "Magaliesburg Swimming Pool",
@@ -157,7 +153,7 @@ class HomeFragment : Fragment() {
             )
         )
 
-        /*        // ✅ Show keyboard automatically
+        /*      // ✅ Show keyboard automatically
                 bottomSheetDialog.setOnShowListener {
                     etSearch.requestFocus()
                     val imm =
@@ -181,10 +177,8 @@ class HomeFragment : Fragment() {
             clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
             addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            decorView.systemUiVisibility = (
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    )
+            decorView.systemUiVisibility =
+                (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
 

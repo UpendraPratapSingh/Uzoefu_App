@@ -1,13 +1,12 @@
 package com.travel.uzoefuapp.adapter
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.travel.uzoefuapp.R
-import com.travel.uzoefuapp.companyActivities.CompanyLandingActivity
+
 
 class DiscoverAdapter(val context: Context) : RecyclerView.Adapter<DiscoverAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

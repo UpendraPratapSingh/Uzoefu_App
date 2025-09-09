@@ -23,9 +23,10 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
                 android:text="Indemnity"
+                android:textColor="@color/nuetral_bold_color"
                 android:textSize="20sp"
-                android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,7 +35,9 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
+                android:fontFamily="@font/roboto_medium"
                 android:text="Sign the indemnity form and attach the applicable documents."
+                android:textColor="@color/nuetral_bold_color"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -55,8 +58,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
+                    android:fontFamily="@font/roboto_medium"
                     android:text="Signing"
-                    android:textStyle="bold"
+                    android:textColor="@color/nuetral_bold_color"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -214,14 +218,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/addParticipantLayout">
 
-                <!-- Signing Section -->
                 <TextView
                     android:id="@+id/tvActivity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
+                    android:fontFamily="@font/roboto_medium"
                     android:text="Activity Description"
-                    android:textStyle="bold"
+                    android:textColor="@color/nuetral_bold_color"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -265,14 +269,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/addActivityLayout">
 
-                <!-- Signing Section -->
                 <TextView
                     android:id="@+id/tvAgreemeent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
+                    android:fontFamily="@font/roboto_medium"
                     android:text="Agreement"
-                    android:textStyle="bold"
+                    android:textColor="@color/nuetral_bold_color"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -301,7 +305,6 @@
                     android:id="@+id/secondAgreementContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-
                     android:text="This is the second section's content."
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -317,14 +320,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/addAgreementLayout">
 
-                <!-- Signing Section -->
                 <TextView
                     android:id="@+id/tvIndemnity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
+                    android:fontFamily="@font/roboto_medium"
                     android:text="Waiver and Indemnity"
-                    android:textStyle="bold"
+                    android:textColor="@color/nuetral_bold_color"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -368,14 +371,14 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/addIndemnityLayout">
 
-                <!-- Signing Section -->
                 <TextView
                     android:id="@+id/tvDeclaration"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
+                    android:fontFamily="@font/roboto_medium"
                     android:text="Declaration"
-                    android:textStyle="bold"
+                    android:textColor="@color/nuetral_bold_color"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -424,8 +427,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
+                    android:fontFamily="@font/roboto_medium"
                     android:text="Acknowledgement"
-                    android:textStyle="bold"
+                    android:textColor="@color/nuetral_bold_color"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

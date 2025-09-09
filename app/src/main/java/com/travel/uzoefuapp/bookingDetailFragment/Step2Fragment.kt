@@ -6,15 +6,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.databinding.FragmentStep2Binding
 
 
 class Step2Fragment : Fragment() {
+    private var _binding: FragmentStep2Binding? = null
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_step2, container, false)
+        _binding = FragmentStep2Binding.inflate(inflater, container, false)
+        return binding.root
     }
 
 }

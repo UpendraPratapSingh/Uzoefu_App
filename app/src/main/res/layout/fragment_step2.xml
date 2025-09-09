@@ -21,10 +21,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
+                android:fontFamily="@font/roboto_medium"
                 android:text="Customer Details"
-                android:textColor="@color/black"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textColor="@color/nuetral_bold_color"
+                android:textSize="16sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -53,11 +53,11 @@
                         android:background="@null"
                         android:gravity="center_vertical"
                         android:inputType="textPersonName"
-                        app:hintTextColor="@color/nuetral_bold_color"
                         android:paddingTop="0dp"
-                        android:text="aman"
                         android:paddingBottom="0dp"
-                        android:textSize="14sp" />
+                        android:text="aman"
+                        android:textSize="14sp"
+                        app:hintTextColor="@color/nuetral_bold_color" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -79,12 +79,11 @@
                         android:gravity="center_vertical"
                         android:inputType="textPersonName"
                         android:paddingTop="0dp"
-                        android:text="Singh"
                         android:paddingBottom="0dp"
+                        android:text="Singh"
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
-
 
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
@@ -105,9 +104,9 @@
                     android:background="@null"
                     android:gravity="center_vertical"
                     android:inputType="textPersonName"
-                    android:text="Pratap"
                     android:paddingTop="0dp"
                     android:paddingBottom="0dp"
+                    android:text="Pratap"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -128,9 +127,9 @@
                     android:background="@null"
                     android:gravity="center_vertical"
                     android:inputType="textPersonName"
-                    android:text="+27 8109139549"
                     android:paddingTop="0dp"
                     android:paddingBottom="0dp"
+                    android:text="+27 8109139549"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -152,11 +151,10 @@
                     android:gravity="center_vertical"
                     android:inputType="textPersonName"
                     android:paddingTop="0dp"
-                    android:text="12 Jopa Drive, Fourways, Johannesburg"
                     android:paddingBottom="0dp"
+                    android:text="12 Jopa Drive, Fourways, Johannesburg"
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
-
 
         </LinearLayout>
     </ScrollView>

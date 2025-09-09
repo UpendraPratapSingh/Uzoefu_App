@@ -2,10 +2,12 @@ package com.travel.uzoefuapp.companyActivities
 
 import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -82,7 +84,8 @@ class BookingProductActivity : AppCompatActivity() {
         viewPager = findViewById(R.id.viewPager)
         indicator = findViewById(R.id.dotsIndicator)
 
-        val images = listOf(R.drawable.balloonslide, R.drawable.balloonslide, R.drawable.balloonslide)
+        val images =
+            listOf(R.drawable.balloonslide, R.drawable.balloonslide, R.drawable.balloonslide)
 
         viewPager.adapter = SliderAdapter(images)
         indicator.setViewPager(viewPager)
@@ -110,24 +113,42 @@ class BookingProductActivity : AppCompatActivity() {
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
 
         val actions = listOf(
-            Action(R.drawable.ic_copy, "Call"),
-            Action(R.drawable.ic_copy, "Map"),
+            Action(R.drawable.ic_call, "Call"),
+            Action(R.drawable.ic_shared, "Map"),
             Action(R.drawable.ic_copy, "Add to Trip"),
-            Action(R.drawable.ic_copy, "Share")
+            Action(R.drawable.ic_shared, "Share")
         )
 
         val actionAdapter = ActionAdapter(actions) { action ->
             when (action.label) {
                 "Call" -> {
+                    val phone = +919876543210
+                    val intent = Intent(Intent.ACTION_DIAL).apply {
+                        data = Uri.parse("tel:$phone")
+                    }
+                    startActivity(intent)
                 }
 
                 "Map" -> {
+                    val location = "Taj Mahal, Agra"
+                    val intent = Intent(Intent.ACTION_VIEW).apply {
+                        data = Uri.parse("geo:0,0?q=$location")
+                    }
+                    startActivity(intent)
                 }
 
                 "Add to Trip" -> {
+                    Toast.makeText(this, "${action.label} added to trip!", Toast.LENGTH_SHORT)
+                        .show()
                 }
 
                 "Share" -> {
+                    val shareText = "Visit the Taj Mahal!"
+                    val intent = Intent(Intent.ACTION_SEND).apply {
+                        type = "text/plain"
+                        putExtra(Intent.EXTRA_TEXT, shareText)
+                    }
+                    startActivity(Intent.createChooser(intent, "Share via"))
                 }
             }
         }
@@ -152,7 +173,6 @@ class BookingProductActivity : AppCompatActivity() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
 
-                // Hide Book button on Reviews tab (position 2)
                 binding.button2.visibility = if (position == 2) {
                     View.GONE
                 } else {
@@ -161,7 +181,6 @@ class BookingProductActivity : AppCompatActivity() {
             }
         })
     }
-
 
     override fun onResume() {
         super.onResume()
@@ -172,5 +191,4 @@ class BookingProductActivity : AppCompatActivity() {
         super.onPause()
         handler.removeCallbacks(slideRunnable)
     }
-
 }

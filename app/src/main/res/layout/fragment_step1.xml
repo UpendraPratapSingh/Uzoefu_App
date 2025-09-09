@@ -22,10 +22,10 @@
                 android:id="@+id/tvTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_medium"
                 android:text="Mpumalanga East"
-                android:textColor="@android:color/black"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textColor="@color/nuetral_bold_color"
+                android:textSize="16sp"/>
 
             <TextView
                 android:id="@+id/tvSubtitle"
@@ -34,17 +34,16 @@
                 android:layout_marginTop="10dp"
                 android:text="Hot Air Balloon Flight along Magalies Valley"
                 android:textColor="@android:color/darker_gray"
-                android:textSize="14sp" />
+                android:textSize="14sp"/>
 
-            <!-- Date Picker -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:fontFamily="@font/roboto_regular"
                 android:text="Select Date"
-                android:textColor="@android:color/black"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textColor="@color/nuetral_bold_color"
+                android:textSize="14sp"/>
 
             <LinearLayout
                 android:layout_width="200dp"
@@ -72,15 +71,14 @@
                     android:textSize="14sp" />
             </LinearLayout>
 
-            <!-- Age Group - Adults -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
+                android:fontFamily="@font/roboto_regular"
                 android:text="Age Group"
-                android:textColor="@android:color/black"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:textColor="@color/nuetral_bold_color"
+                android:textSize="14sp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -113,10 +111,10 @@
                     android:id="@+id/tvAdultCount"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:layout_marginEnd="5dp"
                     android:background="@drawable/bg_green_box"
                     android:gravity="center"
                     android:text="3"
-                    android:layout_marginEnd="5dp"
                     android:textColor="@android:color/white"
                     android:textStyle="bold" />
 
@@ -127,7 +125,6 @@
                     android:src="@drawable/baseline_add_24" />
             </LinearLayout>
 
-            <!-- Age Group - Kids -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -159,9 +156,9 @@
                     android:id="@+id/tvKidCount"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:layout_marginEnd="5dp"
                     android:gravity="center"
                     android:text="0"
-                    android:layout_marginEnd="5dp"
                     android:textColor="@android:color/black"
                     android:textStyle="bold" />
 
@@ -233,8 +230,7 @@
                 android:text="All Prices inclusive of VAT (15%)"
                 android:textColor="@color/black"
                 android:textSize="12sp" />
+
         </LinearLayout>
     </ScrollView>
-
-
 </FrameLayout>

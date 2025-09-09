@@ -35,7 +35,8 @@ class LoginActivity : AppCompatActivity() {
 
         if (userType == "Business") {
             binding.signInButton.setOnClickListener {
-                val intent = Intent(this@LoginActivity, CompleteBusinessProfileSetUpActivity::class.java)
+                val intent =
+                    Intent(this@LoginActivity, CompleteBusinessProfileSetUpActivity::class.java)
                 startActivity(intent)
             }
 

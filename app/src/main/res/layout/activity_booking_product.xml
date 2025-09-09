@@ -116,7 +116,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/action_recycler_view">
 
-        <!-- Top small category text -->
         <TextView
             android:id="@+id/tvCategory"
             android:layout_width="wrap_content"

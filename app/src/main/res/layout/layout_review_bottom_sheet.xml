@@ -46,14 +46,17 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:numStars="5"
-        android:stepSize="1"
+        android:progressBackgroundTint="@android:color/darker_gray"
+        android:progressTint="@android:color/holo_orange_light"
+        android:secondaryProgressTint="@android:color/holo_orange_light"
+        android:stepSize="2"
         app:layout_constraintStart_toEndOf="@id/tvRate"
         app:layout_constraintTop_toTopOf="@id/tvRate" />
 
     <Button
         android:id="@+id/btnAddPhotos"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="45dp"
         android:background="@drawable/button_rounded"
         android:backgroundTint="@color/green_color"
         android:text="Add Photos"
@@ -62,7 +65,6 @@
         android:tint="@color/dark_cyan"
         app:icon="@drawable/add_photo"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.15"
         app:layout_constraintTop_toTopOf="@id/ratingBar"
         app:layout_constraintWidth_percent="0.4" />
 
@@ -79,17 +81,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnAddPhotos" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/review_photo_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etExperience" />
+
     <Button
         android:id="@+id/btnPost"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:background="@drawable/button_rounded"
-        android:backgroundTint="@android:color/darker_gray"
+        android:backgroundTint="@color/dark_black"
         android:enabled="false"
         android:text="Post"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/etExperience" />
+        app:layout_constraintTop_toBottomOf="@id/review_photo_recycler_view" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

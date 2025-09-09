@@ -5,15 +5,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.databinding.FragmentStep4Binding
 
 
 class Step4Fragment : Fragment() {
+    private var _binding: FragmentStep4Binding? = null
+    private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_step4, container, false)
+        _binding = FragmentStep4Binding.inflate(inflater, container, false)
+        return binding.root
     }
 }

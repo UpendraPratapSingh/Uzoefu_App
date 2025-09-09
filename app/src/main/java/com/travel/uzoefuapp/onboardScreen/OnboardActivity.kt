@@ -10,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.viewpager.widget.ViewPager
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activities.CreateAccountActivity
-import com.travel.uzoefuapp.activities.SelectUserTypeActivity
 import com.travel.uzoefuapp.adapter.OnboardingItem
 import com.travel.uzoefuapp.databinding.ActivityOnboardBinding
 import me.relex.circleindicator.CircleIndicator
@@ -33,7 +32,7 @@ class OnboardActivity : AppCompatActivity() {
         indicator = findViewById(R.id.dotsIndicator)
 
         val onboardingItems = listOf(
-            OnboardingItem(R.raw.onboard1, "Explore","Uncover hidden gems\n and popular activities"),
+            OnboardingItem(R.raw.onboard1,"Explore","Uncover hidden gems\n and popular activities"),
             OnboardingItem(R.raw.onboard2, "Discover", "Find exciting things to\n do nearby"),
             OnboardingItem(R.raw.onboard3, "Experience", "Enjoy fun family\n friendly activities"),
             OnboardingItem(R.raw.onboard4, "Wishlist", "Save your future\n adventures with ease")
@@ -60,7 +59,12 @@ class OnboardActivity : AppCompatActivity() {
             override fun run() {
                 if (::adapter.isInitialized) {
                     if (currentPage == adapter.count - 1) {
-                        startActivity(Intent(this@OnboardActivity, CreateAccountActivity::class.java))
+                        startActivity(
+                            Intent(
+                                this@OnboardActivity,
+                                CreateAccountActivity::class.java
+                            )
+                        )
                         finish()
                     } else {
                         currentPage++

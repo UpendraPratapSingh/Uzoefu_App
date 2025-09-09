@@ -1,7 +1,6 @@
 package com.travel.uzoefuapp.fragment
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -25,9 +24,7 @@ class ExploreFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         _binding = FragmentExploreBinding.inflate(inflater, container, false)
-        // Normal padding apply (status bar + nav bar)
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
@@ -44,16 +41,16 @@ class ExploreFragment : Fragment() {
         binding.destinationRecycler.adapter = DestinationAdapter(requireContext())
 
         val categoriesList = listOf(
-            Category("Pretoria", 64, R.drawable.tours),
-            Category("Drakensberg", 56, R.drawable.tours),
-            Category("Victoria", 54, R.drawable.tours),
-            Category("Kimberly", 46, R.drawable.tours),
+            Category("Pretoria", 64, R.drawable.adventure),
+            Category("Drakensberg", 56, R.drawable.outdoor_adventures),
+            Category("Victoria Falls", 54, R.drawable.food),
+            Category("Kimberly", 46, R.drawable.entertainment),
             Category("Brits", 30, R.drawable.tours),
-            Category("Polokwane", 18, R.drawable.tours),
-            Category("Hout Bay", 250, R.drawable.tours),
-            Category("New Castle", 66, R.drawable.tours),
-            Category("Njelele", 131, R.drawable.tours),
-            Category("Wildlife", 65, R.drawable.tours),
+            Category("Polokwane", 18, R.drawable.wellness),
+            Category("Hout Bay", 250, R.drawable.religion),
+            Category("New Castle", 66, R.drawable.religion),
+            Category("Njelele", 131, R.drawable.religion),
+            Category("Wildlife", 65, R.drawable.wildlife),
             Category("Sabie", 50, R.drawable.tours),
         )
 
