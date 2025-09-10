@@ -54,6 +54,11 @@ class ExploreFragment : Fragment() {
             Category("Sabie", 50, R.drawable.tours),
         )
 
+        binding.menuIcon.setOnClickListener {
+            val intent = Intent(requireContext(), SettingsActivity::class.java)
+            startActivity(intent)
+        }
+
         binding.categoriesRecycler.layoutManager =
             GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
         binding.categoriesRecycler.adapter = CategoriesAdapter(requireContext(), categoriesList)

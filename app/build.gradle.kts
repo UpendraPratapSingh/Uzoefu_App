@@ -34,8 +34,8 @@ android {
             isShrinkResources = false
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
             buildConfigField("boolean", "IS_DEBUG", "true")
-            buildConfigField("String", "API_KEY", "\"https://saferbh.com/api/\"")
-            buildConfigField("String", "IMAGE_KEY", "\"https://saferbh.com/\"")
+            buildConfigField("String", "API_KEY", "\"https://mobappssolutions.in/uzoefu/api/\"")
+            buildConfigField("String", "IMAGE_KEY", "\"https://mobappssolutions.in/uzoefu/api/\"")
 
         }
     }

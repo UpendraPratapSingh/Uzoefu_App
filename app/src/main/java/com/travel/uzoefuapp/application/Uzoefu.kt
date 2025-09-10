@@ -10,25 +10,11 @@ class Uzoefu : Application() {
         lateinit var instance: Uzoefu
     }
 
-    override  fun onCreate() {
+    override fun onCreate() {
         super.onCreate()
         encryptedPrefs = PreferenceManager(applicationContext).getInstance(applicationContext)
         instance = this
 
-
-
-        /* // ✅ Initialize Mastercard Gateway SDK
-         CoroutineScope(Dispatchers.IO).launch {
-             GatewaySDK.initialize(
-                 this@Safer,
-                 "TEST100532051",
-                 "Safer",
-                 "https://afs.gateway.mastercard.com/ma/",
-                 GatewayRegion.MTF
-             )
-         }*/
-
-        // FirebaseApp.initializeApp(this) // Uncomment if needed
     }
 
     fun isDarkThemeOn(): Boolean {

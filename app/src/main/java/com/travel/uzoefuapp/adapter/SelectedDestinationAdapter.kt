@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activities.SelectDestinationActivity
+import com.travel.uzoefuapp.bookingActivities.BookingDetailActivity
+import com.travel.uzoefuapp.companyActivities.CompanyLandingActivity
 
 class SelectedDestinationAdapter(val context: Context) :
     RecyclerView.Adapter<SelectedDestinationAdapter.ViewHolder>() {
@@ -20,7 +22,7 @@ class SelectedDestinationAdapter(val context: Context) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val name = "Cape Town"
         holder.itemView.setOnClickListener {
-            val intent = Intent(context, SelectDestinationActivity::class.java)
+            val intent = Intent(context, CompanyLandingActivity::class.java)
             intent.putExtra("Name", name)
             context.startActivity(intent)
         }

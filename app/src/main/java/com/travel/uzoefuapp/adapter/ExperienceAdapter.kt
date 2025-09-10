@@ -18,6 +18,10 @@ class ExperienceAdapter(val context: Context) :
     }
 
     override fun onBindViewHolder(holder: ExperienceAdapter.ViewHolder, position: Int) {
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, CompanyLandingActivity::class.java)
+            context.startActivity(intent)
+        }
 
     }
 
@@ -25,5 +29,5 @@ class ExperienceAdapter(val context: Context) :
         return 6
     }
 
-    class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) { }
+    class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {}
 }

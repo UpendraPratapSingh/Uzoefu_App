@@ -9,7 +9,6 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.travel.uzoefuapp.R
-import com.travel.uzoefuapp.bookingActivities.BookSummaryActivity
 import com.travel.uzoefuapp.businessActivities.BusinessBookingSummaryActivity
 
 class BusinessBookingAdapter(
@@ -27,7 +26,7 @@ class BusinessBookingAdapter(
 
         if (status == "Cancelled") {
             holder.status.visibility = View.VISIBLE
-            holder.status.text = "Cancelled"
+            holder.status.text = context.getString(R.string.cancelled)
             holder.status.setTextColor(ContextCompat.getColor(context, R.color.red))
         } else {
             holder.status.visibility = View.GONE

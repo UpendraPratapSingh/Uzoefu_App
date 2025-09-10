@@ -99,7 +99,8 @@ class HomeFragment : Fragment() {
         }
 
         binding.viewMoreArrow1.setOnClickListener {
-            (activity as? DashboardActivity)?.selectedDestination()
+            val intent = Intent(requireContext(), ExploreActivity::class.java)
+            startActivity(intent)
         }
 
         binding.rightArrow2.setOnClickListener {
@@ -145,21 +146,17 @@ class HomeFragment : Fragment() {
             SearchItem(R.drawable.ic_paw, "Magaliesburg Game Reserve", "Wildlife · Magaliesburg"),
             SearchItem(R.drawable.food, "Magaliesburg Eatery", "Food & Cuisine · Magaliesburg"),
             SearchItem(R.drawable.ic_paw, "Magaliesburg Spa", "Food & Cuisine · Magaliesburg"),
-            SearchItem(R.drawable.food,"Magaliesburg Sports Club","Food & Cuisine · Magaliesburg"),
+            SearchItem(
+                R.drawable.food,
+                "Magaliesburg Sports Club",
+                "Food & Cuisine · Magaliesburg"
+            ),
             SearchItem(
                 R.drawable.ic_paw,
                 "Magaliesburg Swimming Pool",
                 "Food & Cuisine · Magaliesburg"
             )
         )
-
-        /*      // ✅ Show keyboard automatically
-                bottomSheetDialog.setOnShowListener {
-                    etSearch.requestFocus()
-                    val imm =
-                        requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    imm.showSoftInput(etSearch, InputMethodManager.SHOW_IMPLICIT)
-                }*/
 
         val adapter = SearchAdapter(sampleData)
         recycler.adapter = adapter
@@ -318,10 +315,6 @@ class HomeFragment : Fragment() {
         rvSelectPrice.layoutManager = GridLayoutManager(requireContext(), 1)
         rvSelectPrice.adapter = SelectPriceAdapter(requireContext())
 
-        /*   binding.btnApply.setOnClickListener {
-               val selectedPrices = adapter.getSelectedFilters()
-               Toast.makeText(requireContext(), "Selected: $selectedPrices", Toast.LENGTH_SHORT).show()
-           }*/
 
         backIcon.setOnClickListener { bottomSheetDialog.dismiss() }
         closePopup.setOnClickListener { bottomSheetDialog.dismiss() }

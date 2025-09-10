@@ -37,6 +37,10 @@
     <string name="onboarding_title">Explore</string>
     <string name="onboarding_description">Uncover hidden gems and popular activities</string>
     <string name="skip">Skip</string>
+    <string name="unable_to_connect">unable to connect</string>
+    <string name="server_error">Server error</string>
+    <string name="OK">Ok</string>
+    <string name="cancelled">Cancelled</string>
 
 
 </resources>
