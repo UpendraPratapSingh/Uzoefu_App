@@ -20,6 +20,7 @@ import com.travel.uzoefuapp.bookingDetailFragment.Step5Fragment
 import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.ActivityBookingDetailStep1Binding
 import com.travel.uzoefuapp.globalSettings.SettingsActivity
+import com.travel.uzoefuapp.notification.NotificationActivity
 
 class BookingDetailStep1Activity : AppCompatActivity() {
     lateinit var binding: ActivityBookingDetailStep1Binding
@@ -38,6 +39,11 @@ class BookingDetailStep1Activity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        binding.notificationLayout.setOnClickListener {
+            val intent = Intent(this@BookingDetailStep1Activity, NotificationActivity::class.java)
+            startActivity(intent)
         }
 
         steps = listOf(

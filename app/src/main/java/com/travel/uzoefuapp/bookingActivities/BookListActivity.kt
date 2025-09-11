@@ -1,5 +1,6 @@
 package com.travel.uzoefuapp.bookingActivities
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +10,8 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.adapter.BookingTabAdapter
 import com.travel.uzoefuapp.databinding.ActivityBookListBinding
+import com.travel.uzoefuapp.globalSettings.SettingsActivity
+import com.travel.uzoefuapp.notification.NotificationActivity
 
 class BookListActivity : AppCompatActivity() {
     lateinit var binding: ActivityBookListBinding
@@ -26,9 +29,18 @@ class BookListActivity : AppCompatActivity() {
 
         binding.forYouArrowImg.setOnClickListener { finish() }
 
+        binding.notificationLayout.setOnClickListener {
+            val intent = Intent(this@BookListActivity, NotificationActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.menuIcon.setOnClickListener {
+            val intent = Intent(this@BookListActivity, SettingsActivity::class.java)
+            startActivity(intent)
+        }
+
         val adapter = BookingTabAdapter(this)
         binding.viewPager.adapter = adapter
-
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when (position) {

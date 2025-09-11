@@ -9,12 +9,23 @@ import androidx.appcompat.app.AppCompatActivity
 import com.travel.uzoefuapp.R
 import android.text.Editable
 import android.view.View
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.travel.uzoefuapp.databinding.ActivityCreateAccountBinding
+import com.travel.uzoefuapp.signUpModel.SignUpBody
+import com.travel.uzoefuapp.signUpModel.SignUpViewModel
+import com.travel.uzoefuapp.utils.ErrorUtil
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@AndroidEntryPoint
 class CreateAccountActivity : AppCompatActivity() {
     lateinit var binding: ActivityCreateAccountBinding
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val signUpViewModel: SignUpViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         makeFullScreen()
@@ -28,12 +39,10 @@ class CreateAccountActivity : AppCompatActivity() {
 
         playBackgroundVideo()
 
-        binding.signInButton.setOnClickListener {
-            val intent = Intent(this@CreateAccountActivity, LoginActivity::class.java)
-            intent.putExtra("USER_TYPE", "Individual")
+        //called observer
+        signUpObserver()
 
-            startActivity(intent)
-        }
+        binding.signInButton.setOnClickListener { getSignUp() }
 
         binding.alreadyHaveAccount.setOnClickListener {
             val intent = Intent(this@CreateAccountActivity, LoginActivity::class.java)
@@ -70,6 +79,52 @@ class CreateAccountActivity : AppCompatActivity() {
 
             override fun afterTextChanged(s: Editable?) {}
         })
+    }
+
+    private fun getSignUp() {
+        if (binding.userNameEdit.text.toString().isEmpty()) {
+            Toast.makeText(applicationContext, "Please enter your First Name", Toast.LENGTH_LONG)
+                .show()
+        } else if (binding.userNameLastEdit.text.isNullOrEmpty()) {
+            Toast.makeText(applicationContext, "Please enter your Last Name", Toast.LENGTH_LONG)
+                .show()
+        } else if (binding.emailEdit.text.isNullOrEmpty()) {
+            Toast.makeText(applicationContext, "Enter Your email address", Toast.LENGTH_LONG).show()
+
+        } else if (binding.passwordEdit.text.isNullOrEmpty()) {
+            Toast.makeText(applicationContext, "enter your Password", Toast.LENGTH_LONG).show()
+
+        } else {
+            signUpApi()
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun signUpApi() {
+        val signUpBody = SignUpBody(
+            contactName = binding.userNameEdit.text.toString(),
+            lastName = binding.userNameLastEdit.text.toString(),
+            email = binding.emailEdit.text.toString(),
+            password = binding.passwordEdit.text.toString(),
+
+            )
+        signUpViewModel.signUpUser(this, signUpBody)
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun signUpObserver() {
+        signUpViewModel.progressIndicator.observe(this) {}
+        signUpViewModel.mRegisterResponse.observe(this) {
+            val message = it.peekContent().message!!
+            Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        signUpViewModel.errorResponse.observe(this) {
+            ErrorUtil.handlerGeneralError(this, it)
+        }
     }
 
     @Suppress("DEPRECATION")

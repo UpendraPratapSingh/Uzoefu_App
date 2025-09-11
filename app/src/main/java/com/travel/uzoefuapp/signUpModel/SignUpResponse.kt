@@ -1,0 +1,46 @@
+package com.travel.uzoefuapp.signUpModel
+
+import com.google.gson.annotations.Expose
+import com.google.gson.annotations.SerializedName
+import java.io.Serializable
+
+
+class SignUpResponse : Serializable {
+    @SerializedName("message")
+    @Expose
+    var message: String? = null
+
+    @SerializedName("data")
+    @Expose
+    var data: Data? = null
+
+    inner class Data {
+        @SerializedName("name")
+        @Expose
+        var name: String? = null
+
+        @SerializedName("lastname")
+        @Expose
+        var lastname: String? = null
+
+        @SerializedName("email")
+        @Expose
+        var email: String? = null
+
+        @SerializedName("type")
+        @Expose
+        var type: String? = null
+
+        @SerializedName("updated_at")
+        @Expose
+        var updatedAt: String? = null
+
+        @SerializedName("created_at")
+        @Expose
+        var createdAt: String? = null
+
+        @SerializedName("id")
+        @Expose
+        var id: Int? = null
+    }
+}

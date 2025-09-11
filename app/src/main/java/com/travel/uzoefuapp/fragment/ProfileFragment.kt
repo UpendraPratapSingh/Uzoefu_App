@@ -12,6 +12,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.travel.uzoefuapp.adapter.TabAdapter
 import com.travel.uzoefuapp.databinding.FragmentProfileBinding
 import com.travel.uzoefuapp.globalSettings.SettingsActivity
+import com.travel.uzoefuapp.notification.NotificationActivity
 
 
 class ProfileFragment : Fragment() {
@@ -34,6 +35,11 @@ class ProfileFragment : Fragment() {
             startActivity(intent)
         }
 
+        binding.notificationLayout.setOnClickListener {
+            val intent = Intent(requireContext(), NotificationActivity::class.java)
+            startActivity(intent)
+        }
+
         val adapter = TabAdapter(requireActivity())
         binding.viewPager.adapter = adapter
 
@@ -42,7 +48,6 @@ class ProfileFragment : Fragment() {
                 0 -> "Overview"
                 1 -> "Profile"
                 2 -> "Rewards"
-                3 -> "Companies"
                 else -> ""
             }
         }.attach()

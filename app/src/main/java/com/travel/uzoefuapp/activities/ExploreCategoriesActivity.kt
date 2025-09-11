@@ -1,5 +1,6 @@
 package com.travel.uzoefuapp.activities
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +11,7 @@ import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.adapter.CategoriesAdapter
 import com.travel.uzoefuapp.adapter.Category
 import com.travel.uzoefuapp.databinding.ActivityExploreCategoriesBinding
+import com.travel.uzoefuapp.notification.NotificationActivity
 
 class ExploreCategoriesActivity : AppCompatActivity() {
     lateinit var binding: ActivityExploreCategoriesBinding
@@ -25,6 +27,11 @@ class ExploreCategoriesActivity : AppCompatActivity() {
         }
 
         binding.forYouArrowImg.setOnClickListener { finish() }
+
+        binding.notificationLayout.setOnClickListener {
+            val intent = Intent(this@ExploreCategoriesActivity, NotificationActivity::class.java)
+            startActivity(intent)
+        }
 
         val categoriesList = listOf(
             Category("Near Me", 400, R.drawable.ic_location),

@@ -22,6 +22,7 @@ import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.adapter.WishlistAdapter
 import com.travel.uzoefuapp.databinding.FragmentWishlistBinding
 import com.travel.uzoefuapp.globalSettings.SettingsActivity
+import com.travel.uzoefuapp.notification.NotificationActivity
 
 class WishlistFragment : Fragment() {
     private var _binding: FragmentWishlistBinding? = null
@@ -43,6 +44,11 @@ class WishlistFragment : Fragment() {
 
         binding.menuIcon.setOnClickListener {
             val intent = Intent(requireContext(), SettingsActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.notificationLayout.setOnClickListener {
+            val intent = Intent(requireContext(), NotificationActivity::class.java)
             startActivity(intent)
         }
 

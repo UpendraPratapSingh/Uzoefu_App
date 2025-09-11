@@ -8,6 +8,8 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.databinding.ActivityBookSummaryBinding
+import com.travel.uzoefuapp.globalSettings.SettingsActivity
+import com.travel.uzoefuapp.notification.NotificationActivity
 
 class BookSummaryActivity : AppCompatActivity() {
     lateinit var binding: ActivityBookSummaryBinding
@@ -24,5 +26,14 @@ class BookSummaryActivity : AppCompatActivity() {
 
         binding.imageView2.setOnClickListener { finish() }
 
+        binding.notificationLayout.setOnClickListener {
+            val intent = Intent(this@BookSummaryActivity, NotificationActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.menuIcon.setOnClickListener {
+            val intent = Intent(this@BookSummaryActivity, SettingsActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

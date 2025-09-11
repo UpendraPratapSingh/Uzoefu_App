@@ -120,7 +120,6 @@ class HomeFragment : Fragment() {
         val etSearch = view.findViewById<EditText>(R.id.etSearch)
         val btnClose = view.findViewById<ImageView>(R.id.btnClose)
 
-        // Make it fullscreen
         val bottomSheet =
             bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
 

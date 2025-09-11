@@ -15,6 +15,7 @@ import com.travel.uzoefuapp.adapter.Category
 import com.travel.uzoefuapp.adapter.DestinationAdapter
 import com.travel.uzoefuapp.databinding.FragmentExploreBinding
 import com.travel.uzoefuapp.globalSettings.SettingsActivity
+import com.travel.uzoefuapp.notification.NotificationActivity
 
 
 class ExploreFragment : Fragment() {
@@ -33,6 +34,11 @@ class ExploreFragment : Fragment() {
 
         binding.menuIcon.setOnClickListener {
             val intent = Intent(requireContext(), SettingsActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.notificationLayout.setOnClickListener {
+            val intent = Intent(requireContext(), NotificationActivity::class.java)
             startActivity(intent)
         }
 
@@ -64,6 +70,5 @@ class ExploreFragment : Fragment() {
         binding.categoriesRecycler.adapter = CategoriesAdapter(requireContext(), categoriesList)
 
         return binding.root
-
     }
 }

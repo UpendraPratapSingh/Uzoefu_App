@@ -1,5 +1,6 @@
 package com.travel.uzoefuapp.activities
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -11,6 +12,8 @@ import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.adapter.ExploreAdapter
 import com.travel.uzoefuapp.adapter.ExploreResultAdapter
 import com.travel.uzoefuapp.databinding.ActivityExploreBinding
+import com.travel.uzoefuapp.globalSettings.SettingsActivity
+import com.travel.uzoefuapp.notification.NotificationActivity
 
 class ExploreActivity : AppCompatActivity() {
     lateinit var binding: ActivityExploreBinding
@@ -27,10 +30,22 @@ class ExploreActivity : AppCompatActivity() {
 
         binding.forYouArrowImg.setOnClickListener { finish() }
 
-        binding.destinationRecycler.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        binding.notificationLayout.setOnClickListener {
+            val intent = Intent(this@ExploreActivity, NotificationActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.menuIcon.setOnClickListener {
+            val intent = Intent(this@ExploreActivity, SettingsActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.destinationRecycler.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.destinationRecycler.adapter = ExploreAdapter(this)
 
-        binding.categoriesRecycler.layoutManager = GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false)
+        binding.categoriesRecycler.layoutManager =
+            GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false)
         binding.categoriesRecycler.adapter = ExploreResultAdapter(this)
 
     }

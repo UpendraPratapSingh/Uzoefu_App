@@ -3,7 +3,9 @@ package com.travel.uzoefuapp.application
 import android.app.Application
 import android.content.res.Configuration
 import com.travel.uzoefuapp.utils.PreferenceManager
+import dagger.hilt.android.HiltAndroidApp
 
+@HiltAndroidApp
 class Uzoefu : Application() {
     companion object {
         lateinit var encryptedPrefs: PreferenceManager

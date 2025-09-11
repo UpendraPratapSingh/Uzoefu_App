@@ -5,28 +5,20 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.recyclerview.widget.GridLayoutManager
 import com.travel.uzoefuapp.R
-import com.travel.uzoefuapp.adapter.NotificationAdapter
-import com.travel.uzoefuapp.databinding.ActivityNotificationBinding
+import com.travel.uzoefuapp.databinding.ActivityNotificationDetailBinding
 
-class NotificationActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityNotificationBinding
+class NotificationDetailActivity : AppCompatActivity() {
+    lateinit var binding: ActivityNotificationDetailBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityNotificationBinding.inflate(layoutInflater)
+        binding = ActivityNotificationDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-
-        binding.imageView2.setOnClickListener { finish() }
-
-        binding.notificationRecyclerView.layoutManager = GridLayoutManager(this, 1)
-        binding.notificationRecyclerView.adapter = NotificationAdapter(this)
-
     }
 }

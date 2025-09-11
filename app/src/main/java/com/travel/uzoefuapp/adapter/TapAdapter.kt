@@ -14,7 +14,6 @@ class TabAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(frag
         OverviewFragment(),
         ProfileDetailFragment(),
         RewardFragment(),
-        CompanyFragment()
     )
 
     override fun getItemCount(): Int = fragments.size
