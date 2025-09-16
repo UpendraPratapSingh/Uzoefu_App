@@ -52,11 +52,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/roboto_regular"
-            android:text="Open · 27 mins"
+            android:text="Open ·"
             android:textColor="@color/dark_black"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@id/forYouDestName"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/timing"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
+            android:text="27 mins"
+            android:textColor="@color/dark_black"
+            android:textSize="12sp"
+            android:layout_marginStart="5dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/daysName"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
@@ -89,6 +102,7 @@
             android:text="from"
             android:textColor="@color/dark_black"
             android:textSize="12sp"
+            android:layout_marginEnd="5dp"
             app:layout_constraintBaseline_toBaselineOf="@id/priceTxt1"
             app:layout_constraintEnd_toStartOf="@id/priceTxt1"
             app:layout_constraintTop_toBottomOf="@id/daysName" />

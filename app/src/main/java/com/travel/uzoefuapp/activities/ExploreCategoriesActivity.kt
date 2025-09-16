@@ -1,20 +1,33 @@
 package com.travel.uzoefuapp.activities
 
+import CustomProgressDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.adapter.CategoriesAdapter
-import com.travel.uzoefuapp.adapter.Category
+import com.travel.uzoefuapp.categoryModel.CategoryResponse
+import com.travel.uzoefuapp.categoryModel.CategoryViewModel
 import com.travel.uzoefuapp.databinding.ActivityExploreCategoriesBinding
 import com.travel.uzoefuapp.notification.NotificationActivity
+import com.travel.uzoefuapp.utils.ErrorUtil
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@AndroidEntryPoint
 class ExploreCategoriesActivity : AppCompatActivity() {
+    private val categoryViewModel: CategoryViewModel by viewModels()
+    private val progressDialog by lazy { CustomProgressDialog(this) }
     lateinit var binding: ActivityExploreCategoriesBinding
+    var data: List<CategoryResponse.Datum> = ArrayList()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -26,6 +39,10 @@ class ExploreCategoriesActivity : AppCompatActivity() {
             insets
         }
 
+        //observer
+        getCategoryApi()
+        getCategoryObserver()
+
         binding.forYouArrowImg.setOnClickListener { finish() }
 
         binding.notificationLayout.setOnClickListener {
@@ -33,28 +50,43 @@ class ExploreCategoriesActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val categoriesList = listOf(
-            Category("Near Me", 400, R.drawable.ic_location),
-            Category("Adventure", 600, R.drawable.adventure),
-            Category("Culture", 450, R.drawable.culture),
-            Category("Food", 1700, R.drawable.food),
-            Category("Entertainment", 350, R.drawable.entertainment),
-            Category("Family Fun", 18, R.drawable.family_fun),
-            Category("Services", 250, R.drawable.local_service),
-            Category("Religion", 66, R.drawable.religion),
-            Category("Outdoors", 131, R.drawable.outdoor_adventures),
-            Category("Wildlife", 65, R.drawable.wildlife),
-            Category("Wellness", 50, R.drawable.wellness),
-            Category("Historical", 67, R.drawable.historical),
-            Category("Sport", 47, R.drawable.sports),
-            Category("Urban", 32, R.drawable.urban_discovery),
-            Category("Nature", 200, R.drawable.nature),
-            Category("Tours", 123, R.drawable.tours)
-        )
+    }
 
-        binding.categoriesRecycler.layoutManager =
-            GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
-        binding.categoriesRecycler.adapter = CategoriesAdapter(this, categoriesList)
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun getCategoryObserver() {
+        categoryViewModel.progressIndicator.observe(this) {
+
+        }
+
+        categoryViewModel.mCategoryResponse.observe(this) { event ->
+            val content = event.peekContent()
+            val success = content.success
+            val message = content.message
+            data = content.data ?: emptyList()
+
+            if (success == true) {
+                if (data.isEmpty()) {
+                    binding.categoriesRecycler.visibility = View.GONE
+                } else {
+                    binding.categoriesRecycler.visibility = View.VISIBLE
+                    binding.categoriesRecycler.layoutManager =
+                        GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
+                    val categoryAdapter = CategoriesAdapter(this, data)
+                    binding.categoriesRecycler.adapter = categoryAdapter
+                }
+            } else {
+                Toast.makeText(this, message ?: "Failed to load categories", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        }
+        categoryViewModel.errorResponse.observe(this) { error ->
+            ErrorUtil.handlerGeneralError(this@ExploreCategoriesActivity, error)
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun getCategoryApi() {
+        categoryViewModel.getCategory(progressDialog, this)
 
     }
 }

@@ -9,9 +9,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.detailModel.DetailPageResponse
 
 class ProductSliderAdapter(
-    private val images: List<Int>,
+    private val images: List<DetailPageResponse.Data.Image>,
     private val onThumbnailClick: (position: Int) -> Unit
 ) : RecyclerView.Adapter<ProductSliderAdapter.ThumbViewHolder>() {
 
@@ -29,10 +30,10 @@ class ProductSliderAdapter(
 
     override fun onBindViewHolder(holder: ThumbViewHolder, position: Int) {
         val totalImages = images.size
-
+        val image_path = "https://mobappssolutions.in/uzoefu/public/images/activity_images/"
         if (position < 4) {
             Glide.with(holder.thumbImage.context)
-                .load(images[position])
+                .load(image_path+images[position].image)
                 .into(holder.thumbImage)
 
             holder.overlay.visibility = View.GONE
@@ -40,7 +41,7 @@ class ProductSliderAdapter(
             holder.itemView.setOnClickListener { onThumbnailClick(position) }
         } else if (position == 4) {
             Glide.with(holder.thumbImage.context)
-                .load(images[position])
+                .load(image_path+images[position].image)
                 .into(holder.thumbImage)
 
             holder.overlay.visibility = View.VISIBLE

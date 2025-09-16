@@ -8,16 +8,19 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activities.SelectDestinationActivity
-import com.travel.uzoefuapp.categoryModel.CategoryResponse
 
+data class Category(
+    val name: String,
+    val activitiesCount: Int,
+    val imageRes: Int
+)
 
-class CategoriesAdapter(
+class DestinationCategoryAdapter(
     private val context: Context,
-    private val categories: List<CategoryResponse.Datum>
-) : RecyclerView.Adapter<CategoriesAdapter.ViewHolder>() {
+    private val categories: List<Category>
+) : RecyclerView.Adapter<DestinationCategoryAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -27,13 +30,11 @@ class CategoriesAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val category = categories[position]
-
         holder.bind(category)
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, SelectDestinationActivity::class.java)
             intent.putExtra("categoryName", "${category.name} (${category.activitiesCount})")
-            intent.putExtra("categoryId", category.id.toString())
             context.startActivity(intent)
         }
     }
@@ -45,14 +46,8 @@ class CategoriesAdapter(
         private val name = itemView.findViewById<TextView>(R.id.placeTitle)
         private val count = itemView.findViewById<TextView>(R.id.placeCount)
 
-        fun bind(category: CategoryResponse.Datum) {
-            val baseImagePath = "https://mobappssolutions.in/uzoefu/public/icons/"
-
-            Glide.with(itemView.context)
-                .load(baseImagePath + category.icon)
-                .placeholder(R.drawable.wellness)
-                .into(icon)
-
+        fun bind(category: Category) {
+            icon.setImageResource(category.imageRes)
             name.text = category.name
             count.text = "(${category.activitiesCount})"
         }

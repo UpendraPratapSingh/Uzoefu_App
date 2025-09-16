@@ -135,7 +135,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text=" Adventure Sports"
+            android:text=" - Adventure Sports"
             android:textColor="#808080"
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/tvCategory"

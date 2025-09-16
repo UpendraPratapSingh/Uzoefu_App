@@ -19,6 +19,7 @@ class ProductAdapter(val context: Context) : RecyclerView.Adapter<ProductAdapter
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.itemView.setOnClickListener {
             val intent = Intent(context, BookingProductActivity::class.java)
+
             context.startActivity(intent)
         }
     }

@@ -1,5 +1,6 @@
 package com.travel.uzoefuapp.companyActivities
 
+import CustomProgressDialog
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
@@ -9,6 +10,7 @@ import android.os.Looper
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -23,15 +25,21 @@ import com.travel.uzoefuapp.adapter.ProductTabAdapter
 import com.travel.uzoefuapp.adapter.SliderAdapter
 import com.travel.uzoefuapp.bookingActivities.BookingDetailStep1Activity
 import com.travel.uzoefuapp.databinding.ActivityBookingProductBinding
+import com.travel.uzoefuapp.detailModel.DetailPageBody
+import com.travel.uzoefuapp.detailModel.DetailPageViewModel
 import com.travel.uzoefuapp.globalSettings.SettingsActivity
+import com.travel.uzoefuapp.utils.ErrorUtil
+import dagger.hilt.android.AndroidEntryPoint
 import me.relex.circleindicator.CircleIndicator3
 
+@AndroidEntryPoint
 class BookingProductActivity : AppCompatActivity() {
     lateinit var binding: ActivityBookingProductBinding
+    private val detailPageViewModel: DetailPageViewModel by viewModels()
+    private val progressDialog by lazy { CustomProgressDialog(this) }
 
     private lateinit var viewPager: ViewPager2
     private lateinit var indicator: CircleIndicator3
-
     private val handler = Handler(Looper.getMainLooper())
     private var currentPage = 0
 
@@ -66,6 +74,11 @@ class BookingProductActivity : AppCompatActivity() {
 
         binding.btnBack.setOnClickListener { finish() }
 
+        val categoryId = intent.getIntExtra("categoryId", -1)
+
+        getDetailApi(categoryId)
+        getDetailObserver()
+
         binding.button2.setOnClickListener {
             val intent = Intent(this@BookingProductActivity, BookingDetailStep1Activity::class.java)
             startActivity(intent)
@@ -98,16 +111,6 @@ class BookingProductActivity : AppCompatActivity() {
 
         binding.productRecyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-
-        val sampleImages = listOf(
-            R.drawable.balloonslide, R.drawable.product, R.drawable.birds, R.drawable.product,
-            R.drawable.balloon, R.drawable.product, R.drawable.product
-        )
-
-        val thumbnailAdapter = ProductSliderAdapter(sampleImages) { position ->
-            // viewPagerImages.setCurrentItem(position, true)
-        }
-        binding.productRecyclerView.adapter = thumbnailAdapter
 
         binding.actionRecyclerView.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
@@ -155,7 +158,7 @@ class BookingProductActivity : AppCompatActivity() {
 
         binding.actionRecyclerView.adapter = actionAdapter
 
-        val adapter = ProductTabAdapter(this)
+        val adapter = ProductTabAdapter(this, categoryId)
         binding.viewPagerData.adapter = adapter
 
         TabLayoutMediator(binding.tabLayout, binding.viewPagerData) { tab, position ->
@@ -180,6 +183,43 @@ class BookingProductActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private fun getDetailObserver() {
+        detailPageViewModel.progressIndicator.observe(this) {
+
+        }
+        detailPageViewModel.mCategoryResponse.observe(this) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+            val data1 = response.peekContent().data?.activity
+            val data2 = response.peekContent().data?.activity?.category
+            val data3 = response.peekContent().data?.price
+
+            if (success == true) {
+                binding.tvTitle.text = data1?.activityName.toString()
+                binding.tvCategory.text = data2?.name.toString()
+                binding.tvPrice.text = "R ${data3?.groupPrice.toString()}"
+
+                val images = response.peekContent().data?.images ?: emptyList()
+
+                val thumbnailAdapter = ProductSliderAdapter(images) { position ->
+
+                }
+                binding.productRecyclerView.adapter = thumbnailAdapter
+            }
+        }
+        detailPageViewModel.errorResponse.observe(this) {
+            ErrorUtil.handlerGeneralError(this@BookingProductActivity, it)
+        }
+    }
+
+    private fun getDetailApi(categoryId: Int) {
+        val body = DetailPageBody(
+            activity_id = categoryId.toString()
+        )
+        detailPageViewModel.getDetailPageApi(progressDialog, this, body)
+
     }
 
     override fun onResume() {

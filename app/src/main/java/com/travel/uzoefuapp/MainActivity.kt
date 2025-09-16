@@ -8,9 +8,13 @@ import android.os.Handler
 import android.os.Looper
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
+import com.travel.uzoefuapp.application.Uzoefu
+import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.ActivityMainBinding
 import com.travel.uzoefuapp.onboardScreen.OnboardActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var splashAnimation: Animation
@@ -29,12 +33,26 @@ class MainActivity : AppCompatActivity() {
             override fun onAnimationStart(animation: Animation?) {}
 
             override fun onAnimationEnd(animation: Animation?) {
-                Handler(Looper.getMainLooper()).postDelayed({
-                    val intent = Intent(activity, OnboardActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }, 1500)
+                when {
+                    Uzoefu.encryptedPrefs.isFirstTime -> {
+                        startActivity(Intent(this@MainActivity, OnboardActivity::class.java))
+                        finish()
+                    }
+
+                    Uzoefu.encryptedPrefs.isNotification -> {
+                        Handler(Looper.getMainLooper()).postDelayed({
+                            startActivity(Intent(this@MainActivity, DashboardActivity::class.java))
+                            finish()
+                        }, 100)
+                    }
+
+                    else -> {
+                        startActivity(Intent(this@MainActivity, DashboardActivity::class.java))
+                        finish()
+                    }
+                }
             }
+
 
             override fun onAnimationRepeat(animation: Animation?) {
             }

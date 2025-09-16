@@ -16,8 +16,9 @@ import com.travel.uzoefuapp.fragment.ExploreFragment
 import com.travel.uzoefuapp.fragment.HomeFragment
 import com.travel.uzoefuapp.fragment.ProfileFragment
 import com.travel.uzoefuapp.fragment.WishlistFragment
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class DashboardActivity : AppCompatActivity() {
     private lateinit var binding: ActivityDashboardBinding
     override fun onCreate(savedInstanceState: Bundle?) {

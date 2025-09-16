@@ -1,5 +1,6 @@
 package com.travel.uzoefuapp.activities
 
+import CustomProgressDialog
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
@@ -15,7 +16,9 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -26,32 +29,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.R
-import com.travel.uzoefuapp.adapter.Category
-import com.travel.uzoefuapp.adapter.CategoryAdapter
+import com.travel.uzoefuapp.activityModl.ActivityBody
+import com.travel.uzoefuapp.activityModl.ActivityResponse
+import com.travel.uzoefuapp.activityModl.ActivityViewModel
 import com.travel.uzoefuapp.adapter.ExploreResultAdapter
 import com.travel.uzoefuapp.adapter.SelectPriceAdapter
 import com.travel.uzoefuapp.adapter.SelectedDestinationAdapter
 import com.travel.uzoefuapp.databinding.ActivitySelectDestinationBinding
+import com.travel.uzoefuapp.utils.ErrorUtil
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SelectDestinationActivity : AppCompatActivity() {
     lateinit var binding: ActivitySelectDestinationBinding
-
-    private val categoriesList = listOf(
-        Category("Near Me", 400, R.drawable.tours),
-        Category("Adventure", 600, R.drawable.tours),
-        Category("Culture", 450, R.drawable.tours),
-        Category("Food", 1700, R.drawable.tours),
-        Category("Entertainment", 350, R.drawable.tours),
-        Category("Family Fun", 18, R.drawable.tours),
-        Category("Services", 250, R.drawable.tours),
-        Category("Religion", 66, R.drawable.tours),
-        Category("Outdoors", 131, R.drawable.tours),
-        Category("Wildlife", 65, R.drawable.tours),
-        Category("Wellness", 50, R.drawable.tours),
-        Category("Historical", 67, R.drawable.tours),
-        Category("Sport", 47, R.drawable.tours),
-        Category("Urban", 32, R.drawable.tours),
-    )
+    private val activityViewModel: ActivityViewModel by viewModels()
+    var data: List<ActivityResponse.Datum> = ArrayList()
+    var categoryId = ""
+    private val progressDialog by lazy { CustomProgressDialog(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,6 +58,12 @@ class SelectDestinationActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+        val categoryId = intent.getStringExtra("categoryId") ?: ""
+
+        Log.e("TAG", "onCreate: $categoryId")
+        //observer
+        getActivityApi(categoryId)
+        getActivityObserver()
 
         binding.forYouArrowImg.setOnClickListener { finish() }
 
@@ -81,24 +81,66 @@ class SelectDestinationActivity : AppCompatActivity() {
 
         val name = intent.getStringExtra("Name").toString()
 
-        Log.e("UserDestination", "user destination : $name , $type ")
-
         if (type == "1") {
-            binding.textView.text = name ?: ""       // show Name if type is 1
+            binding.textView.text = name ?: "" // show Name if type is 1
         } else {
             binding.textView.text = categoryName ?: "" // otherwise show categoryName
         }
 
-
         binding.filterData.setOnClickListener { showFilterPopup() }
 
-        binding.destinationRecycler.layoutManager =
+        /*binding.destinationRecycler.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.destinationRecycler.adapter = SelectedDestinationAdapter(this)
+*/
+        /*        binding.destinationRecyclerView.layoutManager =
+                    GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false)
+                binding.destinationRecyclerView.adapter = ExploreResultAdapter(this)*/
 
-        binding.destinationRecyclerView.layoutManager =
-            GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false)
-        binding.destinationRecyclerView.adapter = ExploreResultAdapter(this)
+    }
+
+    private fun getActivityObserver() {
+        activityViewModel.progressIndicator.observe(this) {
+
+        }
+        activityViewModel.categoryActivitiesResponse.observe(this) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+
+            data = response.peekContent().data?.data ?: emptyList()
+
+            if (success == true) {
+                if (data.isEmpty()) {
+                    binding.destinationRecycler.visibility = View.GONE
+                } else {
+                    binding.destinationRecycler.visibility = View.VISIBLE
+                    val limitedList = data.take(2)
+                    binding.destinationRecycler.layoutManager =
+                        LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+                    val categoryAdapter = SelectedDestinationAdapter(this, limitedList)
+                    binding.destinationRecycler.adapter = categoryAdapter
+
+                    // Vertical
+                    binding.destinationRecyclerView.layoutManager =
+                        LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                    val verticalAdapter = ExploreResultAdapter(this, data)
+                    binding.destinationRecyclerView.adapter = verticalAdapter
+
+                }
+            } else {
+                Toast.makeText(this, message ?: "Failed to load categories", Toast.LENGTH_SHORT).show()
+            }
+        }
+        activityViewModel.errorResponse.observe(this) {
+            ErrorUtil.handlerGeneralError(this@SelectDestinationActivity, it)
+        }
+    }
+
+    private fun getActivityApi(categoryId: String) {
+        val body = ActivityBody(
+            categoryId = categoryId
+        )
+        activityViewModel.getActivitiesByCategory(progressDialog, this, body)
 
     }
 
@@ -187,7 +229,8 @@ class SelectDestinationActivity : AppCompatActivity() {
             "20 Kilometres"
         )
 
-        val radiusAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, radiusOptions)
+        val radiusAdapter =
+            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, radiusOptions)
         spinnerRadius.adapter = radiusAdapter
 
         var selectedRadius = ""
@@ -244,8 +287,8 @@ class SelectDestinationActivity : AppCompatActivity() {
             }
         }
 
-        rvCategories.layoutManager = GridLayoutManager(this, 3)
-        rvCategories.adapter = CategoryAdapter(this, categoriesList)
+        /*    rvCategories.layoutManager = GridLayoutManager(this, 3)
+            rvCategories.adapter = CategoryAdapter(this, categoriesList)*/
 
 
         rvSelectPrice.layoutManager = GridLayoutManager(this, 1)

@@ -1,5 +1,6 @@
 package com.travel.uzoefuapp.fragment
 
+import CustomProgressDialog
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
@@ -18,10 +19,12 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Spinner
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,38 +33,36 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activities.ExploreActivity
 import com.travel.uzoefuapp.activities.ExploreCategoriesActivity
-import com.travel.uzoefuapp.adapter.Category
+import com.travel.uzoefuapp.activityModl.ActivityBody
+import com.travel.uzoefuapp.activityModl.ActivityResponse
+import com.travel.uzoefuapp.activityModl.ActivityViewModel
 import com.travel.uzoefuapp.adapter.CategoryAdapter
 import com.travel.uzoefuapp.adapter.DiscoverAdapter
 import com.travel.uzoefuapp.adapter.ExperienceAdapter
 import com.travel.uzoefuapp.adapter.ExploreAdapter
+import com.travel.uzoefuapp.adapter.OnCategoryClickListener
 import com.travel.uzoefuapp.adapter.SearchAdapter
 import com.travel.uzoefuapp.adapter.SearchItem
 import com.travel.uzoefuapp.adapter.SelectPriceAdapter
+import com.travel.uzoefuapp.categoryModel.CategoryResponse
+import com.travel.uzoefuapp.categoryModel.CategoryViewModel
 import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.FragmentHomeBinding
+import com.travel.uzoefuapp.utils.ErrorUtil
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-
-class HomeFragment : Fragment() {
+@AndroidEntryPoint
+class HomeFragment : Fragment(), OnCategoryClickListener {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
-
-    private val categoriesList = listOf(
-        Category("Near Me", 400, R.drawable.ic_location),
-        Category("Adventure", 600, R.drawable.adventure),
-        Category("Culture", 450, R.drawable.culture),
-        Category("Food", 1700, R.drawable.food),
-        Category("Entertainment", 350, R.drawable.entertainment),
-        Category("Family Fun", 18, R.drawable.family_fun),
-        Category("Services", 250, R.drawable.local_service),
-        Category("Religion", 66, R.drawable.religion),
-        Category("Outdoors", 131, R.drawable.outdoor_adventures),
-        Category("Wildlife", 65, R.drawable.wildlife),
-        Category("Wellness", 50, R.drawable.wellness),
-        Category("Historical", 67, R.drawable.historical),
-        Category("Sport", 47, R.drawable.sports),
-        Category("Urban", 32, R.drawable.urban_discovery),
-    )
+    private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
+    private var rvCategories: RecyclerView? = null
+    private val categoryViewModel: CategoryViewModel by viewModels()
+    private val activityViewModel: ActivityViewModel by viewModels()
+    var data: List<CategoryResponse.Datum> = ArrayList()
+    private var activityList: List<ActivityResponse.Datum> = ArrayList()
+    private val categoryId = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,21 +75,16 @@ class HomeFragment : Fragment() {
             insets
         }
 
+        getActivityApi()
+        getCategoryApi()
+        getActivityObserver()
+        getActivityByCategory(categoryId)
+        getActivityByCategoryObserver()
+        getCategoryObserver()
+
         binding.trendingRecyclerview.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.trendingRecyclerview.adapter = DiscoverAdapter(requireContext())
-
-        binding.bestOfferRecyclerview.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.bestOfferRecyclerview.adapter = ExperienceAdapter(requireContext())
-
-        binding.categoriesRecyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.categoriesRecyclerView.adapter = CategoryAdapter(requireContext(), categoriesList)
-
-        binding.popularcontryRecyclerView.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.popularcontryRecyclerView.adapter = ExploreAdapter(requireContext())
 
         binding.filterData.setOnClickListener { showFilterPopup() }
 
@@ -100,6 +96,7 @@ class HomeFragment : Fragment() {
 
         binding.viewMoreArrow1.setOnClickListener {
             val intent = Intent(requireContext(), ExploreActivity::class.java)
+            intent.putExtra("ExperienceActivity", "1")
             startActivity(intent)
         }
 
@@ -110,10 +107,112 @@ class HomeFragment : Fragment() {
         return binding.root
     }
 
+    private fun getActivityByCategoryObserver() {
+        activityViewModel.progressIndicator.observe(viewLifecycleOwner) {
+
+        }
+        activityViewModel.categoryActivitiesResponse.observe(viewLifecycleOwner) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+
+            val categoryActivityList = response.peekContent().data?.data ?: emptyList()
+
+            if (success == true) {
+                if (data.isEmpty()) {
+                    binding.popularcontryRecyclerView.visibility = View.GONE
+                } else {
+                    binding.popularcontryRecyclerView.visibility = View.VISIBLE
+                    binding.popularcontryRecyclerView.layoutManager =
+                        LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                    val categoryAdapter = ExploreAdapter(requireContext(), categoryActivityList)
+                    binding.popularcontryRecyclerView.adapter = categoryAdapter
+                }
+            } else {
+                Toast.makeText(requireContext(),message ?: "Failed to load categories", Toast.LENGTH_SHORT).show()
+            }
+        }
+        activityViewModel.errorResponse.observe(viewLifecycleOwner) {
+            ErrorUtil.handlerGeneralError(requireContext(), it)
+        }
+    }
+
+    private fun getActivityObserver() {
+        activityViewModel.progressIndicator.observe(viewLifecycleOwner) {}
+        activityViewModel.allActivitiesResponse.observe(viewLifecycleOwner) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+
+            activityList = response.peekContent().data?.data ?: emptyList()
+
+            if (success == true) {
+                if (data.isEmpty()) {
+                    binding.bestOfferRecyclerview.visibility = View.GONE
+                } else {
+                    binding.bestOfferRecyclerview.visibility = View.VISIBLE
+                    binding.bestOfferRecyclerview.layoutManager =
+                        LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                    val categoryAdapter = ExperienceAdapter(requireContext(), activityList)
+                    binding.bestOfferRecyclerview.adapter = categoryAdapter
+                }
+            } else {
+                Toast.makeText(requireContext(), message ?: "Failed to load categories", Toast.LENGTH_SHORT).show()
+            }
+        }
+        activityViewModel.errorResponse.observe(viewLifecycleOwner) {
+            ErrorUtil.handlerGeneralError(requireContext(), it)
+        }
+    }
+
+    private fun getActivityApi() {
+        val body = ActivityBody(categoryId = "")
+        activityViewModel.getAllActivities(progressDialog, requireActivity(), body)
+
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun getCategoryObserver() {
+        categoryViewModel.progressIndicator.observe(viewLifecycleOwner) {
+
+        }
+
+        categoryViewModel.mCategoryResponse.observe(viewLifecycleOwner) { event ->
+            val content = event.peekContent()
+            val success = content.success
+            val message = content.message
+            data = content.data ?: emptyList()
+
+            if (success == true) {
+                if (data.isEmpty()) {
+                    binding.categoriesRecyclerView.visibility = View.GONE
+                } else {
+                    binding.categoriesRecyclerView.visibility = View.VISIBLE
+                    binding.categoriesRecyclerView.layoutManager =
+                        GridLayoutManager(requireContext(), 1, GridLayoutManager.HORIZONTAL, false)
+                    val categoryAdapter = CategoryAdapter(requireContext(), data, this)
+                    binding.categoriesRecyclerView.adapter = categoryAdapter
+                }
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    message ?: "Failed to load categories",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+        categoryViewModel.errorResponse.observe(viewLifecycleOwner) { error ->
+            ErrorUtil.handlerGeneralError(requireContext(), error)
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun getCategoryApi() {
+        categoryViewModel.getCategory(progressDialog, requireActivity())
+
+    }
+
     @SuppressLint("CutPasteId")
     private fun searchExperience() {
-        val bottomSheetDialog =
-            BottomSheetDialog(requireContext())
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(R.layout.search_bottom_sheet, null)
         bottomSheetDialog.setContentView(view)
 
@@ -145,16 +244,8 @@ class HomeFragment : Fragment() {
             SearchItem(R.drawable.ic_paw, "Magaliesburg Game Reserve", "Wildlife · Magaliesburg"),
             SearchItem(R.drawable.food, "Magaliesburg Eatery", "Food & Cuisine · Magaliesburg"),
             SearchItem(R.drawable.ic_paw, "Magaliesburg Spa", "Food & Cuisine · Magaliesburg"),
-            SearchItem(
-                R.drawable.food,
-                "Magaliesburg Sports Club",
-                "Food & Cuisine · Magaliesburg"
-            ),
-            SearchItem(
-                R.drawable.ic_paw,
-                "Magaliesburg Swimming Pool",
-                "Food & Cuisine · Magaliesburg"
-            )
+            SearchItem(R.drawable.food,"Magaliesburg Sports Club","Food & Cuisine · Magaliesburg"),
+            SearchItem(R.drawable.ic_paw,"Magaliesburg Swimming Pool","Food & Cuisine · Magaliesburg")
         )
 
         val adapter = SearchAdapter(sampleData)
@@ -195,7 +286,7 @@ class HomeFragment : Fragment() {
         val categoriesSection = view.findViewById<ConstraintLayout>(R.id.categoriesSection)
         val ratingFilterContainer = view.findViewById<LinearLayout>(R.id.ratingFilterContainer)
 
-        val rvCategories = view.findViewById<RecyclerView>(R.id.rvCategories)
+        rvCategories = view.findViewById(R.id.rvCategories)
         val rvSelectPrice = view.findViewById<RecyclerView>(R.id.rvSelectPrice)
 
         val spinnerCity = view.findViewById<AppCompatSpinner>(R.id.spinnerCity)
@@ -238,6 +329,9 @@ class HomeFragment : Fragment() {
 
             override fun onNothingSelected(parent: AdapterView<*>?) {}
         }
+
+        getCategoryBottomSheetApi()
+        getCategoryBottomSheetObserver()
 
         val radiusOptions = arrayOf(
             "Select Radius",
@@ -307,19 +401,22 @@ class HomeFragment : Fragment() {
             }
         }
 
-        rvCategories.layoutManager = GridLayoutManager(requireContext(), 3)
-        rvCategories.adapter = CategoryAdapter(requireContext(), categoriesList)
+        /*
+                rvCategories.layoutManager = GridLayoutManager(requireContext(), 3)
+                rvCategories.adapter = CategoryAdapter(requireContext(), categoriesList)
+        */
 
 
         rvSelectPrice.layoutManager = GridLayoutManager(requireContext(), 1)
         rvSelectPrice.adapter = SelectPriceAdapter(requireContext())
-
 
         backIcon.setOnClickListener { bottomSheetDialog.dismiss() }
         closePopup.setOnClickListener { bottomSheetDialog.dismiss() }
 
         btnApply.setOnClickListener {
             val intent = Intent(requireContext(), ExploreActivity::class.java)
+            intent.putExtra("categoryId", categoryId)
+
             startActivity(intent)
             bottomSheetDialog.dismiss()
         }
@@ -327,26 +424,69 @@ class HomeFragment : Fragment() {
         bottomSheetDialog.show()
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun getCategoryBottomSheetObserver() {
+        categoryViewModel.progressIndicator.observe(viewLifecycleOwner) {
+
+        }
+
+        categoryViewModel.mCategoryResponse.observe(viewLifecycleOwner) { event ->
+            val content = event.peekContent()
+            val success = content.success
+            val message = content.message
+            data = content.data ?: emptyList()
+
+            if (success == true) {
+                if (data.isEmpty()) {
+                    rvCategories?.visibility = View.GONE
+                } else {
+                    rvCategories?.visibility = View.VISIBLE
+                    rvCategories?.layoutManager =
+                        GridLayoutManager(requireContext(), 3, GridLayoutManager.VERTICAL, false)
+                    val categoryAdapter = CategoryAdapter(requireContext(), data, this)
+                    rvCategories?.adapter = categoryAdapter
+                }
+            } else {
+                Toast.makeText(requireContext(), message ?: "Failed to load categories", Toast.LENGTH_SHORT).show()
+            }
+        }
+        categoryViewModel.errorResponse.observe(viewLifecycleOwner) { error ->
+            ErrorUtil.handlerGeneralError(requireContext(), error)
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun getCategoryBottomSheetApi() {
+        categoryViewModel.getCategory(progressDialog, requireActivity())
+
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Apply status bar padding only to searchBar
-        /*
-                ViewCompat.setOnApplyWindowInsetsListener(binding.searchBar) { v, insets ->
-                    val statusBarInsets = insets.getInsets(WindowInsetsCompat.Type.statusBars())
-                    v.setPadding(
-                        v.paddingLeft,
-                        statusBarInsets.top, // push down under status bar
-                        v.paddingRight,
-                        v.paddingBottom
-                    )
-                    insets
-                }
-        */
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
+    override fun onResume() {
+        super.onResume()
+        getCategoryApi()
+        getActivityApi()
+        getActivityByCategory(categoryId)
+
+    }
+
+    override fun onCategoryClick(categoryId: String, categoryName: String) {
+        getActivityByCategory(categoryId)
+
+    }
+
+    private fun getActivityByCategory(categoryId: String) {
+        val body = ActivityBody(categoryId = categoryId)
+        activityViewModel.getActivitiesByCategory(progressDialog, requireActivity(), body)
+    }
+
 }

@@ -41,6 +41,7 @@
     <string name="server_error">Server error</string>
     <string name="OK">Ok</string>
     <string name="cancelled">Cancelled</string>
+    <string name="please_wait">Please Wait...</string>
 
 
 </resources>

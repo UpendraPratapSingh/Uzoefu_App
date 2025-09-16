@@ -1,18 +1,34 @@
 package com.travel.uzoefuapp.activities
 
+import CustomProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.ActivityLoginBinding
+import com.travel.uzoefuapp.loginModel.LoginBody
+import com.travel.uzoefuapp.loginModel.LoginViewModel
+import com.travel.uzoefuapp.utils.ErrorUtil
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
+@AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
+    private var phoneNumber: String = ""
+    private var password: String = ""
+    private val progressDialog by lazy { CustomProgressDialog(this) }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val loginViewModel: LoginViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         makeFullScreen()
@@ -24,28 +40,66 @@ class LoginActivity : AppCompatActivity() {
             insets
         }
 
-        val userType = intent.getStringExtra("USER_TYPE")
-
         playBackgroundVideo()
 
         binding.signInButton.setOnClickListener {
-            val intent = Intent(this@LoginActivity, DashboardActivity::class.java)
-            startActivity(intent)
+            validation()
         }
 
-        if (userType == "Business") {
-            binding.signInButton.setOnClickListener {
-                val intent =
-                    Intent(this@LoginActivity, CompleteBusinessProfileSetUpActivity::class.java)
-                startActivity(intent)
-            }
+        loginObserver()
 
-        } else if (userType == "Individual") {
-            binding.signInButton.setOnClickListener {
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun loginObserver() {
+        loginViewModel.progressIndicator.observe(this) {
+
+        }
+        loginViewModel.mRegisterResponse.observe(this) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+            val response = response.peekContent().data
+
+            if (success == true) {
+                Uzoefu.encryptedPrefs.isFirstTime = false
+                Uzoefu.encryptedPrefs.bearerToken = "Bearer ${response?.token ?: ""}"
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                 val intent = Intent(this@LoginActivity, DashboardActivity::class.java)
                 startActivity(intent)
+            } else {
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
             }
         }
+        loginViewModel.errorResponse.observe(this) {
+            ErrorUtil.handlerGeneralError(this@LoginActivity, it)
+        }
+    }
+
+
+    private fun validation() {
+        phoneNumber = binding.emailEdit.text.toString().trim()
+        password = binding.passwordEdit.text.toString().trim()
+
+        when {
+            phoneNumber.isEmpty() -> {
+                Toast.makeText(this, "Please enter Email", Toast.LENGTH_SHORT).show()
+            }
+
+            password.isEmpty() -> {
+                Toast.makeText(this, "Please enter password", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+            else -> {
+                loginApi(phoneNumber, password)
+            }
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun loginApi(phoneNo: String, passwordTxt: String) {
+        val body = LoginBody(email = phoneNo, password = passwordTxt)
+        loginViewModel.userLoginApi(progressDialog, this, body)
     }
 
     @Suppress("DEPRECATION")

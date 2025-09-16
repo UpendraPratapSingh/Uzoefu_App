@@ -10,14 +10,16 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.travel.uzoefuapp.R
-import com.travel.uzoefuapp.adapter.CategoriesAdapter
 import com.travel.uzoefuapp.adapter.Category
 import com.travel.uzoefuapp.adapter.DestinationAdapter
+import com.travel.uzoefuapp.adapter.DestinationCategoryAdapter
 import com.travel.uzoefuapp.databinding.FragmentExploreBinding
 import com.travel.uzoefuapp.globalSettings.SettingsActivity
 import com.travel.uzoefuapp.notification.NotificationActivity
+import dagger.hilt.android.AndroidEntryPoint
 
 
+@AndroidEntryPoint
 class ExploreFragment : Fragment() {
     private var _binding: FragmentExploreBinding? = null
     private val binding get() = _binding!!
@@ -67,7 +69,7 @@ class ExploreFragment : Fragment() {
 
         binding.categoriesRecycler.layoutManager =
             GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
-        binding.categoriesRecycler.adapter = CategoriesAdapter(requireContext(), categoriesList)
+        binding.categoriesRecycler.adapter = DestinationCategoryAdapter(requireContext(), categoriesList)
 
         return binding.root
     }

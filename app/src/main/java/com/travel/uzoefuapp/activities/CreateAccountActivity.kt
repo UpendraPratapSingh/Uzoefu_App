@@ -46,8 +46,6 @@ class CreateAccountActivity : AppCompatActivity() {
 
         binding.alreadyHaveAccount.setOnClickListener {
             val intent = Intent(this@CreateAccountActivity, LoginActivity::class.java)
-            intent.putExtra("USER_TYPE", "Individual")
-
             startActivity(intent)
         }
 
@@ -116,10 +114,17 @@ class CreateAccountActivity : AppCompatActivity() {
         signUpViewModel.progressIndicator.observe(this) {}
         signUpViewModel.mRegisterResponse.observe(this) {
             val message = it.peekContent().message!!
-            Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
-            val intent = Intent(this, LoginActivity::class.java)
-            startActivity(intent)
-            finish()
+            val success = it.peekContent().success!!
+
+            if (success) {
+                Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+                val intent = Intent(this, LoginActivity::class.java)
+                startActivity(intent)
+                finish()
+            } else {
+                Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+
+            }
         }
 
         signUpViewModel.errorResponse.observe(this) {

@@ -8,15 +8,18 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.travel.uzoefuapp.R
-
+import com.travel.uzoefuapp.categoryModel.CategoryResponse
 
 class CategoryAdapter(
     private val context: Context,
-    private val categories: List<Category>
+    private val categories: List<CategoryResponse.Datum>,
+    private val listener: OnCategoryClickListener // callback interface
+
 ) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
-    private val selectedPositions = mutableSetOf<Int>()
+    private var selectedPosition = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -26,15 +29,19 @@ class CategoryAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val category = categories[position]
-
         holder.categoryText.text = category.name
+        val baseImagePath = "https://mobappssolutions.in/uzoefu/public/icons/"
+        Glide.with(context)
+            .load(baseImagePath + category.icon)
+            .placeholder(R.drawable.wellness)
+            .into(holder.categoryIcon)
 
-        holder.categoryIcon.setImageResource(category.iconRes)
-
-        if (selectedPositions.contains(position)) {
+        if (position == selectedPosition) {
             holder.itemView.setBackgroundResource(R.drawable.category_selected_background)
             holder.categoryText.setTextColor(ContextCompat.getColor(context, R.color.dark_cyan))
             holder.categoryIcon.setColorFilter(ContextCompat.getColor(context, R.color.dark_cyan))
+            listener.onCategoryClick((category.id ?: "").toString(), category.name ?: "")
+
         } else {
             holder.itemView.setBackgroundResource(R.drawable.category_background)
             holder.categoryText.setTextColor(ContextCompat.getColor(context, R.color.gray))
@@ -42,12 +49,11 @@ class CategoryAdapter(
         }
 
         holder.itemView.setOnClickListener {
-            if (selectedPositions.contains(position)) {
-                selectedPositions.remove(position)
-            } else {
-                selectedPositions.add(position)
-            }
+            val previousPosition = selectedPosition
+            selectedPosition = if (selectedPosition == position) -1 else position
+            if (previousPosition != -1) notifyItemChanged(previousPosition)
             notifyItemChanged(position)
+            listener.onCategoryClick((category.id ?: "").toString(), category.name ?: "")
         }
     }
 

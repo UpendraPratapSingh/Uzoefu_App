@@ -7,13 +7,13 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.travel.uzoefuapp.R
-import com.travel.uzoefuapp.adapter.Category
 import com.travel.uzoefuapp.adapter.CategoryAdapter
 import com.travel.uzoefuapp.databinding.ActivityDecriptionBinding
 
 class ActivityDecriptionActivity : AppCompatActivity() {
     lateinit var binding: ActivityDecriptionBinding
 
+/*
     private val categoriesList = listOf(
         Category("Near Me", 400, R.drawable.tours),
         Category("Culture", 450, R.drawable.tours),
@@ -24,6 +24,7 @@ class ActivityDecriptionActivity : AppCompatActivity() {
         Category("Sport", 47, R.drawable.tours),
         Category("Urban", 32, R.drawable.tours),
     )
+*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,8 +39,10 @@ class ActivityDecriptionActivity : AppCompatActivity() {
 
         binding.backArrow.setOnClickListener { finish() }
 
+/*
         binding.rvSelectPrice.layoutManager = GridLayoutManager(this, 3)
         binding.rvSelectPrice.adapter = CategoryAdapter(this, categoriesList)
+*/
 
 
     }
