@@ -40,6 +40,7 @@
                     app:hintEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/firstName"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@null"
@@ -64,6 +65,7 @@
                     app:hintEnabled="true">
 
                     <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/lastName"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@null"
@@ -137,6 +139,7 @@
                 app:errorTextAppearance="@style/TextAppearance.MaterialComponents.Caption">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@null"

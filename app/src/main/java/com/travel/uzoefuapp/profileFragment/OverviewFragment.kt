@@ -1,5 +1,6 @@
 package com.travel.uzoefuapp.profileFragment
 
+import CustomProgressDialog
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
@@ -16,6 +17,7 @@ import com.travel.uzoefuapp.bookingActivities.BookListActivity
 import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.FragmentOverviewBinding
 import com.travel.uzoefuapp.fragment.WishlistFragment
+import com.travel.uzoefuapp.getProfileModel.GetProfileViewModel
 import com.travel.uzoefuapp.logoutModel.LogoutViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -27,6 +29,8 @@ class OverviewFragment : Fragment() {
     private var _binding: FragmentOverviewBinding? = null
     @OptIn(ExperimentalCoroutinesApi::class)
     private val logoutViewModel: LogoutViewModel by viewModels()
+    private val getProfileViewModel: GetProfileViewModel by viewModels()
+    private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
     private val binding get() = _binding!!
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +39,10 @@ class OverviewFragment : Fragment() {
         _binding = FragmentOverviewBinding.inflate(inflater, container, false)
 
         //called observer
+        getProfileApi()
+        getProfileObserver()
         logoutObserver()
+
 
         binding.bookingsCons.setOnClickListener {
             val intent = Intent(requireContext(), BookListActivity::class.java)
@@ -51,6 +58,30 @@ class OverviewFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun getProfileObserver() {
+        getProfileViewModel.progressIndicator.observe(viewLifecycleOwner){
+
+        }
+        getProfileViewModel.mCategoryResponse.observe(viewLifecycleOwner){ response->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+            val data = response.peekContent().data
+
+            if (success == true){
+                binding.tvName.setText(data?.name.toString() + data?.lastname.toString())
+            }
+
+        }
+        getProfileViewModel.errorResponse.observe(viewLifecycleOwner){
+            ErrorUtil.handlerGeneralError(requireContext(), it)
+        }
+    }
+
+    private fun getProfileApi() {
+        getProfileViewModel.getProfileApi(progressDialog, requireActivity())
+
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)

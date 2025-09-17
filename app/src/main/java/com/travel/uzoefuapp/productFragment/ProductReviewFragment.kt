@@ -1,5 +1,6 @@
 package com.travel.uzoefuapp.productFragment
 
+import CustomProgressDialog
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -18,6 +19,7 @@ import android.widget.RatingBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity.RESULT_OK
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,8 +29,12 @@ import com.travel.uzoefuapp.adapter.PhotoAdapter
 import com.travel.uzoefuapp.adapter.Review
 import com.travel.uzoefuapp.adapter.ReviewAdapter
 import com.travel.uzoefuapp.databinding.FragmentProductReviewBinding
+import com.travel.uzoefuapp.detailModel.DetailPageBody
+import com.travel.uzoefuapp.detailModel.DetailPageViewModel
+import com.travel.uzoefuapp.utils.ErrorUtil
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class ProductReviewFragment : Fragment() {
     private var _binding: FragmentProductReviewBinding? = null
     private val binding get() = _binding!!
@@ -36,6 +42,10 @@ class ProductReviewFragment : Fragment() {
     private lateinit var adapter: PhotoAdapter
     private val photos = mutableListOf<Uri>()
     private val PICK_IMAGES = 1001
+    private var categoryId: Int? = null
+    private val detailPageViewModel: DetailPageViewModel by viewModels()
+    private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
+
 
     private val pickImagesLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -61,10 +71,11 @@ class ProductReviewFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentProductReviewBinding.inflate(inflater, container, false)
+        categoryId = arguments?.getInt("categoryId")
+        binding.writeReviewBtn.setOnClickListener { showReviewBottomSheet(requireContext()) }
 
-        binding.writeReviewBtn.setOnClickListener {
-            showReviewBottomSheet(requireContext())
-        }
+        //getDetailObserver()
+        //categoryId?.let { getDetailApi(it) }
 
         val reviews = listOf(
             Review(
@@ -146,4 +157,34 @@ class ProductReviewFragment : Fragment() {
         bottomSheetDialog.setContentView(view)
         bottomSheetDialog.show()
     }
+
+    private fun getDetailObserver() {
+        detailPageViewModel.progressIndicator.observe(viewLifecycleOwner) {
+
+        }
+        detailPageViewModel.mCategoryResponse.observe(viewLifecycleOwner) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+            val data = response.peekContent().data?.ActivityRating()
+
+            if (success == true) {
+/*                binding.tvDescription.text = data?.description.toString()
+                binding.highlights.text = data?.highlights?.joinToString("\n") { "• $it" } ?: ""
+                binding.tvLocation.text = "${data?.address.toString()} , ${data3?.town.toString()}"*/
+
+            }
+        }
+        detailPageViewModel.errorResponse.observe(viewLifecycleOwner) {
+            ErrorUtil.handlerGeneralError(requireContext(), it)
+        }
+    }
+
+    private fun getDetailApi(categoryId: Int) {
+        val body = DetailPageBody(
+            activity_id = categoryId.toString()
+        )
+        detailPageViewModel.getDetailPageApi(progressDialog, requireActivity(), body)
+
+    }
+
 }

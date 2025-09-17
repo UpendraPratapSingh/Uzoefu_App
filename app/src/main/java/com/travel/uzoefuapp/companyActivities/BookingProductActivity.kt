@@ -89,10 +89,10 @@ class BookingProductActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        binding.tvCategory.setOnClickListener {
+      /*  binding.tvCategory.setOnClickListener {
             val intent = Intent(this@BookingProductActivity, CompanyLandingActivity::class.java)
             startActivity(intent)
-        }
+        }*/
 
         viewPager = findViewById(R.id.viewPager)
         indicator = findViewById(R.id.dotsIndicator)

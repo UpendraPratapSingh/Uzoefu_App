@@ -37,8 +37,6 @@ class ExploreResultAdapter(
         // Load image using Glide
         Glide.with(holder.itemView.context)
             .load(imagePath + list.image)
-            .placeholder(R.drawable.balloon)
-            .error(R.drawable.balloon)
             .into(holder.image)
 
         holder.itemView.setOnClickListener {

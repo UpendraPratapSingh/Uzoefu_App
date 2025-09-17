@@ -130,5 +130,9 @@ class ActivityResponse : Serializable {
         @SerializedName("rating")
         @Expose
         var rating: String? = null
+
+        @SerializedName("is_wish")
+        @Expose
+        var isWish: Boolean? = null
     }
 }

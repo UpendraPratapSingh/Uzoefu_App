@@ -86,11 +86,12 @@
                 app:layout_constraintTop_toBottomOf="@id/itemTitle" />
 
             <TextView
+                android:id="@+id/rateText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:text="(120)"
-                android:textColor="@android:color/holo_green_light"
+                android:textColor="@color/green_color"
                 android:textSize="14sp" />
         </LinearLayout>
 

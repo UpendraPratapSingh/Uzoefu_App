@@ -1,11 +1,15 @@
 package com.travel.uzoefuapp.services
 
+import com.travel.uzoefuapp.AddToWishlistModel.AddWishlistBody
+import com.travel.uzoefuapp.AddToWishlistModel.AddWishlistResponse
+import com.travel.uzoefuapp.GetWishlistModel.GetWishlistResponse
 import com.travel.uzoefuapp.activityModl.ActivityBody
 import com.travel.uzoefuapp.activityModl.ActivityResponse
 import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.categoryModel.CategoryResponse
 import com.travel.uzoefuapp.detailModel.DetailPageBody
 import com.travel.uzoefuapp.detailModel.DetailPageResponse
+import com.travel.uzoefuapp.getProfileModel.GetProfileResponse
 import com.travel.uzoefuapp.loginModel.LoginBody
 import com.travel.uzoefuapp.loginModel.LoginResponse
 import com.travel.uzoefuapp.logoutModel.LogoutResponse
@@ -49,5 +53,21 @@ interface ApiServices {
         @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
         @Body body: DetailPageBody
     ): Observable<DetailPageResponse>
+
+    @POST("wishlist")
+    fun addToWishlist(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
+        @Body body: AddWishlistBody
+    ): Observable<AddWishlistResponse>
+
+    @POST("wishlist/data")
+    fun getWishlistApi(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
+    ): Observable<GetWishlistResponse>
+
+    @POST("profile/list")
+    fun getProfile(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
+    ): Observable<GetProfileResponse>
 
 }

@@ -43,6 +43,7 @@
             android:text="Birders Haven"
             android:textColor="@color/nuetral_bold_color"
             android:textSize="16sp"
+            app:layout_constraintWidth_percent="0.55"
             app:layout_constraintBottom_toTopOf="@+id/daysName"
             app:layout_constraintStart_toEndOf="@+id/forYouCountryImg"
             app:layout_constraintTop_toTopOf="@+id/forYouCountryImg" />

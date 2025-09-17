@@ -15,8 +15,10 @@ import com.travel.uzoefuapp.companyActivities.BookingProductActivity
 import com.travel.uzoefuapp.companyActivities.CompanyLandingActivity
 
 class ExperienceAdapter(val context: Context,
-                        private val activityList: List<ActivityResponse.Datum>
-) :
+                        private val activityList: List<ActivityResponse.Datum>,
+                        private val wishlistClickListener: OnWishlistClickListener,
+
+                        ) :
     RecyclerView.Adapter<ExperienceAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -37,8 +39,6 @@ class ExperienceAdapter(val context: Context,
         // Load image using Glide
         Glide.with(holder.itemView.context)
             .load(imagePath + list.image)
-            .placeholder(R.drawable.balloon)
-            .error(R.drawable.balloon)
             .into(holder.image)
 
         holder.itemView.setOnClickListener {
@@ -47,6 +47,28 @@ class ExperienceAdapter(val context: Context,
             context.startActivity(intent)
         }
 
+        holder.favIcon.setImageResource(
+            if (list.isWish == true) R.drawable.wishlist_color
+            else R.drawable.ic_wish
+        )
+
+
+        holder.favIcon.setOnClickListener { view ->
+            view.animate()
+                .scaleX(1.3f)
+                .scaleY(1.3f)
+                .setDuration(150)
+                .withEndAction {
+                    view.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .setDuration(150)
+                        .start()
+                }
+                .start()
+
+            wishlistClickListener.onWishlistClicked(list, position)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -59,5 +81,6 @@ class ExperienceAdapter(val context: Context,
         val timing = itemView.findViewById<TextView>(R.id.noOfDays)
         val rating = itemView.findViewById<TextView>(R.id.priceTxt)
         val price = itemView.findViewById<TextView>(R.id.priceTxt1)
+        val favIcon = itemView.findViewById<ImageView>(R.id.favIcon)
     }
 }

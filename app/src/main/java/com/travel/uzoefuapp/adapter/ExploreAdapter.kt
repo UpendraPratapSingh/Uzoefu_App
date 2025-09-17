@@ -11,13 +11,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activityModl.ActivityResponse
-import com.travel.uzoefuapp.companyActivities.CompanyLandingActivity
+import com.travel.uzoefuapp.companyActivities.BookingProductActivity
 
-class ExploreAdapter(val context: Context,
-                     private val activityList: List<ActivityResponse.Datum>
-    ) : RecyclerView.Adapter<ExploreAdapter.ViewHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int, ): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.explore_recyclerview, parent, false)
+class ExploreAdapter(
+    val context: Context,
+    private val activityList: List<ActivityResponse.Datum>,
+    private val wishlistClickListener: OnWishlistClickListener,
+) : RecyclerView.Adapter<ExploreAdapter.ViewHolder>() {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.explore_recyclerview, parent, false)
         return ViewHolder(view)
     }
 
@@ -34,11 +37,10 @@ class ExploreAdapter(val context: Context,
         // Load image using Glide
         Glide.with(holder.itemView.context)
             .load(imagePath + list.image)
-            .placeholder(R.drawable.balloon)
-            .error(R.drawable.balloon)
             .into(holder.image)
         holder.itemView.setOnClickListener {
-            val intent = Intent(context, CompanyLandingActivity::class.java)
+            val intent = Intent(context, BookingProductActivity::class.java)
+            intent.putExtra("categoryId", list.id)
             context.startActivity(intent)
         }
     }

@@ -30,6 +30,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.travel.uzoefuapp.AddToWishlistModel.AddWishlistBody
+import com.travel.uzoefuapp.AddToWishlistModel.AddWishlistViewModel
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activities.ExploreActivity
 import com.travel.uzoefuapp.activities.ExploreCategoriesActivity
@@ -41,6 +43,7 @@ import com.travel.uzoefuapp.adapter.DiscoverAdapter
 import com.travel.uzoefuapp.adapter.ExperienceAdapter
 import com.travel.uzoefuapp.adapter.ExploreAdapter
 import com.travel.uzoefuapp.adapter.OnCategoryClickListener
+import com.travel.uzoefuapp.adapter.OnWishlistClickListener
 import com.travel.uzoefuapp.adapter.SearchAdapter
 import com.travel.uzoefuapp.adapter.SearchItem
 import com.travel.uzoefuapp.adapter.SelectPriceAdapter
@@ -53,13 +56,14 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
-class HomeFragment : Fragment(), OnCategoryClickListener {
+class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListener {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
     private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
     private var rvCategories: RecyclerView? = null
     private val categoryViewModel: CategoryViewModel by viewModels()
     private val activityViewModel: ActivityViewModel by viewModels()
+    private val addWishlistViewModel: AddWishlistViewModel by viewModels()
     var data: List<CategoryResponse.Datum> = ArrayList()
     private var activityList: List<ActivityResponse.Datum> = ArrayList()
     private val categoryId = ""
@@ -81,6 +85,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener {
         getActivityByCategory(categoryId)
         getActivityByCategoryObserver()
         getCategoryObserver()
+        activityAddToWishListObserver()
 
         binding.trendingRecyclerview.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -107,6 +112,23 @@ class HomeFragment : Fragment(), OnCategoryClickListener {
         return binding.root
     }
 
+    private fun activityAddToWishListObserver() {
+        addWishlistViewModel.progressIndicator.observe(viewLifecycleOwner) {
+
+        }
+        addWishlistViewModel.mCategoryResponse.observe(viewLifecycleOwner) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+            if (success == true) {
+
+            }
+
+        }
+        addWishlistViewModel.errorResponse.observe(viewLifecycleOwner) {
+            ErrorUtil.handlerGeneralError(requireContext(), it)
+        }
+    }
+
     private fun getActivityByCategoryObserver() {
         activityViewModel.progressIndicator.observe(viewLifecycleOwner) {
 
@@ -118,17 +140,22 @@ class HomeFragment : Fragment(), OnCategoryClickListener {
             val categoryActivityList = response.peekContent().data?.data ?: emptyList()
 
             if (success == true) {
-                if (data.isEmpty()) {
+                if (categoryActivityList.isEmpty()) {
                     binding.popularcontryRecyclerView.visibility = View.GONE
                 } else {
                     binding.popularcontryRecyclerView.visibility = View.VISIBLE
                     binding.popularcontryRecyclerView.layoutManager =
                         LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                    val categoryAdapter = ExploreAdapter(requireContext(), categoryActivityList)
+                    val categoryAdapter =
+                        ExploreAdapter(requireContext(), categoryActivityList, this)
                     binding.popularcontryRecyclerView.adapter = categoryAdapter
                 }
             } else {
-                Toast.makeText(requireContext(),message ?: "Failed to load categories", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    message ?: "Failed to load categories",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
         activityViewModel.errorResponse.observe(viewLifecycleOwner) {
@@ -145,17 +172,21 @@ class HomeFragment : Fragment(), OnCategoryClickListener {
             activityList = response.peekContent().data?.data ?: emptyList()
 
             if (success == true) {
-                if (data.isEmpty()) {
+                if (activityList.isEmpty()) {
                     binding.bestOfferRecyclerview.visibility = View.GONE
                 } else {
                     binding.bestOfferRecyclerview.visibility = View.VISIBLE
                     binding.bestOfferRecyclerview.layoutManager =
                         LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                    val categoryAdapter = ExperienceAdapter(requireContext(), activityList)
+                    val categoryAdapter = ExperienceAdapter(requireContext(), activityList, this)
                     binding.bestOfferRecyclerview.adapter = categoryAdapter
                 }
             } else {
-                Toast.makeText(requireContext(), message ?: "Failed to load categories", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    message ?: "Failed to load categories",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
         activityViewModel.errorResponse.observe(viewLifecycleOwner) {
@@ -244,8 +275,16 @@ class HomeFragment : Fragment(), OnCategoryClickListener {
             SearchItem(R.drawable.ic_paw, "Magaliesburg Game Reserve", "Wildlife · Magaliesburg"),
             SearchItem(R.drawable.food, "Magaliesburg Eatery", "Food & Cuisine · Magaliesburg"),
             SearchItem(R.drawable.ic_paw, "Magaliesburg Spa", "Food & Cuisine · Magaliesburg"),
-            SearchItem(R.drawable.food,"Magaliesburg Sports Club","Food & Cuisine · Magaliesburg"),
-            SearchItem(R.drawable.ic_paw,"Magaliesburg Swimming Pool","Food & Cuisine · Magaliesburg")
+            SearchItem(
+                R.drawable.food,
+                "Magaliesburg Sports Club",
+                "Food & Cuisine · Magaliesburg"
+            ),
+            SearchItem(
+                R.drawable.ic_paw,
+                "Magaliesburg Swimming Pool",
+                "Food & Cuisine · Magaliesburg"
+            )
         )
 
         val adapter = SearchAdapter(sampleData)
@@ -447,7 +486,11 @@ class HomeFragment : Fragment(), OnCategoryClickListener {
                     rvCategories?.adapter = categoryAdapter
                 }
             } else {
-                Toast.makeText(requireContext(), message ?: "Failed to load categories", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    message ?: "Failed to load categories",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
         categoryViewModel.errorResponse.observe(viewLifecycleOwner) { error ->
@@ -487,6 +530,37 @@ class HomeFragment : Fragment(), OnCategoryClickListener {
     private fun getActivityByCategory(categoryId: String) {
         val body = ActivityBody(categoryId = categoryId)
         activityViewModel.getActivitiesByCategory(progressDialog, requireActivity(), body)
+    }
+
+    override fun onWishlistClicked(product: ActivityResponse.Datum, position: Int) {
+        product.isWish = !(product.isWish ?: false)
+
+        val viewHolder = binding.bestOfferRecyclerview.findViewHolderForAdapterPosition(position)
+                as? ExperienceAdapter.ViewHolder
+
+        viewHolder?.favIcon?.setImageResource(
+            if (product.isWish == true) R.drawable.wishlist_color
+            else R.drawable.ic_wish
+        )
+        addToWishlistApi(product.id)
+
+        val viewHolderCat =
+            binding.popularcontryRecyclerView.findViewHolderForAdapterPosition(position)
+                    as? ExperienceAdapter.ViewHolder
+
+        viewHolderCat?.favIcon?.setImageResource(
+            if (product.isWish == true) R.drawable.wishlist_color
+            else R.drawable.ic_wish
+        )
+        addToWishlistApi(product.id)
+
+    }
+
+    private fun addToWishlistApi(id: Int?) {
+        val body = AddWishlistBody(
+            activity_id = id.toString()
+        )
+        addWishlistViewModel.addToWishListApi(progressDialog, requireActivity(), body)
     }
 
 }
