@@ -52,7 +52,6 @@ class ExploreCategoriesActivity : AppCompatActivity() {
 
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun getCategoryObserver() {
         categoryViewModel.progressIndicator.observe(this) {
 
@@ -84,7 +83,6 @@ class ExploreCategoriesActivity : AppCompatActivity() {
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun getCategoryApi() {
         categoryViewModel.getCategory(progressDialog, this)
 

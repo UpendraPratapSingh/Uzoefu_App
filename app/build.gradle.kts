@@ -45,6 +45,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
+        freeCompilerArgs += "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
     }
     buildFeatures {
         viewBinding = true
@@ -105,6 +106,8 @@ dependencies {
 
     // spinner
     implementation("com.github.skydoves:powerspinner:1.2.4")
+
+    implementation("io.github.chaosleung:pinview:1.4.4")
 
     // Retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")

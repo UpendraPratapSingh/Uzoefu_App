@@ -42,6 +42,13 @@
     <string name="OK">Ok</string>
     <string name="cancelled">Cancelled</string>
     <string name="please_wait">Please Wait...</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="reset_password">Reset Password</string>
+    <string name="set_new_password">Set New Password</string>
+    <string name="must_be_atleast_8_character">Must be at least 8 character</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="submit">Submit</string>
 
 
 </resources>

@@ -1,5 +1,6 @@
 package com.travel.uzoefuapp.activities
 
+import CustomProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -23,9 +24,9 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 @AndroidEntryPoint
 class CreateAccountActivity : AppCompatActivity() {
     lateinit var binding: ActivityCreateAccountBinding
-
-    @OptIn(ExperimentalCoroutinesApi::class)
+    private val progressDialog by lazy { CustomProgressDialog(this) }
     private val signUpViewModel: SignUpViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         makeFullScreen()
@@ -97,7 +98,6 @@ class CreateAccountActivity : AppCompatActivity() {
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun signUpApi() {
         val signUpBody = SignUpBody(
             contactName = binding.userNameEdit.text.toString(),
@@ -106,10 +106,9 @@ class CreateAccountActivity : AppCompatActivity() {
             password = binding.passwordEdit.text.toString(),
 
             )
-        signUpViewModel.signUpUser(this, signUpBody)
+        signUpViewModel.signUpUser(progressDialog,this, signUpBody)
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun signUpObserver() {
         signUpViewModel.progressIndicator.observe(this) {}
         signUpViewModel.mRegisterResponse.observe(this) {

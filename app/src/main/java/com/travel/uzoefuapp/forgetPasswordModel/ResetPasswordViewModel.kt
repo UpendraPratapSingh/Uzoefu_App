@@ -1,4 +1,4 @@
-package com.travel.uzoefuapp.signUpModel
+package com.travel.uzoefuapp.forgetPasswordModel
 
 import CustomProgressDialog
 import android.app.Activity
@@ -14,41 +14,41 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-@ExperimentalCoroutinesApi
-class SignUpViewModel @Inject constructor(
-    application: Application,
-    private val repository: CommonRepository
-) :
-    AndroidViewModel(application) {
-        val progressIndicator = MutableLiveData<Boolean>()
-        val errorResponse = MutableLiveData<Throwable>()
-        val mRegisterResponse = MutableLiveData<Event<SignUpResponse>>()
+class ResetPasswordViewModel @Inject constructor(
+    application: Application, private val repository: CommonRepository
+) : AndroidViewModel(application) {
+    val progressIndicator = MutableLiveData<Boolean>()
+    val errorResponse = MutableLiveData<Throwable>()
+    val mCategoryResponse = MutableLiveData<Event<ResetPasswordResponse>>()
 
-    fun signUpUser(progressDialog: CustomProgressDialog, activity: Activity, body: SignUpBody) =
-        viewModelScope.launch {
-            getSignUp(progressDialog, activity, body)
-        }
-
-    private suspend fun getSignUp(
+    fun resetPasswordApi(
         progressDialog: CustomProgressDialog,
         activity: Activity,
-        body: SignUpBody
+        body: ResetPasswordBody
+    ) =
+        viewModelScope.launch {
+            resetPassword(progressDialog, activity, body)
+        }
+
+    private suspend fun resetPassword(
+        progressDialog: CustomProgressDialog,
+        activity: Activity,
+        body: ResetPasswordBody
     ) {
         progressDialog.start("")
         progressIndicator.value = true
-        repository.postSignUp(body)
+        repository.resetPassword(body)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : DisposableObserver<SignUpResponse>() {
+            .subscribe(object : DisposableObserver<ResetPasswordResponse>() {
                 @RequiresApi(Build.VERSION_CODES.S)
-                override fun onNext(value: SignUpResponse) {
+                override fun onNext(value: ResetPasswordResponse) {
                     progressIndicator.value = false
-                    mRegisterResponse.value = Event(value)
+                    mCategoryResponse.value = Event(value)
                     progressDialog.stop()
                 }
 
@@ -61,7 +61,6 @@ class SignUpViewModel @Inject constructor(
                 override fun onComplete() {
                     progressIndicator.value = false
                     progressDialog.stop()
-
                 }
             })
     }

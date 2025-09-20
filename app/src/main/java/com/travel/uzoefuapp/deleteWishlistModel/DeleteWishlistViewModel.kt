@@ -1,4 +1,4 @@
-package com.travel.uzoefuapp.signUpModel
+package com.travel.uzoefuapp.deleteWishlistModel
 
 import CustomProgressDialog
 import android.app.Activity
@@ -20,35 +20,37 @@ import javax.inject.Inject
 
 @HiltViewModel
 @ExperimentalCoroutinesApi
-class SignUpViewModel @Inject constructor(
-    application: Application,
-    private val repository: CommonRepository
-) :
-    AndroidViewModel(application) {
-        val progressIndicator = MutableLiveData<Boolean>()
-        val errorResponse = MutableLiveData<Throwable>()
-        val mRegisterResponse = MutableLiveData<Event<SignUpResponse>>()
+class DeleteWishlistViewModel @Inject constructor(
+    application: Application, private val repository: CommonRepository
+) : AndroidViewModel(application) {
+    val progressIndicator = MutableLiveData<Boolean>()
+    val errorResponse = MutableLiveData<Throwable>()
+    val mCategoryResponse = MutableLiveData<Event<DeleteWishlistResponse>>()
 
-    fun signUpUser(progressDialog: CustomProgressDialog, activity: Activity, body: SignUpBody) =
-        viewModelScope.launch {
-            getSignUp(progressDialog, activity, body)
-        }
-
-    private suspend fun getSignUp(
+    fun deleteWishListApi(
         progressDialog: CustomProgressDialog,
         activity: Activity,
-        body: SignUpBody
+        body: DeleteWishlistBody
+    ) =
+        viewModelScope.launch {
+            deleteWishList(progressDialog, activity, body)
+        }
+
+    private suspend fun deleteWishList(
+        progressDialog: CustomProgressDialog,
+        activity: Activity,
+        body: DeleteWishlistBody
     ) {
         progressDialog.start("")
         progressIndicator.value = true
-        repository.postSignUp(body)
+        repository.deleteWishList(body)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : DisposableObserver<SignUpResponse>() {
+            .subscribe(object : DisposableObserver<DeleteWishlistResponse>() {
                 @RequiresApi(Build.VERSION_CODES.S)
-                override fun onNext(value: SignUpResponse) {
+                override fun onNext(value: DeleteWishlistResponse) {
                     progressIndicator.value = false
-                    mRegisterResponse.value = Event(value)
+                    mCategoryResponse.value = Event(value)
                     progressDialog.stop()
                 }
 
@@ -61,7 +63,6 @@ class SignUpViewModel @Inject constructor(
                 override fun onComplete() {
                     progressIndicator.value = false
                     progressDialog.stop()
-
                 }
             })
     }

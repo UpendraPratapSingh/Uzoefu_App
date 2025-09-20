@@ -4,6 +4,7 @@ import CustomProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -14,20 +15,20 @@ import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.ActivityLoginBinding
+import com.travel.uzoefuapp.forgetPasswordActivites.ForgetPasswordActivity
 import com.travel.uzoefuapp.loginModel.LoginBody
 import com.travel.uzoefuapp.loginModel.LoginViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
     lateinit var binding: ActivityLoginBinding
     private var phoneNumber: String = ""
     private var password: String = ""
-    private val progressDialog by lazy { CustomProgressDialog(this) }
+    private var isPasswordVisible = false
 
-    @OptIn(ExperimentalCoroutinesApi::class)
+    private val progressDialog by lazy { CustomProgressDialog(this) }
     private val loginViewModel: LoginViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,11 +47,27 @@ class LoginActivity : AppCompatActivity() {
             validation()
         }
 
+        binding.forgotText.setOnClickListener {
+            val intent = Intent(this@LoginActivity, ForgetPasswordActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.emailIcon.setOnClickListener {
+            isPasswordVisible = !isPasswordVisible
+            if (isPasswordVisible) {
+                binding.passwordEdit.transformationMethod = null
+                binding.emailIcon.setImageResource(R.drawable.lock)
+            } else {
+                binding.passwordEdit.transformationMethod =
+                    PasswordTransformationMethod.getInstance()
+                binding.emailIcon.setImageResource(R.drawable.lock)
+            }
+            binding.passwordEdit.setSelection(binding.passwordEdit.text?.length ?: 0)
+        }
         loginObserver()
 
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun loginObserver() {
         loginViewModel.progressIndicator.observe(this) {
 
@@ -75,7 +92,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-
     private fun validation() {
         phoneNumber = binding.emailEdit.text.toString().trim()
         password = binding.passwordEdit.text.toString().trim()
@@ -96,7 +112,6 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun loginApi(phoneNo: String, passwordTxt: String) {
         val body = LoginBody(email = phoneNo, password = passwordTxt)
         loginViewModel.userLoginApi(progressDialog, this, body)

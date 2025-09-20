@@ -27,6 +27,10 @@ class GetWishlistResponse: Serializable {
         @Expose
         var id: Int? = null
 
+        @SerializedName("activity_id")
+        @Expose
+        var activityId: Int? = null
+
         @SerializedName("name")
         @Expose
         var name: String? = null

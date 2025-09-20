@@ -200,7 +200,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
 
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun getCategoryObserver() {
         categoryViewModel.progressIndicator.observe(viewLifecycleOwner) {
 
@@ -235,7 +234,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun getCategoryApi() {
         categoryViewModel.getCategory(progressDialog, requireActivity())
 
@@ -463,7 +461,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         bottomSheetDialog.show()
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun getCategoryBottomSheetObserver() {
         categoryViewModel.progressIndicator.observe(viewLifecycleOwner) {
 
@@ -498,7 +495,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         }
     }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
     private fun getCategoryBottomSheetApi() {
         categoryViewModel.getCategory(progressDialog, requireActivity())
 
@@ -544,7 +540,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         )
         addToWishlistApi(product.id)
 
-        val viewHolderCat =
+ /*       val viewHolderCat =
             binding.popularcontryRecyclerView.findViewHolderForAdapterPosition(position)
                     as? ExperienceAdapter.ViewHolder
 
@@ -552,7 +548,8 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             if (product.isWish == true) R.drawable.wishlist_color
             else R.drawable.ic_wish
         )
-        addToWishlistApi(product.id)
+        addToWishlistApi(product.id)*/
+
 
     }
 

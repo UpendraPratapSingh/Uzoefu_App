@@ -55,7 +55,7 @@
                         android:inputType="textPersonName"
                         android:paddingTop="0dp"
                         android:paddingBottom="0dp"
-                        android:text="aman"
+                        android:text=""
                         android:textSize="14sp"
                         app:hintTextColor="@color/nuetral_bold_color" />
 
@@ -80,7 +80,7 @@
                         android:inputType="textPersonName"
                         android:paddingTop="0dp"
                         android:paddingBottom="0dp"
-                        android:text="Singh"
+                        android:text=""
                         android:textSize="14sp" />
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
@@ -106,7 +106,7 @@
                     android:inputType="textPersonName"
                     android:paddingTop="0dp"
                     android:paddingBottom="0dp"
-                    android:text="Pratap"
+                    android:text=""
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -129,7 +129,7 @@
                     android:inputType="textPersonName"
                     android:paddingTop="0dp"
                     android:paddingBottom="0dp"
-                    android:text="+27 8109139549"
+                    android:text=""
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -152,7 +152,7 @@
                     android:inputType="textPersonName"
                     android:paddingTop="0dp"
                     android:paddingBottom="0dp"
-                    android:text="12 Jopa Drive, Fourways, Johannesburg"
+                    android:text=""
                     android:textSize="14sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
