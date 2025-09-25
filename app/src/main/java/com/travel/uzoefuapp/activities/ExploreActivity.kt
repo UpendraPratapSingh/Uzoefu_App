@@ -70,14 +70,12 @@ class ExploreActivity : AppCompatActivity() {
     }
 
     private fun getActivityObserver() {
-        activityViewModel.progressIndicator.observe(this) {
-
-        }
+        activityViewModel.progressIndicator.observe(this) {}
         activityViewModel.categoryActivitiesResponse.observe(this) { response ->
             val success = response.peekContent().success
             val message = response.peekContent().message
 
-            data = response.peekContent().data?.data ?: emptyList()
+            data = response.peekContent().data ?: emptyList()
 
             if (success == true) {
                 if (data.isEmpty()) {
@@ -90,7 +88,6 @@ class ExploreActivity : AppCompatActivity() {
                     val categoryAdapter = SelectedDestinationAdapter(this, limitedList)
                     binding.destinationRecycler.adapter = categoryAdapter
 
-                    // Vertical
                     binding.categoriesRecycler.layoutManager =
                         LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
                     val verticalAdapter = ExploreResultAdapter(this, data)

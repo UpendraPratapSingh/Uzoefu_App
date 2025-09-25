@@ -16,7 +16,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.adapter.BusinessFAQ
 import com.travel.uzoefuapp.adapter.BusinessFaqAdapter
-import com.travel.uzoefuapp.adapter.FAQ
 import com.travel.uzoefuapp.databinding.ActivityBusinessFaqactivityBinding
 import java.util.*
 

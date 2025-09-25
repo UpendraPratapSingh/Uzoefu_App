@@ -1,6 +1,7 @@
 package com.travel.uzoefuapp.productFragment
 
 import CustomProgressDialog
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -18,21 +19,21 @@ import android.widget.ImageView
 import android.widget.RatingBar
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.adapter.PhotoAdapter
-import com.travel.uzoefuapp.adapter.Review
 import com.travel.uzoefuapp.adapter.ReviewAdapter
 import com.travel.uzoefuapp.databinding.FragmentProductReviewBinding
 import com.travel.uzoefuapp.detailModel.DetailPageBody
+import com.travel.uzoefuapp.detailModel.DetailPageResponse
 import com.travel.uzoefuapp.detailModel.DetailPageViewModel
+import com.travel.uzoefuapp.ratingModel.RatingViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 
 @AndroidEntryPoint
 class ProductReviewFragment : Fragment() {
@@ -44,9 +45,11 @@ class ProductReviewFragment : Fragment() {
     private val PICK_IMAGES = 1001
     private var categoryId: Int? = null
     private val detailPageViewModel: DetailPageViewModel by viewModels()
+    private val ratingViewModel: RatingViewModel by viewModels()
     private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
+    var data: MutableList<DetailPageResponse.Data.ActivityRating> = ArrayList()
 
-
+    @SuppressLint("NotifyDataSetChanged")
     private val pickImagesLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -74,33 +77,28 @@ class ProductReviewFragment : Fragment() {
         categoryId = arguments?.getInt("categoryId")
         binding.writeReviewBtn.setOnClickListener { showReviewBottomSheet(requireContext()) }
 
-        //getDetailObserver()
-        //categoryId?.let { getDetailApi(it) }
-
-        val reviews = listOf(
-            Review(
-                userName = "Rahul Sharma",
-                timeAgo = "2 days ago",
-                rating = 4.5f,
-                reviewText = "Very good product, value for money!",
-                userImage = R.drawable.balloon,
-                images = listOf(R.drawable.product, R.drawable.birds)
-            ),
-            Review(
-                userName = "Priya Verma",
-                timeAgo = "1 week ago",
-                rating = 5f,
-                reviewText = "Awesome quality and fast delivery.",
-                userImage = R.drawable.birds,
-                images = listOf(R.drawable.product)
-            )
-        )
-
-        reviewAdapter = ReviewAdapter(reviews)
-        binding.recyclerReviews.layoutManager = LinearLayoutManager(requireContext())
-        binding.recyclerReviews.adapter = reviewAdapter
+        getDetailObserver()
+        categoryId?.let { getDetailApi(it) }
+        ratingObserver()
 
         return binding.root
+    }
+
+    private fun ratingObserver() {
+        ratingViewModel.progressIndicator.observe(viewLifecycleOwner) {
+
+        }
+        ratingViewModel.ratingResponse.observe(viewLifecycleOwner) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+
+            if (success == true) {
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            }
+        }
+        ratingViewModel.errorResponse.observe(viewLifecycleOwner) {
+            ErrorUtil.handlerGeneralError(requireContext(), it)
+        }
     }
 
     private fun showReviewBottomSheet(context: Context) {
@@ -151,6 +149,7 @@ class ProductReviewFragment : Fragment() {
             val rating = ratingBar.rating
             val experience = experienceEdit.text.toString().trim()
             Toast.makeText(context, "Posted: $rating stars, $experience", Toast.LENGTH_SHORT).show()
+            doRatingApi(rating, experience)
             bottomSheetDialog.dismiss()
         }
 
@@ -158,22 +157,63 @@ class ProductReviewFragment : Fragment() {
         bottomSheetDialog.show()
     }
 
-    private fun getDetailObserver() {
-        detailPageViewModel.progressIndicator.observe(viewLifecycleOwner) {
+    private fun doRatingApi(rating: Float, experience: String) {
+        val files = getFilesFromUris(photos)
 
+        ratingViewModel.ratingApi(
+            progressDialog,
+            activityId = categoryId.toString(),
+            rating = rating.toInt().toString(),
+            description = experience,
+            imageFiles = files
+        )
+    }
+
+    private fun getFilesFromUris(uriList: List<Uri>): List<File> {
+        return uriList.mapNotNull { uriToFile(it) }
+    }
+
+    private fun uriToFile(uri: Uri): File? {
+        val context = requireContext()
+        val inputStream = context.contentResolver.openInputStream(uri) ?: return null
+        val file = File(context.cacheDir, "${System.currentTimeMillis()}.jpg")
+        inputStream.use { input ->
+            file.outputStream().use { output ->
+                input.copyTo(output)
+            }
         }
+        return file
+    }
+
+    private val reviews = mutableListOf<DetailPageResponse.Data.ActivityRating>()
+
+    private fun getDetailObserver() {
+        // Observe progress
+        detailPageViewModel.progressIndicator.observe(viewLifecycleOwner) {
+            // handle progress if needed
+        }
+
+        // Observe response
         detailPageViewModel.mCategoryResponse.observe(viewLifecycleOwner) { response ->
             val success = response.peekContent().success
             val message = response.peekContent().message
-            val data = response.peekContent().data?.ActivityRating()
+            val data = response.peekContent().data?.activityRating ?: emptyList()
 
             if (success == true) {
-/*                binding.tvDescription.text = data?.description.toString()
-                binding.highlights.text = data?.highlights?.joinToString("\n") { "• $it" } ?: ""
-                binding.tvLocation.text = "${data?.address.toString()} , ${data3?.town.toString()}"*/
+                reviews.clear()
+                reviews.addAll(data)
 
+                if (!::reviewAdapter.isInitialized) {
+                    reviewAdapter = ReviewAdapter(reviews)
+                    binding.recyclerReviews.layoutManager = LinearLayoutManager(requireContext())
+                    binding.recyclerReviews.adapter = reviewAdapter
+                } else {
+                    reviewAdapter.notifyDataSetChanged()
+                }
             }
         }
+
+        // Observe errors
         detailPageViewModel.errorResponse.observe(viewLifecycleOwner) {
             ErrorUtil.handlerGeneralError(requireContext(), it)
         }

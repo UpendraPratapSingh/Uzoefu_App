@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activityModl.ActivityResponse
 import com.travel.uzoefuapp.companyActivities.BookingProductActivity
@@ -37,6 +38,7 @@ class ExploreAdapter(
         // Load image using Glide
         Glide.with(holder.itemView.context)
             .load(imagePath + list.image)
+            .diskCacheStrategy(DiskCacheStrategy.ALL) // cache both original and transformed images
             .into(holder.image)
         holder.itemView.setOnClickListener {
             val intent = Intent(context, BookingProductActivity::class.java)

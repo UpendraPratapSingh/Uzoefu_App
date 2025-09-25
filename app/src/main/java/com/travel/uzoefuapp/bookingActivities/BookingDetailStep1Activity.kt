@@ -21,13 +21,18 @@ import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.ActivityBookingDetailStep1Binding
 import com.travel.uzoefuapp.globalSettings.SettingsActivity
 import com.travel.uzoefuapp.notification.NotificationActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class BookingDetailStep1Activity : AppCompatActivity() {
     lateinit var binding: ActivityBookingDetailStep1Binding
     private lateinit var steps: List<TextView>
     private lateinit var lines: List<View>
     private lateinit var nextBtn: Button
     private var currentStep = 1
+    var price = ""
+    private var childrenPrice = ""
+    private var activityId = ""
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,6 +45,11 @@ class BookingDetailStep1Activity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
+        // Get values from intent
+        price = intent.getStringExtra("price").toString()
+        childrenPrice = intent.getStringExtra("childrenPrice").toString()
+        activityId = intent.getStringExtra("activityId").toString()
 
         binding.notificationLayout.setOnClickListener {
             val intent = Intent(this@BookingDetailStep1Activity, NotificationActivity::class.java)
@@ -70,7 +80,7 @@ class BookingDetailStep1Activity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        openFragment(Step1Fragment())
+        openFragment(Step1Fragment(price, childrenPrice, activityId))
         updateStepper()
 
         nextBtn.setOnClickListener {
@@ -124,14 +134,13 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         if (currentStep > 1) {
             currentStep--
             when (currentStep) {
-                1 -> openFragment(Step1Fragment())
+                1 -> openFragment(Step1Fragment(activityId, price, childrenPrice))
                 2 -> openFragment(Step2Fragment())
                 3 -> openFragment(Step3Fragment())
                 4 -> openFragment(Step4Fragment())
             }
             updateStepper()
         } else {
-            // At first step, close the activity
             finish()
         }
     }

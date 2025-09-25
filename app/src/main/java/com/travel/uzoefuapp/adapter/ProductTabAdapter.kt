@@ -24,7 +24,14 @@ class ProductTabAdapter(activity: AppCompatActivity, private val categoryId: Int
                 fragment
             }
 
-            1 -> InformationFragment()
+            1 -> {
+                val fragment = InformationFragment()
+                val bundle = Bundle()
+                bundle.putInt("categoryId", categoryId)
+                fragment.arguments = bundle
+                fragment
+            }
+
             2 -> {
                 val fragment = ProductReviewFragment()
                 val bundle = Bundle()
@@ -33,7 +40,15 @@ class ProductTabAdapter(activity: AppCompatActivity, private val categoryId: Int
                 fragment
             }
 
-            3 -> FAQFragment()
+            3 -> {
+                val fragment = FAQFragment()
+                val bundle = Bundle()
+                bundle.putInt("categoryId", categoryId)
+                fragment.arguments = bundle
+                fragment
+
+            }
+
             else -> ProductOverviewFragment()
         }
     }

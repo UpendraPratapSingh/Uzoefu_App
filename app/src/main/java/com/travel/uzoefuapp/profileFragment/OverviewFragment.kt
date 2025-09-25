@@ -27,6 +27,7 @@ import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.bookingActivities.BookListActivity
 import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.FragmentOverviewBinding
+import com.travel.uzoefuapp.fragment.ProfileFragment
 import com.travel.uzoefuapp.getProfileModel.GetProfileViewModel
 import com.travel.uzoefuapp.imageUpdateModel.ImageUpdateViewModel
 import com.travel.uzoefuapp.logoutModel.LogoutViewModel
@@ -54,7 +55,7 @@ class OverviewFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentOverviewBinding.inflate(inflater, container, false)
 
         //Called Observer
@@ -62,10 +63,13 @@ class OverviewFragment : Fragment() {
         getProfileObserver()
         logoutObserver()
 
+        binding.ivEditProfile.setOnClickListener {
+            (parentFragment as? ProfileFragment)?.switchToTab(1)
+        }
+
         binding.profileImage.setOnClickListener { showImageSourceDialog() }
 
-        cameraLauncher =
-            registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+        cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
                 if (success) {
                     val uri = imageUri
                     if (uri != null) {
@@ -106,13 +110,7 @@ class OverviewFragment : Fragment() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
             != PackageManager.PERMISSION_GRANTED
         ) {
-
-            ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.CAMERA),
-                CAMERA_PERMISSION_CODE
-            )
-
+            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
         } else {
             openCamera()
         }
@@ -136,11 +134,7 @@ class OverviewFragment : Fragment() {
             cameraLauncher.launch(uri)
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(
-                requireContext(),
-                "Failed to open camera: ${e.message}",
-                Toast.LENGTH_SHORT
-            ).show()
+            Toast.makeText(requireContext(), "Failed to open camera: ${e.message}", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -219,6 +213,8 @@ class OverviewFragment : Fragment() {
             val data = response.peekContent().data
             if (success == true) {
                 binding.tvName.setText(data?.name.toString() + data?.lastname.toString())
+                binding.tvUsername.text = data?.username.toString()
+
                 val imagePath = "https://mobappssolutions.in/uzoefu/public/uploads/users/"
                 val profileImageUrl = if (!data?.profilePhotoPath.isNullOrEmpty()) {
                     "$imagePath/${data?.profilePhotoPath}"
@@ -247,7 +243,6 @@ class OverviewFragment : Fragment() {
 
     private fun logoutObserver() {
         logoutViewModel.progressIndicator.observe(viewLifecycleOwner) {
-            // yaha loader show/hide karna hai to kar sakte ho
         }
 
         logoutViewModel.mRegisterResponse.observe(viewLifecycleOwner) { response ->

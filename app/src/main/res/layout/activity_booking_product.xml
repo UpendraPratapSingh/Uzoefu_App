@@ -106,7 +106,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/product_recycler_view" />
 
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/productConst"
         android:layout_width="match_parent"
@@ -128,7 +127,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-
         <TextView
             android:id="@+id/tvCategoryAdv"
             android:layout_width="wrap_content"
@@ -147,7 +145,8 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="2"
-            android:text="Hot Air Balloon Flight along Magalies Valley"
+            android:layout_marginTop="10dp"
+            android:text=""
             android:textColor="#60686B"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -161,7 +160,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_price"
             android:padding="6dp"
-            android:text="R3,200"
+            android:text=""
             android:textColor="#1B5E20"
             android:textSize="14sp"
             android:textStyle="bold"
@@ -215,7 +214,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tabLayout" />
 
-
     <Button
         android:id="@+id/button2"
         android:layout_width="match_parent"
@@ -225,8 +223,6 @@
         android:layout_marginEnd="20dp"
         android:background="@drawable/button_rounded"
         android:text="Book"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="20dp" />
-
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

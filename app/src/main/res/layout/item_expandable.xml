@@ -31,12 +31,13 @@
             android:src="@drawable/baseline_add_24" />
     </LinearLayout>
 
-    <!-- Answer content -->
     <LinearLayout
         android:id="@+id/containerContent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingTop="8dp"
+        android:padding="8dp"
         android:visibility="gone" />
+
 </LinearLayout>

@@ -38,7 +38,6 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
     var data: List<CategoryResponse.Datum> = ArrayList()
     var categoriesId = ""
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,13 +50,9 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
         getCategoryApi()
         getCategoryObserver()
 
-        binding.saveButton.setOnClickListener {
-            validation()
-        }
+        binding.saveButton.setOnClickListener { validation() }
 
-        binding.dateOfBirth.setOnClickListener {
-            showDatePicker()
-        }
+        binding.dateOfBirth.setOnClickListener { showDatePicker() }
 
         return binding.root
     }
@@ -85,7 +80,6 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
         datePickerDialog.show()
     }
 
-
     private fun getCategoryObserver() {
         categoryViewModel.progressIndicator.observe(viewLifecycleOwner) {
 
@@ -108,11 +102,7 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
                     binding.categoriesRecyclerView.adapter = categoryAdapter
                 }
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    message ?: "Failed to load categories",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(requireContext(),message ?: "Failed to load categories",Toast.LENGTH_SHORT).show()
             }
         }
         categoryViewModel.errorResponse.observe(viewLifecycleOwner) { error ->
@@ -138,7 +128,6 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
                 getProfileApi()
 
             }
-
         }
         updateProfileViewModel.errorResponse.observe(viewLifecycleOwner) {
             ErrorUtil.handlerGeneralError(requireActivity(), it)
@@ -157,42 +146,35 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
         var isValid = true
 
         if (firstNameValid.isEmpty()) {
-            // binding.firstName.error = "First Name can't be empty"
             Toast.makeText(requireContext(), "First Name is empty!", Toast.LENGTH_SHORT).show()
             isValid = false
         }
 
         if (lastNameValid.isEmpty()) {
-            // binding.lastName.error = "Last Name can't be empty"
             Toast.makeText(requireContext(), "Last Name is empty!", Toast.LENGTH_SHORT).show()
             isValid = false
         }
         if (isUserNameValid.isEmpty()) {
-            // binding.lastName.error = "Last Name can't be empty"
             Toast.makeText(requireContext(), "User Name is empty!", Toast.LENGTH_SHORT).show()
             isValid = false
         }
 
         if (emailValid.isEmpty()) {
-            //  binding.email.error = "Email can't be empty"
             Toast.makeText(requireContext(), "Email is empty!", Toast.LENGTH_SHORT).show()
             isValid = false
         }
 
         if (dateOfBirth.isEmpty()) {
-            //  binding.email.error = "Email can't be empty"
             Toast.makeText(requireContext(), "Date of Birth is empty!", Toast.LENGTH_SHORT).show()
             isValid = false
         }
 
         if (mobileValid.isEmpty()) {
-            // binding.mobileNumber.error = "Mobile Number can't be empty"
             Toast.makeText(requireContext(), "Mobile Number is empty!", Toast.LENGTH_SHORT).show()
             isValid = false
         }
 
         if (cityValid.isEmpty()) {
-            // binding.cityName.error = "City can't be empty"
             Toast.makeText(requireContext(), "City is empty!", Toast.LENGTH_SHORT).show()
             isValid = false
         }
@@ -254,10 +236,8 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
             city = isCityValid,
             distance = isDistanceValid,
             categoryIds = listOf(categoriesId)
-
         )
         updateProfileViewModel.updateProfileApi(progressDialog, requireActivity(), body)
-
     }
 
     private fun getProfileObserver() {
@@ -272,6 +252,7 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
             if (success == true) {
                 binding.firstName.setText(data?.name.toString())
                 binding.lastName.setText(data?.lastname.toString())
+                binding.etUsername.setText(data?.username.toString())
                 binding.dateOfBirth.setText(data?.dateofbirth.toString())
                 binding.email.setText(data?.email.toString())
                 binding.mobileNumber.setText(data?.mobile.toString())
@@ -291,7 +272,6 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
 
         val distanceRanges = listOf("1 km", "5 km", "10 km", "20 km", "50 km")
 
@@ -317,4 +297,5 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
         categoriesId = categoryId
 
     }
+
 }

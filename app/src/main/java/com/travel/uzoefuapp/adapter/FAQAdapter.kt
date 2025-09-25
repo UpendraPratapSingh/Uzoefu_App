@@ -8,15 +8,14 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.detailModel.DetailPageResponse
 
-data class FAQ(
-    var question: String,
-    var answer: String,
-    var isExpanded: Boolean = false
-)
 
-class FAQAdapter(private val faqList: List<FAQ>) :
+class FAQAdapter(private val faqList: List<DetailPageResponse.Data.Faq>) :
     RecyclerView.Adapter<FAQAdapter.FAQViewHolder>() {
+
+    private val expandedPositions = mutableSetOf<Int>()
+
 
     inner class FAQViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvQuestion: TextView = itemView.findViewById(R.id.tvQuestion)
@@ -36,13 +35,19 @@ class FAQAdapter(private val faqList: List<FAQ>) :
         holder.tvQuestion.text = faq.question
         holder.tvAnswer.text = faq.answer
 
-        holder.tvAnswer.visibility = if (faq.isExpanded) View.VISIBLE else View.GONE
+        val isExpanded = expandedPositions.contains(position)
+
+        holder.tvAnswer.visibility = if (isExpanded) View.VISIBLE else View.GONE
         holder.ivArrow.setImageResource(
-            if (faq.isExpanded) R.drawable.baseline_remove else R.drawable.baseline_add_24
+            if (isExpanded) R.drawable.baseline_remove else R.drawable.baseline_add_24
         )
 
         holder.faqLayout.setOnClickListener {
-            faq.isExpanded = !faq.isExpanded
+            if (isExpanded) {
+                expandedPositions.remove(position)
+            } else {
+                expandedPositions.add(position)
+            }
             notifyItemChanged(position)
         }
     }

@@ -21,7 +21,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class OtpVerificationActivity : AppCompatActivity() {
     private lateinit var binding: ActivityOtpVerificationBinding
     private val otpVerificationViewModel: OtpVerificationViewModel by viewModels()
-    private var userId= ""
+    private var userId = ""
     private val progressDialog by lazy { CustomProgressDialog(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,7 +36,7 @@ class OtpVerificationActivity : AppCompatActivity() {
         }
         userId = intent.getStringExtra("userId").toString()
 
-        Log.e("TAG", "onCreate: $userId", )
+        Log.e("TAG", "onCreate: $userId")
 
         binding.arrowBack.setOnClickListener { finish() }
 
@@ -59,7 +59,6 @@ class OtpVerificationActivity : AppCompatActivity() {
                 intent.putExtra("userId", userId)
                 startActivity(intent)
             }
-
         }
         otpVerificationViewModel.errorResponse.observe(this) {
             ErrorUtil.handlerGeneralError(this@OtpVerificationActivity, it)
@@ -69,20 +68,18 @@ class OtpVerificationActivity : AppCompatActivity() {
     private fun formValidation() {
         val otp = binding.pinview.text.toString().trim()
 
-        if (ValidationInputs(otp)) {
+        if (validationInputs(otp)) {
             // calling api here
             forgotPasswordApi(otp)
         }
     }
 
     private fun forgotPasswordApi(otp: String) {
-        val body = OtpVerificationBody(
-            otp = otp
-        )
+        val body = OtpVerificationBody(otp = otp)
         otpVerificationViewModel.OtpVerificationApi(progressDialog, this, body)
     }
 
-    private fun ValidationInputs(otp: String): Boolean {
+    private fun validationInputs(otp: String): Boolean {
         return when {
             otp.isEmpty() -> {
                 Toast.makeText(this, "Please enter OTP", Toast.LENGTH_SHORT).show()
@@ -97,6 +94,4 @@ class OtpVerificationActivity : AppCompatActivity() {
             else -> true
         }
     }
-
-
 }

@@ -72,7 +72,6 @@ class SelectDestinationActivity : AppCompatActivity() {
         val type = intent.getStringExtra("type")
         binding.textView.text = Name
 
-
         if (type == "1") {
             binding.textView.text = Name
         } else {
@@ -82,9 +81,9 @@ class SelectDestinationActivity : AppCompatActivity() {
         val name = intent.getStringExtra("Name").toString()
 
         if (type == "1") {
-            binding.textView.text = name ?: "" // show Name if type is 1
+            binding.textView.text = name ?: ""
         } else {
-            binding.textView.text = categoryName ?: "" // otherwise show categoryName
+            binding.textView.text = categoryName ?: ""
         }
 
         binding.filterData.setOnClickListener { showFilterPopup() }
@@ -107,7 +106,7 @@ class SelectDestinationActivity : AppCompatActivity() {
             val success = response.peekContent().success
             val message = response.peekContent().message
 
-            data = response.peekContent().data?.data ?: emptyList()
+            data = response.peekContent().data ?: emptyList()
 
             if (success == true) {
                 if (data.isEmpty()) {
@@ -289,7 +288,6 @@ class SelectDestinationActivity : AppCompatActivity() {
 
         /*    rvCategories.layoutManager = GridLayoutManager(this, 3)
             rvCategories.adapter = CategoryAdapter(this, categoriesList)*/
-
 
         rvSelectPrice.layoutManager = GridLayoutManager(this, 1)
         rvSelectPrice.adapter = SelectPriceAdapter(this)

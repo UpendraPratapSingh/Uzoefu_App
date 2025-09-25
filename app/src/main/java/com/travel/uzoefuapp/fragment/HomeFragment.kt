@@ -53,7 +53,6 @@ import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.FragmentHomeBinding
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListener {
@@ -120,9 +119,8 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             val success = response.peekContent().success
             val message = response.peekContent().message
             if (success == true) {
-
+                Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show()
             }
-
         }
         addWishlistViewModel.errorResponse.observe(viewLifecycleOwner) {
             ErrorUtil.handlerGeneralError(requireContext(), it)
@@ -133,11 +131,12 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         activityViewModel.progressIndicator.observe(viewLifecycleOwner) {
 
         }
+
         activityViewModel.categoryActivitiesResponse.observe(viewLifecycleOwner) { response ->
             val success = response.peekContent().success
             val message = response.peekContent().message
 
-            val categoryActivityList = response.peekContent().data?.data ?: emptyList()
+            val categoryActivityList = response.peekContent().data ?: emptyList()
 
             if (success == true) {
                 if (categoryActivityList.isEmpty()) {
@@ -168,13 +167,14 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         activityViewModel.allActivitiesResponse.observe(viewLifecycleOwner) { response ->
             val success = response.peekContent().success
             val message = response.peekContent().message
-
-            activityList = response.peekContent().data?.data ?: emptyList()
+            activityList = response.peekContent().data ?: emptyList()
 
             if (success == true) {
                 if (activityList.isEmpty()) {
                     binding.bestOfferRecyclerview.visibility = View.GONE
+                    binding.popularCountryConst.visibility = View.GONE
                 } else {
+                    binding.popularCountryConst.visibility = View.VISIBLE
                     binding.bestOfferRecyclerview.visibility = View.VISIBLE
                     binding.bestOfferRecyclerview.layoutManager =
                         LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -197,7 +197,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
     private fun getActivityApi() {
         val body = ActivityBody(categoryId = "")
         activityViewModel.getAllActivities(progressDialog, requireActivity(), body)
-
     }
 
     private fun getCategoryObserver() {
@@ -236,7 +235,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
 
     private fun getCategoryApi() {
         categoryViewModel.getCategory(progressDialog, requireActivity())
-
     }
 
     @SuppressLint("CutPasteId")
@@ -377,6 +375,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             "10 Kilometres",
             "20 Kilometres"
         )
+
         val radiusAdapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
@@ -462,9 +461,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
     }
 
     private fun getCategoryBottomSheetObserver() {
-        categoryViewModel.progressIndicator.observe(viewLifecycleOwner) {
-
-        }
+        categoryViewModel.progressIndicator.observe(viewLifecycleOwner) {}
 
         categoryViewModel.mCategoryResponse.observe(viewLifecycleOwner) { event ->
             val content = event.peekContent()
@@ -497,12 +494,10 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
 
     private fun getCategoryBottomSheetApi() {
         categoryViewModel.getCategory(progressDialog, requireActivity())
-
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
     }
 
     override fun onDestroyView() {
@@ -520,7 +515,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
 
     override fun onCategoryClick(categoryId: String, categoryName: String) {
         getActivityByCategory(categoryId)
-
     }
 
     private fun getActivityByCategory(categoryId: String) {
@@ -540,24 +534,20 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         )
         addToWishlistApi(product.id)
 
- /*       val viewHolderCat =
-            binding.popularcontryRecyclerView.findViewHolderForAdapterPosition(position)
-                    as? ExperienceAdapter.ViewHolder
+        /*       val viewHolderCat =
+                   binding.popularcontryRecyclerView.findViewHolderForAdapterPosition(position)
+                           as? ExperienceAdapter.ViewHolder
 
-        viewHolderCat?.favIcon?.setImageResource(
-            if (product.isWish == true) R.drawable.wishlist_color
-            else R.drawable.ic_wish
-        )
-        addToWishlistApi(product.id)*/
-
+               viewHolderCat?.favIcon?.setImageResource(
+                   if (product.isWish == true) R.drawable.wishlist_color
+                   else R.drawable.ic_wish
+               )
+               addToWishlistApi(product.id)*/
 
     }
 
     private fun addToWishlistApi(id: Int?) {
-        val body = AddWishlistBody(
-            activity_id = id.toString()
-        )
+        val body = AddWishlistBody(activity_id = id.toString())
         addWishlistViewModel.addToWishListApi(progressDialog, requireActivity(), body)
     }
-
 }

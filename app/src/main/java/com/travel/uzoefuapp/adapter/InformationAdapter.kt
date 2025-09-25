@@ -1,7 +1,8 @@
 package com.travel.uzoefuapp.adapter
 
-import android.content.Context
 import android.graphics.Color
+import android.text.Html
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,12 +17,13 @@ data class BusinessHour(val day: String, val time: String)
 data class ExpandableItem(
     val title: String,
     val hours: List<BusinessHour>? = null,
-    val content: String? = null,
+    val answer: String? = null,
     var isExpanded: Boolean = false
 )
 
-class InformationAdapter(private val items: List<ExpandableItem>, private val context: Context) :
-    RecyclerView.Adapter<InformationAdapter.ExpandableViewHolder>() {
+class InformationAdapter(
+    private val items: List<ExpandableItem>
+) : RecyclerView.Adapter<InformationAdapter.ExpandableViewHolder>() {
 
     inner class ExpandableViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvTitle: TextView = itemView.findViewById(R.id.tvTitle)
@@ -41,30 +43,39 @@ class InformationAdapter(private val items: List<ExpandableItem>, private val co
 
         holder.tvTitle.text = item.title
 
-        holder.tvIndicator.visibility = View.VISIBLE
         holder.tvIndicator.setImageResource(
             if (item.isExpanded) R.drawable.baseline_remove else R.drawable.baseline_add_24
         )
-
         holder.containerContent.removeAllViews()
+
+        Log.e("InformationAdapter", "Binding item: ${item.answer}")
 
         if (item.isExpanded) {
             holder.containerContent.visibility = View.VISIBLE
 
+            // Add business hours if available
             item.hours?.forEach { hour ->
-                val row = LayoutInflater.from(context)
+                val row = LayoutInflater.from(holder.itemView.context)
                     .inflate(R.layout.item_business_hour, holder.containerContent, false)
                 row.findViewById<TextView>(R.id.tvDay).text = hour.day
                 row.findViewById<TextView>(R.id.tvTime).text = hour.time
                 holder.containerContent.addView(row)
             }
 
-            item.content?.let {
-                val textView = TextView(context)
-                textView.text = it
-                textView.setTextColor(Color.DKGRAY)
-                textView.textSize = 14f
-                textView.setPadding(0, 8, 0, 0)
+            // Add answer text if available
+            item.answer?.let {
+                /*  val textView = TextView(holder.itemView.context).apply {
+                      text = it
+                      setTextColor(Color.DKGRAY)
+                      textSize = 14f
+                      setPadding(0, 8, 0, 0)
+                  }*/
+                val textView = TextView(holder.itemView.context).apply {
+                    text = Html.fromHtml(it, Html.FROM_HTML_MODE_LEGACY)
+                    setTextColor(Color.DKGRAY)
+                    textSize = 14f
+                    setPadding(0, 8, 0, 0)
+                }
                 holder.containerContent.addView(textView)
             }
 
@@ -72,6 +83,7 @@ class InformationAdapter(private val items: List<ExpandableItem>, private val co
             holder.containerContent.visibility = View.GONE
         }
 
+        // Handle expand/collapse click
         holder.faqLayout.setOnClickListener {
             item.isExpanded = !item.isExpanded
             notifyItemChanged(position)

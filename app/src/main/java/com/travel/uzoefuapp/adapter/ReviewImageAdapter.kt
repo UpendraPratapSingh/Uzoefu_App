@@ -5,9 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.travel.uzoefuapp.R
 
-class ReviewImageAdapter(private val images: List<Int>) :
+class ReviewImageAdapter(private val images: List<String>) :
     RecyclerView.Adapter<ReviewImageAdapter.ImageViewHolder>() {
 
     inner class ImageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -21,8 +22,14 @@ class ReviewImageAdapter(private val images: List<Int>) :
     }
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        holder.image.setImageResource(images[position])
+        val imageUrl = "https://mobappssolutions.in/uzoefu/public/images/rating_images/" + images[position]
+        Glide.with(holder.itemView.context)
+            .load(imageUrl)
+            .placeholder(R.drawable.product)
+            .error(R.drawable.product)
+            .into(holder.image)
     }
 
     override fun getItemCount() = images.size
 }
+

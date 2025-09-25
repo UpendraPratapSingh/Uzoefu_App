@@ -9,16 +9,17 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activityModl.ActivityResponse
 import com.travel.uzoefuapp.companyActivities.BookingProductActivity
-import com.travel.uzoefuapp.companyActivities.CompanyLandingActivity
 
-class ExperienceAdapter(val context: Context,
-                        private val activityList: List<ActivityResponse.Datum>,
-                        private val wishlistClickListener: OnWishlistClickListener,
+class ExperienceAdapter(
+    val context: Context,
+    private val activityList: List<ActivityResponse.Datum>,
+    private val wishlistClickListener: OnWishlistClickListener,
 
-                        ) :
+    ) :
     RecyclerView.Adapter<ExperienceAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -26,7 +27,7 @@ class ExperienceAdapter(val context: Context,
         return ViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ExperienceAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val list = activityList[position]
 
         val imagePath = "https://mobappssolutions.in/uzoefu/public/images/activity_images/"
@@ -36,9 +37,9 @@ class ExperienceAdapter(val context: Context,
         holder.rating.text = list.rating
         holder.price.text = "R ${list.activityPrice.toString()}"
 
-        // Load image using Glide
         Glide.with(holder.itemView.context)
             .load(imagePath + list.image)
+            .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(holder.image)
 
         holder.itemView.setOnClickListener {
@@ -51,7 +52,6 @@ class ExperienceAdapter(val context: Context,
             if (list.isWish == true) R.drawable.wishlist_color
             else R.drawable.ic_wish
         )
-
 
         holder.favIcon.setOnClickListener { view ->
             view.animate()
@@ -75,12 +75,12 @@ class ExperienceAdapter(val context: Context,
         return activityList.size
     }
 
-    class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView) {
-        val image = itemView.findViewById<ImageView>(R.id.forYouCountryImg)
-        val titleText = itemView.findViewById<TextView>(R.id.forYouDestName)
-        val timing = itemView.findViewById<TextView>(R.id.noOfDays)
-        val rating = itemView.findViewById<TextView>(R.id.priceTxt)
-        val price = itemView.findViewById<TextView>(R.id.priceTxt1)
-        val favIcon = itemView.findViewById<ImageView>(R.id.favIcon)
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val image: ImageView = itemView.findViewById(R.id.forYouCountryImg)
+        val titleText: TextView = itemView.findViewById(R.id.forYouDestName)
+        val timing: TextView = itemView.findViewById(R.id.noOfDays)
+        val rating: TextView = itemView.findViewById(R.id.priceTxt)
+        val price: TextView = itemView.findViewById(R.id.priceTxt1)
+        val favIcon: ImageView = itemView.findViewById(R.id.favIcon)
     }
 }

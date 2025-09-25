@@ -22,12 +22,17 @@ import com.travel.uzoefuapp.imageUpdateModel.ImageUpdateResponse
 import com.travel.uzoefuapp.loginModel.LoginBody
 import com.travel.uzoefuapp.loginModel.LoginResponse
 import com.travel.uzoefuapp.logoutModel.LogoutResponse
+import com.travel.uzoefuapp.priceCalculationModel.PriceCalculationBody
+import com.travel.uzoefuapp.priceCalculationModel.PriceCalculationResponse
+import com.travel.uzoefuapp.ratingModel.RatingResponse
 import com.travel.uzoefuapp.signUpModel.SignUpBody
 import com.travel.uzoefuapp.signUpModel.SignUpResponse
 import com.travel.uzoefuapp.updateProfileModel.UpdateProfileBody
 import com.travel.uzoefuapp.updateProfileModel.UpdateProfileResponse
 import io.reactivex.Observable
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.Multipart
@@ -113,7 +118,22 @@ interface ApiServices {
     @POST("reset/password")
     fun resetPassword(
         @Body body: ResetPasswordBody,
-
     ): Observable<ResetPasswordResponse>
+
+    @Multipart
+    @POST("activity/rating")
+    suspend fun submitRating(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
+        @Part("activity_id") activityId: RequestBody,
+        @Part("rating") rating: RequestBody,
+        @Part("description") description: RequestBody,
+        @Part images: List<MultipartBody.Part>
+    ): Response<RatingResponse>
+
+    @POST("price/calculation")
+    fun priceCalculation(
+        @Body body: PriceCalculationBody,
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
+    ): Observable<PriceCalculationResponse>
 
 }

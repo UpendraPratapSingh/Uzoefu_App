@@ -58,7 +58,7 @@ class DetailPageResponse : Serializable {
 
         @SerializedName("amenities")
         @Expose
-        var amenities: List<Any>? = null
+        var amenities: List<Amenity>? = null
 
         @SerializedName("images")
         @Expose
@@ -70,7 +70,7 @@ class DetailPageResponse : Serializable {
 
         @SerializedName("faqs")
         @Expose
-        var faqs: List<Any>? = null
+        var faqs: List<Faq>? = null
 
         @SerializedName("terms")
         @Expose
@@ -82,7 +82,59 @@ class DetailPageResponse : Serializable {
 
         @SerializedName("activity_rating")
         @Expose
-        var activityRating: MutableList<ActivityRating?>? = null
+        var activityRating: List<ActivityRating>? = null
+
+        inner class Amenity {
+            @SerializedName("id")
+            @Expose
+            var id: Int? = null
+
+            @SerializedName("activity_id")
+            @Expose
+            var activityId: Int? = null
+
+            @SerializedName("user_id")
+            @Expose
+            var userId: Int? = null
+
+            @SerializedName("amenity_id")
+            @Expose
+            var amenityId: Int? = null
+
+            @SerializedName("created_at")
+            @Expose
+            var createdAt: String? = null
+
+            @SerializedName("updated_at")
+            @Expose
+            var updatedAt: String? = null
+
+            @SerializedName("amenity")
+            @Expose
+            var amenity: Amenity__1? = null
+
+            inner class Amenity__1 {
+                @SerializedName("id")
+                @Expose
+                var id: Int? = null
+
+                @SerializedName("name")
+                @Expose
+                var name: String? = null
+
+                @SerializedName("status")
+                @Expose
+                var status: Int? = null
+
+                @SerializedName("created_at")
+                @Expose
+                var createdAt: String? = null
+
+                @SerializedName("updated_at")
+                @Expose
+                var updatedAt: String? = null
+            }
+        }
 
         inner class ActivityRating {
             @SerializedName("id")
@@ -104,6 +156,36 @@ class DetailPageResponse : Serializable {
             @SerializedName("user")
             @Expose
             var user: User? = null
+        }
+
+        inner class Faq {
+            @SerializedName("id")
+            @Expose
+            var id: Int? = null
+
+            @SerializedName("user_id")
+            @Expose
+            var userId: Int? = null
+
+            @SerializedName("activity_id")
+            @Expose
+            var activityId: Int? = null
+
+            @SerializedName("question")
+            @Expose
+            var question: String? = null
+
+            @SerializedName("answer")
+            @Expose
+            var answer: String? = null
+
+            @SerializedName("created_at")
+            @Expose
+            var createdAt: String? = null
+
+            @SerializedName("updated_at")
+            @Expose
+            var updatedAt: String? = null
         }
 
         inner class Datum {
@@ -144,77 +226,13 @@ class DetailPageResponse : Serializable {
             var user: User? = null
 
             inner class User {
-                @SerializedName("id")
-                @Expose
-                var id: Int? = null
-
                 @SerializedName("name")
                 @Expose
                 var name: String? = null
 
-                @SerializedName("lastname")
+                @SerializedName("image")
                 @Expose
-                var lastname: String? = null
-
-                @SerializedName("email")
-                @Expose
-                var email: String? = null
-
-                @SerializedName("status")
-                @Expose
-                var status: Int? = null
-
-                @SerializedName("is_update")
-                @Expose
-                var isUpdate: Int? = null
-
-                @SerializedName("business_name")
-                @Expose
-                var businessName: String? = null
-
-                @SerializedName("email_verified_at")
-                @Expose
-                var emailVerifiedAt: Any? = null
-
-                @SerializedName("two_factor_secret")
-                @Expose
-                var twoFactorSecret: Any? = null
-
-                @SerializedName("two_factor_recovery_codes")
-                @Expose
-                var twoFactorRecoveryCodes: Any? = null
-
-                @SerializedName("two_factor_confirmed_at")
-                @Expose
-                var twoFactorConfirmedAt: Any? = null
-
-                @SerializedName("type")
-                @Expose
-                var type: String? = null
-
-                @SerializedName("is_complete")
-                @Expose
-                var isComplete: Int? = null
-
-                @SerializedName("api_token")
-                @Expose
-                var apiToken: Any? = null
-
-                @SerializedName("current_team_id")
-                @Expose
-                var currentTeamId: Any? = null
-
-                @SerializedName("profile_photo_path")
-                @Expose
-                var profilePhotoPath: Any? = null
-
-                @SerializedName("created_at")
-                @Expose
-                var createdAt: String? = null
-
-                @SerializedName("updated_at")
-                @Expose
-                var updatedAt: String? = null
+                var image: String? = null
 
             }
         }
@@ -294,11 +312,176 @@ class DetailPageResponse : Serializable {
         }
 
         inner class Hours {
+            @SerializedName("mon_from")
+            @Expose
+            var monFrom: String? = null
 
+            @SerializedName("mon_to")
+            @Expose
+            var monTo: String? = null
+
+            @SerializedName("tue_from")
+            @Expose
+            var tueFrom: String? = null
+
+            @SerializedName("tue_to")
+            @Expose
+            var tueTo: String? = null
+
+            @SerializedName("wed_from")
+            @Expose
+            var wedFrom: String? = null
+
+            @SerializedName("wed_to")
+            @Expose
+            var wedTo: String? = null
+
+            @SerializedName("thu_from")
+            @Expose
+            var thuFrom: String? = null
+
+            @SerializedName("thu_to")
+            @Expose
+            var thuTo: String? = null
+
+            @SerializedName("fri_from")
+            @Expose
+            var friFrom: String? = null
+
+            @SerializedName("fri_to")
+            @Expose
+            var friTo: String? = null
+
+            @SerializedName("sat_from")
+            @Expose
+            var satFrom: String? = null
+
+            @SerializedName("sat_to")
+            @Expose
+            var satTo: String? = null
+
+            @SerializedName("sun_from")
+            @Expose
+            var sunFrom: String? = null
+
+            @SerializedName("sun_to")
+            @Expose
+            var sunTo: String? = null
+
+            @SerializedName("public_mon_from")
+            @Expose
+            var publicMonFrom: String? = null
+
+            @SerializedName("public_mon_to")
+            @Expose
+            var publicMonTo: String? = null
         }
 
         inner class Payment {
+            @SerializedName("id")
+            @Expose
+            var id: Int? = null
 
+            @SerializedName("user_id")
+            @Expose
+            var userId: Int? = null
+
+            @SerializedName("activity_id")
+            @Expose
+            var activityId: Int? = null
+
+            @SerializedName("visa_card")
+            @Expose
+            var visaCard: Int? = null
+
+            @SerializedName("eft")
+            @Expose
+            var eft: Int? = null
+
+            @SerializedName("bank_id")
+            @Expose
+            var bankId: Int? = null
+
+            @SerializedName("bank_branch_id")
+            @Expose
+            var bankBranchId: Int? = null
+
+            @SerializedName("account_holder_name")
+            @Expose
+            var accountHolderName: String? = null
+
+            @SerializedName("account_type")
+            @Expose
+            var accountType: String? = null
+
+            @SerializedName("account_number")
+            @Expose
+            var accountNumber: String? = null
+
+            @SerializedName("branch_code")
+            @Expose
+            var branchCode: String? = null
+
+            @SerializedName("swift_code")
+            @Expose
+            var swiftCode: String? = null
+
+            @SerializedName("created_at")
+            @Expose
+            var createdAt: String? = null
+
+            @SerializedName("updated_at")
+            @Expose
+            var updatedAt: String? = null
+
+            @SerializedName("bank")
+            @Expose
+            var bank: Bank? = null
+
+            @SerializedName("bankbranch")
+            @Expose
+            var bankbranch: Bankbranch? = null
+
+
+            inner class Bank {
+                @SerializedName("id")
+                @Expose
+                var id: Int? = null
+
+                @SerializedName("name")
+                @Expose
+                var name: String? = null
+
+                @SerializedName("created_at")
+                @Expose
+                var createdAt: String? = null
+
+                @SerializedName("updated_at")
+                @Expose
+                var updatedAt: String? = null
+            }
+
+            inner class Bankbranch {
+                @SerializedName("id")
+                @Expose
+                var id: Int? = null
+
+                @SerializedName("name")
+                @Expose
+                var name: String? = null
+
+                @SerializedName("bank_id")
+                @Expose
+                var bankId: Int? = null
+
+                @SerializedName("created_at")
+                @Expose
+                var createdAt: String? = null
+
+                @SerializedName("updated_at")
+                @Expose
+                var updatedAt: String? = null
+            }
         }
 
         inner class Terms {
@@ -505,7 +688,6 @@ class DetailPageResponse : Serializable {
             @SerializedName("category")
             @Expose
             var category: Category? = null
-
 
             inner class Branch {
                 @SerializedName("id")

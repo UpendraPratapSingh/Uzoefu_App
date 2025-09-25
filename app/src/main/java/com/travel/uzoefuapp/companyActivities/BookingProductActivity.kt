@@ -79,10 +79,6 @@ class BookingProductActivity : AppCompatActivity() {
         getDetailApi(categoryId)
         getDetailObserver()
 
-        binding.button2.setOnClickListener {
-            val intent = Intent(this@BookingProductActivity, BookingDetailStep1Activity::class.java)
-            startActivity(intent)
-        }
 
         binding.btnMore.setOnClickListener {
             val intent = Intent(this@BookingProductActivity, SettingsActivity::class.java)
@@ -97,8 +93,7 @@ class BookingProductActivity : AppCompatActivity() {
         viewPager = findViewById(R.id.viewPager)
         indicator = findViewById(R.id.dotsIndicator)
 
-        val images =
-            listOf(R.drawable.balloonslide, R.drawable.balloonslide, R.drawable.balloonslide)
+        val images = listOf(R.drawable.balloonslide, R.drawable.balloonslide, R.drawable.balloonslide)
 
         viewPager.adapter = SliderAdapter(images)
         indicator.setViewPager(viewPager)
@@ -199,7 +194,9 @@ class BookingProductActivity : AppCompatActivity() {
             if (success == true) {
                 binding.tvTitle.text = data1?.activityName.toString()
                 binding.tvCategory.text = data2?.name.toString()
-                binding.tvPrice.text = "R ${data3?.groupPrice.toString()}"
+             //   binding.tvPrice.text = "R ${data3?.groupPrice.toString()}"
+              //  binding.tvPrice.text = "R ${"%.2f".format(data3?.groupPrice ?: 0.0)}"
+                binding.tvPrice.text = "R ${data3?.groupPrice ?: 0}"
 
                 val images = response.peekContent().data?.images ?: emptyList()
 
@@ -207,6 +204,17 @@ class BookingProductActivity : AppCompatActivity() {
 
                 }
                 binding.productRecyclerView.adapter = thumbnailAdapter
+
+                binding.button2.setOnClickListener {
+                    val intent = Intent(this@BookingProductActivity, BookingDetailStep1Activity::class.java)
+                    intent.putExtra("price", data3?.groupPrice.toString())
+                    intent.putExtra("childrenPrice", data3?.childrenBase.toString())
+                    intent.putExtra("activityId", data3?.activityId.toString())
+                    startActivity(intent)
+                }
+
+
+
             }
         }
         detailPageViewModel.errorResponse.observe(this) {

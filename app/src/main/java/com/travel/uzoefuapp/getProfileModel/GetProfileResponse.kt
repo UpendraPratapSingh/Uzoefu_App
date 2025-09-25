@@ -59,11 +59,16 @@ class GetProfileResponse : Serializable {
         @Expose
         var profilePhotoPath: String? = null
 
+        @SerializedName("username")
+        @Expose
+        var username: String? = null
+
         @SerializedName("category")
         @Expose
         var category: List<Category>? = null
 
         inner class Category {
+
             @SerializedName("id")
             @Expose
             var id: Int? = null
@@ -83,6 +88,7 @@ class GetProfileResponse : Serializable {
             @SerializedName("updated_at")
             @Expose
             var updatedAt: String? = null
+
         }
     }
 }

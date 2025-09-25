@@ -22,13 +22,20 @@ import com.travel.uzoefuapp.imageUpdateModel.ImageUpdateResponse
 import com.travel.uzoefuapp.loginModel.LoginBody
 import com.travel.uzoefuapp.loginModel.LoginResponse
 import com.travel.uzoefuapp.logoutModel.LogoutResponse
+import com.travel.uzoefuapp.priceCalculationModel.PriceCalculationBody
+import com.travel.uzoefuapp.priceCalculationModel.PriceCalculationResponse
+import com.travel.uzoefuapp.ratingModel.RatingResponse
 import com.travel.uzoefuapp.services.ApiServices
 import com.travel.uzoefuapp.signUpModel.SignUpBody
 import com.travel.uzoefuapp.signUpModel.SignUpResponse
 import com.travel.uzoefuapp.updateProfileModel.UpdateProfileBody
 import com.travel.uzoefuapp.updateProfileModel.UpdateProfileResponse
 import io.reactivex.Observable
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Response
+import java.io.File
 import javax.inject.Inject
 
 class CommonRepository @Inject constructor(private val services: ApiServices) {
@@ -91,6 +98,27 @@ class CommonRepository @Inject constructor(private val services: ApiServices) {
 
     fun resetPassword(body: ResetPasswordBody): Observable<ResetPasswordResponse>{
         return services.resetPassword(body)
+    }
+
+    suspend fun submitRatingApi(activityId: String,
+                                rating: String,
+                                description: String,
+                                imageFiles: List<File>): Response<RatingResponse> {
+
+        val activityIdBody = RequestBody.create("text/plain".toMediaTypeOrNull(), activityId)
+        val ratingBody = RequestBody.create("text/plain".toMediaTypeOrNull(), rating)
+        val descriptionBody = RequestBody.create("text/plain".toMediaTypeOrNull(), description)
+
+        val imageParts = imageFiles.mapIndexed { index, file ->
+            val requestFile = RequestBody.create("image/*".toMediaTypeOrNull(), file)
+            MultipartBody.Part.createFormData("images[$index]", file.name, requestFile)
+        }
+
+        return services.submitRating(Uzoefu.encryptedPrefs.bearerToken, activityIdBody, ratingBody, descriptionBody, imageParts)
+    }
+
+    fun priceCalculation(body: PriceCalculationBody): Observable<PriceCalculationResponse>{
+        return services.priceCalculation(body, Uzoefu.encryptedPrefs.bearerToken)
     }
 
 }

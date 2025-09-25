@@ -41,15 +41,19 @@
 
     <RatingBar
         android:id="@+id/ratingBar"
-        style="?android:attr/ratingBarStyleSmall"
+        style="@style/Widget.AppCompat.RatingBar.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:isIndicator="false"
         android:numStars="5"
         android:progressBackgroundTint="@android:color/darker_gray"
         android:progressTint="@android:color/holo_orange_light"
+        android:rating="0"
+        android:scaleX="0.9"
+        android:scaleY="0.9"
         android:secondaryProgressTint="@android:color/holo_orange_light"
-        android:stepSize="2"
+        android:stepSize="1.0"
         app:layout_constraintStart_toEndOf="@id/tvRate"
         app:layout_constraintTop_toTopOf="@id/tvRate" />
 

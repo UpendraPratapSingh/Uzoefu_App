@@ -7,7 +7,9 @@ import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.detailModel.DetailPageResponse
 import de.hdodenhof.circleimageview.CircleImageView
 
 data class Review(
@@ -19,16 +21,16 @@ data class Review(
     val images: List<Int>
 )
 
-class ReviewAdapter(private val reviews: List<Review>) :
+class ReviewAdapter(private val reviews: List<DetailPageResponse.Data.ActivityRating>) :
     RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>() {
 
     inner class ReviewViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val imgUser = itemView.findViewById<CircleImageView>(R.id.imgUser)
-        val tvUserName = itemView.findViewById<TextView>(R.id.tvUserName)
+        val imgUser: CircleImageView = itemView.findViewById(R.id.imgUser)
+        val tvUserName: TextView = itemView.findViewById(R.id.tvUserName)
         val tvTimeAgo = itemView.findViewById<TextView>(R.id.tvTimeAgo)
-        val ratingBar = itemView.findViewById<RatingBar>(R.id.ratingBar)
-        val tvReviewText = itemView.findViewById<TextView>(R.id.tvReviewText)
-        val recyclerReviewImages = itemView.findViewById<RecyclerView>(R.id.recyclerReviewImages)
+        val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
+        val tvReviewText: TextView = itemView.findViewById(R.id.tvReviewText)
+        val recyclerReviewImages: RecyclerView = itemView.findViewById(R.id.recyclerReviewImages)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
@@ -38,15 +40,25 @@ class ReviewAdapter(private val reviews: List<Review>) :
 
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
         val review = reviews[position]
-        holder.tvUserName.text = review.userName
-        holder.tvTimeAgo.text = review.timeAgo
-        holder.ratingBar.rating = review.rating
-        holder.tvReviewText.text = review.reviewText
-        holder.imgUser.setImageResource(review.userImage)
+
+        val imagePath = "https://mobappssolutions.in/uzoefu/public/uploads/users/"
+
+        holder.tvUserName.text = review.user?.name.toString()
+        //  holder.tvTimeAgo.text = review.timeAgo
+        holder.ratingBar.rating = review.rating!!.toFloat()
+        holder.tvReviewText.text = review.description.toString()
+
+        review.user?.image?.let { img ->
+            Glide.with(holder.itemView.context)
+                .load(imagePath + img)
+                .placeholder(R.drawable.profile)
+                .error(R.drawable.profile)
+                .into(holder.imgUser)
+        }
 
         holder.recyclerReviewImages.layoutManager =
             LinearLayoutManager(holder.itemView.context, LinearLayoutManager.HORIZONTAL, false)
-        holder.recyclerReviewImages.adapter = ReviewImageAdapter(review.images)
+        holder.recyclerReviewImages.adapter = ReviewImageAdapter(review.images ?: emptyList())
     }
 
     override fun getItemCount() = reviews.size
