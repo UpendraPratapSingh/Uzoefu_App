@@ -53,8 +53,7 @@
                     android:layout_margin="8dp"
                     android:background="@drawable/heart_bg"
                     android:padding="6dp"
-                    android:src="@drawable/ic_wishlist"
-                    app:tint="@android:color/white" />
+                    android:src="@drawable/ic_wish" />
 
             </androidx.cardview.widget.CardView>
 
@@ -134,9 +133,9 @@
 
                 <ImageView
                     android:id="@+id/destinationStartTxt1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/star"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/stars"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />

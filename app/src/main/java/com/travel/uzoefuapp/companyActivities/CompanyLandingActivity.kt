@@ -70,8 +70,8 @@ class CompanyLandingActivity : AppCompatActivity() {
 
         val images = listOf(R.drawable.balloonslide, R.drawable.balloonslide, R.drawable.balloonslide)
 
-        viewPager.adapter = SliderAdapter(images)
-        indicator.setViewPager(viewPager)
+      /*  viewPager.adapter = SliderAdapter(images)
+        indicator.setViewPager(viewPager)*/
 
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {

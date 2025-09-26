@@ -28,11 +28,14 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.travel.uzoefuapp.AddToWishlistModel.AddWishlistBody
+import com.travel.uzoefuapp.AddToWishlistModel.AddWishlistViewModel
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activityModl.ActivityBody
 import com.travel.uzoefuapp.activityModl.ActivityResponse
 import com.travel.uzoefuapp.activityModl.ActivityViewModel
 import com.travel.uzoefuapp.adapter.ExploreResultAdapter
+import com.travel.uzoefuapp.adapter.OnWishlistListener
 import com.travel.uzoefuapp.adapter.SelectPriceAdapter
 import com.travel.uzoefuapp.adapter.SelectedDestinationAdapter
 import com.travel.uzoefuapp.databinding.ActivitySelectDestinationBinding
@@ -40,12 +43,13 @@ import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SelectDestinationActivity : AppCompatActivity() {
+class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener {
     lateinit var binding: ActivitySelectDestinationBinding
     private val activityViewModel: ActivityViewModel by viewModels()
     var data: List<ActivityResponse.Datum> = ArrayList()
     var categoryId = ""
     private val progressDialog by lazy { CustomProgressDialog(this) }
+    private val addWishlistViewModel: AddWishlistViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,9 +65,11 @@ class SelectDestinationActivity : AppCompatActivity() {
         val categoryId = intent.getStringExtra("categoryId") ?: ""
 
         Log.e("TAG", "onCreate: $categoryId")
+
         //observer
         getActivityApi(categoryId)
         getActivityObserver()
+        activityAddToWishListObserver()
 
         binding.forYouArrowImg.setOnClickListener { finish() }
 
@@ -91,11 +97,26 @@ class SelectDestinationActivity : AppCompatActivity() {
         /*binding.destinationRecycler.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         binding.destinationRecycler.adapter = SelectedDestinationAdapter(this)
-*/
-        /*        binding.destinationRecyclerView.layoutManager =
+*//*        binding.destinationRecyclerView.layoutManager =
                     GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false)
                 binding.destinationRecyclerView.adapter = ExploreResultAdapter(this)*/
 
+    }
+
+    private fun activityAddToWishListObserver() {
+        addWishlistViewModel.progressIndicator.observe(this) {
+
+        }
+        addWishlistViewModel.mCategoryResponse.observe(this) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+            if (success == true) {
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+            }
+        }
+        addWishlistViewModel.errorResponse.observe(this) {
+            ErrorUtil.handlerGeneralError(this, it)
+        }
     }
 
     private fun getActivityObserver() {
@@ -116,18 +137,20 @@ class SelectDestinationActivity : AppCompatActivity() {
                     val limitedList = data.take(2)
                     binding.destinationRecycler.layoutManager =
                         LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-                    val categoryAdapter = SelectedDestinationAdapter(this, limitedList)
+                    val categoryAdapter = SelectedDestinationAdapter(this, limitedList, this)
                     binding.destinationRecycler.adapter = categoryAdapter
 
                     // Vertical
+                    val remainingList = data.drop(2)
                     binding.destinationRecyclerView.layoutManager =
                         LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-                    val verticalAdapter = ExploreResultAdapter(this, data)
+                    val verticalAdapter = ExploreResultAdapter(this, remainingList, this)
                     binding.destinationRecyclerView.adapter = verticalAdapter
 
                 }
             } else {
-                Toast.makeText(this, message ?: "Failed to load categories", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, message ?: "Failed to load categories", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
         activityViewModel.errorResponse.observe(this) {
@@ -153,9 +176,8 @@ class SelectDestinationActivity : AppCompatActivity() {
             clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
             addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                    View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    )
+            decorView.systemUiVisibility =
+                (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION)
             setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
 
@@ -202,17 +224,13 @@ class SelectDestinationActivity : AppCompatActivity() {
         }
 
         val cities = arrayOf("Select City", "Johannesburg", "Cape Town", "Durban", "Pretoria")
-        val cityAdapter =
-            ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, cities)
+        val cityAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, cities)
         spinnerCity.adapter = cityAdapter
 
         var selectedCity = ""
         spinnerCity.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
+                parent: AdapterView<*>?, view: View?, position: Int, id: Long
             ) {
                 selectedCity = if (position > 0) cities[position] else ""
             }
@@ -221,11 +239,7 @@ class SelectDestinationActivity : AppCompatActivity() {
         }
 
         val radiusOptions = arrayOf(
-            "Select Radius",
-            "2 Kilometres",
-            "5 Kilometres",
-            "10 Kilometres",
-            "20 Kilometres"
+            "Select Radius", "2 Kilometres", "5 Kilometres", "10 Kilometres", "20 Kilometres"
         )
 
         val radiusAdapter =
@@ -235,10 +249,7 @@ class SelectDestinationActivity : AppCompatActivity() {
         var selectedRadius = ""
         spinnerRadius.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
+                parent: AdapterView<*>?, view: View?, position: Int, id: Long
             ) {
                 selectedRadius = if (position > 0) radiusOptions[position] else ""
             }
@@ -307,5 +318,39 @@ class SelectDestinationActivity : AppCompatActivity() {
         }
 
         bottomSheetDialog.show()
+    }
+
+    override fun onWishlistClick(product: ActivityResponse.Datum, position: Int) {
+        product.isWish = !(product.isWish ?: false)
+
+        val viewHolder =
+            binding.destinationRecycler.findViewHolderForAdapterPosition(position) as? SelectedDestinationAdapter.ViewHolder
+
+        viewHolder?.favIcon?.setImageResource(
+            if (product.isWish == true) R.drawable.wishlist_color
+            else R.drawable.ic_wish
+        )
+        addToWishlistApi(product.id)
+
+
+    }
+
+    override fun onWishlistClicked(product: ActivityResponse.Datum, position: Int) {
+        product.isWish = !(product.isWish ?: false)
+
+        val viewHolder =
+            binding.destinationRecyclerView.findViewHolderForAdapterPosition(position) as? ExploreResultAdapter.ViewHolder
+
+        viewHolder?.favIcon?.setImageResource(
+            if (product.isWish == true) R.drawable.wishlist_color
+            else R.drawable.ic_wish
+        )
+        addToWishlistApi(product.id)
+
+    }
+
+    private fun addToWishlistApi(id: Int?) {
+        val body = AddWishlistBody(activity_id = id.toString())
+        addWishlistViewModel.addToWishListApi(progressDialog, this, body)
     }
 }

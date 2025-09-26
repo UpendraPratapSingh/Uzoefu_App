@@ -33,6 +33,9 @@ class BookingDetailStep1Activity : AppCompatActivity() {
     var price = ""
     private var childrenPrice = ""
     private var activityId = ""
+    private var address = ""
+    private var town = ""
+    private var productName = ""
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +53,9 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         price = intent.getStringExtra("price").toString()
         childrenPrice = intent.getStringExtra("childrenPrice").toString()
         activityId = intent.getStringExtra("activityId").toString()
+        town = intent.getStringExtra("town").toString()
+        address = intent.getStringExtra("address").toString()
+        productName = intent.getStringExtra("productName").toString()
 
         binding.notificationLayout.setOnClickListener {
             val intent = Intent(this@BookingDetailStep1Activity, NotificationActivity::class.java)
@@ -80,7 +86,7 @@ class BookingDetailStep1Activity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        openFragment(Step1Fragment(price, childrenPrice, activityId))
+        openFragment(Step1Fragment.newInstance(price, childrenPrice, activityId, address, town, productName))
         updateStepper()
 
         nextBtn.setOnClickListener {
@@ -88,7 +94,7 @@ class BookingDetailStep1Activity : AppCompatActivity() {
                 currentStep++
                 when (currentStep) {
                     2 -> openFragment(Step2Fragment())
-                    3 -> openFragment(Step3Fragment())
+                    3 -> openFragment(Step3Fragment(activityId))
                     4 -> openFragment(Step4Fragment())
                     5 -> openFragment(Step5Fragment())
                 }
@@ -134,9 +140,16 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         if (currentStep > 1) {
             currentStep--
             when (currentStep) {
-                1 -> openFragment(Step1Fragment(activityId, price, childrenPrice))
+                1 -> openFragment(Step1Fragment.newInstance(
+                    price,
+                    childrenPrice,
+                    activityId,
+                    address,
+                    town,
+                    productName
+                ))
                 2 -> openFragment(Step2Fragment())
-                3 -> openFragment(Step3Fragment())
+                3 -> openFragment(Step3Fragment(activityId))
                 4 -> openFragment(Step4Fragment())
             }
             updateStepper()

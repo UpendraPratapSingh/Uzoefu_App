@@ -82,6 +82,9 @@
                 android:scaleX="0.7"
                 android:scaleY="0.7"
                 android:stepSize="1"
+                android:progressTint="@android:color/holo_orange_light"
+                android:secondaryProgressTint="@android:color/darker_gray"
+                android:backgroundTint="@android:color/darker_gray"
                 app:layout_constraintStart_toStartOf="@id/itemTitle"
                 app:layout_constraintTop_toBottomOf="@id/itemTitle" />
 
@@ -89,7 +92,6 @@
                 android:id="@+id/rateText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
                 android:text="(120)"
                 android:textColor="@color/green_color"
                 android:textSize="14sp" />

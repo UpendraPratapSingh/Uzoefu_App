@@ -50,13 +50,13 @@ class ProductOverviewFragment : Fragment() {
             //val description1 = data1?.highlights?.joinToString(separator = "\n") ?: ""
 
             if (success == true) {
-                binding.tvDescription.text = data1?.description.toString()
+                binding.tvDescription.text = data1?.description ?: ""
                 binding.highlights.text = data1?.highlights?.joinToString("\n") { "• $it" } ?: ""
                 binding.tvLocation.text = "${data3?.address.toString()} , ${data3?.town.toString()}"
                 binding.tvPhone.text = "Tel: +${data3?.teliphoneNumber.toString()}"
                 binding.tvCell.text = "Cel: +${data3?.contactNumber.toString()}"
-                val ratingValue = data2?.rating?.toString()?.toFloatOrNull() ?: 0f
-                binding.ratingBar.rating = ratingValue.toFloat()
+                val ratingValue = 1.5f  // static rating
+                binding.ratingBar.rating = ratingValue
                 binding.tvRating.text = ratingValue.toString()
             }
         }

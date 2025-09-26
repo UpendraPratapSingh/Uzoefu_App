@@ -48,38 +48,37 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:background="@drawable/heart_bg"
                     android:layout_gravity="end"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
-                    app:layout_constraintTop_toTopOf="parent"
+                    android:background="@drawable/heart_bg"
                     app:layout_constraintEnd_toEndOf="parent"
-                    >
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
                         android:id="@+id/favIcon"
                         android:layout_width="32dp"
                         android:layout_height="32dp"
+                        android:layout_margin="8dp"
                         android:padding="6dp"
                         android:src="@drawable/ic_wish"
-                        app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        android:layout_margin="8dp"/>
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
-<!--
-                <ImageView
-                    android:id="@+id/favIcon"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_gravity="top|end"
-                    android:layout_margin="8dp"
-                    android:background="@drawable/heart_bg"
-                    android:padding="6dp"
-                    android:src="@drawable/ic_wish"/>-->
+                <!--
+                                <ImageView
+                                    android:id="@+id/favIcon"
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:layout_gravity="top|end"
+                                    android:layout_margin="8dp"
+                                    android:background="@drawable/heart_bg"
+                                    android:padding="6dp"
+                                    android:src="@drawable/ic_wish"/>-->
 
             </androidx.cardview.widget.CardView>
 
@@ -159,9 +158,9 @@
 
                 <ImageView
                     android:id="@+id/destinationStartTxt1"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/star"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:src="@drawable/stars"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -217,9 +216,9 @@
                     android:fontFamily="@font/roboto_semi_bold"
                     android:gravity="right"
                     android:text="R 100"
+                    android:textColor="@color/nuetral_bold_color"
                     android:textFontWeight="400"
                     android:textSize="12sp"
-                    android:textColor="@color/nuetral_bold_color"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@+id/fullPriceText"
                     app:layout_constraintTop_toTopOf="parent" />

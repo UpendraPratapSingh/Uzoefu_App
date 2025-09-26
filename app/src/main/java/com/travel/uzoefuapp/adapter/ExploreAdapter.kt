@@ -17,7 +17,7 @@ import com.travel.uzoefuapp.companyActivities.BookingProductActivity
 class ExploreAdapter(
     val context: Context,
     private val activityList: List<ActivityResponse.Datum>,
-    private val wishlistClickListener: OnWishlistClickListener,
+    private val wishlistClickListener: OnWishlistListener,
 ) : RecyclerView.Adapter<ExploreAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -32,7 +32,7 @@ class ExploreAdapter(
 
         holder.titleText.text = list.name
         holder.timing.text = list.todayHours
-        holder.rating.text = list.rating
+        holder.rating.text = "${list.rating} (${list.ratingCount})"
         holder.price.text = "R ${list.activityPrice.toString()}"
 
         // Load image using Glide
@@ -45,6 +45,29 @@ class ExploreAdapter(
             intent.putExtra("categoryId", list.id)
             context.startActivity(intent)
         }
+
+        holder.favIcon.setImageResource(
+            if (list.isWish == true) R.drawable.wishlist_color
+            else R.drawable.ic_wish
+        )
+
+        holder.favIcon.setOnClickListener { view ->
+            view.animate()
+                .scaleX(1.3f)
+                .scaleY(1.3f)
+                .setDuration(150)
+                .withEndAction {
+                    view.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .setDuration(150)
+                        .start()
+                }
+                .start()
+
+            wishlistClickListener.onWishlistClick(list, position)
+        }
+
     }
 
     override fun getItemCount(): Int {
@@ -57,5 +80,6 @@ class ExploreAdapter(
         val timing = itemView.findViewById<TextView>(R.id.noOfDays)
         val rating = itemView.findViewById<TextView>(R.id.priceTxt)
         val price = itemView.findViewById<TextView>(R.id.priceTxt1)
+        val favIcon = itemView.findViewById<ImageView>(R.id.favIcon)
     }
 }

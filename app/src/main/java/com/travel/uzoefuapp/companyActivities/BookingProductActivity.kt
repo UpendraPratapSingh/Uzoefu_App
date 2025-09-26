@@ -37,7 +37,6 @@ class BookingProductActivity : AppCompatActivity() {
     lateinit var binding: ActivityBookingProductBinding
     private val detailPageViewModel: DetailPageViewModel by viewModels()
     private val progressDialog by lazy { CustomProgressDialog(this) }
-
     private lateinit var viewPager: ViewPager2
     private lateinit var indicator: CircleIndicator3
     private val handler = Handler(Looper.getMainLooper())
@@ -85,18 +84,19 @@ class BookingProductActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-      /*  binding.tvCategory.setOnClickListener {
-            val intent = Intent(this@BookingProductActivity, CompanyLandingActivity::class.java)
-            startActivity(intent)
-        }*/
+        /*  binding.tvCategory.setOnClickListener {
+              val intent = Intent(this@BookingProductActivity, CompanyLandingActivity::class.java)
+              startActivity(intent)
+          }*/
 
         viewPager = findViewById(R.id.viewPager)
         indicator = findViewById(R.id.dotsIndicator)
 
-        val images = listOf(R.drawable.balloonslide, R.drawable.balloonslide, R.drawable.balloonslide)
+      /*  val images =
+            listOf(R.drawable.balloonslide, R.drawable.balloonslide, R.drawable.balloonslide)
 
         viewPager.adapter = SliderAdapter(images)
-        indicator.setViewPager(viewPager)
+        indicator.setViewPager(viewPager)*/
 
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -120,7 +120,7 @@ class BookingProductActivity : AppCompatActivity() {
         val actionAdapter = ActionAdapter(actions) { action ->
             when (action.label) {
                 "Call" -> {
-                    val phone = +919876543210
+                    val phone = +27634854147
                     val intent = Intent(Intent.ACTION_DIAL).apply {
                         data = Uri.parse("tel:$phone")
                     }
@@ -128,7 +128,7 @@ class BookingProductActivity : AppCompatActivity() {
                 }
 
                 "Map" -> {
-                    val location = "Taj Mahal, Agra"
+                    val location = "5467 Gymnema  St Waterberg Fields estate Kosmosdal, Centurion"
                     val intent = Intent(Intent.ACTION_VIEW).apply {
                         data = Uri.parse("geo:0,0?q=$location")
                     }
@@ -190,12 +190,14 @@ class BookingProductActivity : AppCompatActivity() {
             val data1 = response.peekContent().data?.activity
             val data2 = response.peekContent().data?.activity?.category
             val data3 = response.peekContent().data?.price
+            val activityId = data3?.activityId
+            val address = data1?.branch
 
             if (success == true) {
                 binding.tvTitle.text = data1?.activityName.toString()
                 binding.tvCategory.text = data2?.name.toString()
-             //   binding.tvPrice.text = "R ${data3?.groupPrice.toString()}"
-              //  binding.tvPrice.text = "R ${"%.2f".format(data3?.groupPrice ?: 0.0)}"
+                //   binding.tvPrice.text = "R ${data3?.groupPrice.toString()}"
+                //  binding.tvPrice.text = "R ${"%.2f".format(data3?.groupPrice ?: 0.0)}"
                 binding.tvPrice.text = "R ${data3?.groupPrice ?: 0}"
 
                 val images = response.peekContent().data?.images ?: emptyList()
@@ -209,10 +211,16 @@ class BookingProductActivity : AppCompatActivity() {
                     val intent = Intent(this@BookingProductActivity, BookingDetailStep1Activity::class.java)
                     intent.putExtra("price", data3?.groupPrice.toString())
                     intent.putExtra("childrenPrice", data3?.childrenBase.toString())
-                    intent.putExtra("activityId", data3?.activityId.toString())
+                    intent.putExtra("activityId", data1?.id.toString())
+                    intent.putExtra("productName", data1?.activityName.toString())
+                    intent.putExtra("address", address?.address.toString())
+                    intent.putExtra("town", address?.town.toString())
                     startActivity(intent)
+
                 }
 
+                viewPager.adapter = SliderAdapter(images)
+                indicator.setViewPager(viewPager)
 
 
             }

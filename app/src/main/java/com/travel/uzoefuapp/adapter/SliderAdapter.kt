@@ -7,26 +7,29 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.detailModel.DetailPageResponse
 
-class SliderAdapter(private val items: List<Any>) : RecyclerView.Adapter<SliderAdapter.SliderVH>() {
+class SliderAdapter(private val images: List<DetailPageResponse.Data.Image>) :
+    RecyclerView.Adapter<SliderAdapter.SliderVH>() {
 
-    inner class SliderVH(val view: View) : RecyclerView.ViewHolder(view) {
-        val img: ImageView = view.findViewById(R.id.imgSlide)
+    inner class SliderVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        val img: ImageView = itemView.findViewById(R.id.imgSlide)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SliderVH {
-        val v = LayoutInflater.from(parent.context)
+        val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_slider_image, parent, false)
-        return SliderVH(v)
+        return SliderVH(view)
     }
 
     override fun onBindViewHolder(holder: SliderVH, position: Int) {
-        val item = items[position]
-        when (item) {
-            is Int -> Glide.with(holder.itemView).load(item).into(holder.img)
-            is String -> Glide.with(holder.itemView).load(item).into(holder.img)
-        }
+        val imagePath =
+            "https://mobappssolutions.in/uzoefu/public/images/activity_images/" + images[position].image
+
+        Glide.with(holder.itemView.context)
+            .load(imagePath)
+            .into(holder.img)
     }
 
-    override fun getItemCount() = items.size
+    override fun getItemCount(): Int = images.size
 }

@@ -5,15 +5,20 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.bookingActivities.BookSummaryActivity
+import com.travel.uzoefuapp.bookingCompleteModel.BookingCompleteResponse
 
 class BookingAdapter(
-    private val context: Context, private val status: String
+    private val context: Context,
+    private val status: String,
+    private val bookingList: List<BookingCompleteResponse.Datum>
 ) : RecyclerView.Adapter<BookingAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -23,6 +28,17 @@ class BookingAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val list = bookingList[position]
+        val imgBase = "https://mobappssolutions.in/uzoefu/public/images/activity_images"
+        holder.txtTitle.text = list.activityName
+        holder.txtDate.text = list.date
+        holder.txtPrice.text = "R ${list.total.toString()}"
+        Glide.with(context)
+            .load(imgBase + list.images)
+            .placeholder(R.drawable.balloon)
+            .error(R.drawable.balloon)
+            .into(holder.imgActivity)
+
         when (status) {
             "Active" -> {
                 // show active design
@@ -48,11 +64,15 @@ class BookingAdapter(
     }
 
     override fun getItemCount(): Int {
-        return 6
+        return bookingList.size
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val status = itemView.findViewById<TextView>(R.id.txtStatus)
-        val layout = itemView.findViewById<LinearLayout>(R.id.linearLayout)
+        val status: TextView = itemView.findViewById(R.id.txtStatus)
+        val layout: LinearLayout = itemView.findViewById(R.id.linearLayout)
+        val txtTitle: TextView = itemView.findViewById(R.id.txtTitle)
+        val txtDate: TextView = itemView.findViewById(R.id.txtDate)
+        val txtPrice: TextView = itemView.findViewById(R.id.txtPrice)
+        val imgActivity: ImageView = itemView.findViewById(R.id.imgActivity)
     }
 }

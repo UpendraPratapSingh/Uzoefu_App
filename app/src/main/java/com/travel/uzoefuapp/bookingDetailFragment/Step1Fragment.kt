@@ -16,7 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
 
 @AndroidEntryPoint
-class Step1Fragment(val price: String, private val childrenPrice: String, val activityId: String) :
+class Step1Fragment() :
     Fragment() {
     private var _binding: FragmentStep1Binding? = null
     private val binding get() = _binding!!
@@ -26,16 +26,54 @@ class Step1Fragment(val price: String, private val childrenPrice: String, val ac
     private var kidCount = 1
     private var selectedDate = ""
 
+    private var price: String? = null
+    private var childrenPrice: String? = null
+    private var activityId: String? = null
+    private var address: String? = null
+    private var town: String? = null
+    private var productName: String? = null
+
+    companion object {
+        fun newInstance(
+            price: String,
+            childrenPrice: String,
+            activityId: String,
+            address: String,
+            town: String,
+            productName: String
+        ): Step1Fragment {
+            val fragment = Step1Fragment()
+            val args = Bundle()
+            args.putString("price", price)
+            args.putString("childrenPrice", childrenPrice)
+            args.putString("activityId", activityId)
+            args.putString("address", address)
+            args.putString("town", town)
+            args.putString("productName", productName)
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         _binding = FragmentStep1Binding.inflate(inflater, container, false)
-
+        arguments?.let {
+            price = it.getString("price")
+            childrenPrice = it.getString("childrenPrice")
+            activityId = it.getString("activityId")
+            address = it.getString("address")
+            town = it.getString("town")
+            productName = it.getString("productName")
+        }
         binding.datePicker.setOnClickListener { datePickerCode() }
 
-        // 👇 Set current date as default
+        binding.tvTitle.text = address + town
+        binding.tvSubtitle.text = productName
+
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
         val month = calendar.get(Calendar.MONTH) + 1
@@ -43,7 +81,7 @@ class Step1Fragment(val price: String, private val childrenPrice: String, val ac
 
         selectedDate = String.format("%04d-%02d-%02d", year, month, day)
         binding.tvDate.text = selectedDate
-        saveActivityIdLocally(activityId)
+        activityId?.let { saveActivityIdLocally(it) }
         // priceCalculateApi()
         priceCalculateObserver()
         priceCalculateApi()
@@ -88,8 +126,8 @@ class Step1Fragment(val price: String, private val childrenPrice: String, val ac
     }
 
     private fun calculateLocalPrice() {
-        val adultPrice = price.toDoubleOrNull() ?: 0.0
-        val childPrice = childrenPrice.toDoubleOrNull() ?: 0.0
+        val adultPrice = price?.toDoubleOrNull() ?: 0.0
+        val childPrice = childrenPrice?.toDoubleOrNull() ?: 0.0
 
         val subtotal = (adultCount * adultPrice) + (kidCount * childPrice)
         val total = subtotal
@@ -118,11 +156,11 @@ class Step1Fragment(val price: String, private val childrenPrice: String, val ac
 
                 binding.tvAdultCount.text = priceResponse?.prcingDetail?.adult.toString()
                 binding.tvKidCount.text = priceResponse?.prcingDetail?.kids.toString()
-                binding.tvSubtotal.text = priceResponse?.prcingDetail?.subtotal
-                binding.tvTotal.text = priceResponse?.prcingDetail?.total
+                binding.tvSubtotal.text = "R${priceResponse?.prcingDetail?.subtotal}"
+                binding.tvTotal.text = "R${priceResponse?.prcingDetail?.total}"
+
             }
         }
-
 
         priceCalculationViewModel.errorResponse.observe(viewLifecycleOwner) {
             ErrorUtil.handlerGeneralError(requireContext(), it)
@@ -130,13 +168,17 @@ class Step1Fragment(val price: String, private val childrenPrice: String, val ac
     }
 
     private fun priceCalculateApi() {
-        val body = PriceCalculationBody(
-            activity_id = activityId,
-            date = selectedDate,
-            adultcount = adultCount.toString(),
-            kidscount = kidCount.toString()
-        )
-        priceCalculationViewModel.priceCalculationApi(progressDialog, requireActivity(), body)
+        val body = activityId?.let {
+            PriceCalculationBody(
+                activity_id = it,
+                date = selectedDate,
+                adultcount = adultCount.toString(),
+                kidscount = kidCount.toString()
+            )
+        }
+        if (body != null) {
+            priceCalculationViewModel.priceCalculationApi(progressDialog, requireActivity(), body)
+        }
     }
 
     private fun datePickerCode() {

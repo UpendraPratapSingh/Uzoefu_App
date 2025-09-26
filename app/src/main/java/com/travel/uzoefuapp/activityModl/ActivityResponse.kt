@@ -53,7 +53,7 @@ class ActivityResponse : Serializable {
 
         @SerializedName("activity_price")
         @Expose
-        var activityPrice: Int? = null
+        var activityPrice: String? = null
 
         @SerializedName("today_hours")
         @Expose
@@ -62,6 +62,10 @@ class ActivityResponse : Serializable {
         @SerializedName("rating")
         @Expose
         var rating: String? = null
+
+        @SerializedName("rating_count")
+        @Expose
+        var ratingCount: Int? = null
 
         @SerializedName("is_wish")
         @Expose

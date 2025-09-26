@@ -19,7 +19,6 @@ import com.travel.uzoefuapp.databinding.ActivityExploreCategoriesBinding
 import com.travel.uzoefuapp.notification.NotificationActivity
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @AndroidEntryPoint
 class ExploreCategoriesActivity : AppCompatActivity() {
@@ -49,13 +48,10 @@ class ExploreCategoriesActivity : AppCompatActivity() {
             val intent = Intent(this@ExploreCategoriesActivity, NotificationActivity::class.java)
             startActivity(intent)
         }
-
     }
 
     private fun getCategoryObserver() {
-        categoryViewModel.progressIndicator.observe(this) {
-
-        }
+        categoryViewModel.progressIndicator.observe(this) {}
 
         categoryViewModel.mCategoryResponse.observe(this) { event ->
             val content = event.peekContent()
@@ -68,14 +64,12 @@ class ExploreCategoriesActivity : AppCompatActivity() {
                     binding.categoriesRecycler.visibility = View.GONE
                 } else {
                     binding.categoriesRecycler.visibility = View.VISIBLE
-                    binding.categoriesRecycler.layoutManager =
-                        GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
+                    binding.categoriesRecycler.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
                     val categoryAdapter = CategoriesAdapter(this, data)
                     binding.categoriesRecycler.adapter = categoryAdapter
                 }
             } else {
-                Toast.makeText(this, message ?: "Failed to load categories", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this, message ?: "Failed to load categories", Toast.LENGTH_SHORT).show()
             }
         }
         categoryViewModel.errorResponse.observe(this) { error ->

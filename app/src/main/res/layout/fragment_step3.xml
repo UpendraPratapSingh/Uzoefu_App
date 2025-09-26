@@ -246,7 +246,7 @@
                 android:id="@+id/addActivityLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/activityDescriptionCons">
 
@@ -297,7 +297,7 @@
                 android:id="@+id/addAgreementLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/agreementCons">
 
@@ -348,7 +348,7 @@
                 android:id="@+id/addIndemnityLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/indemnityCons">
 
@@ -399,7 +399,7 @@
                 android:id="@+id/addDeclarationLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/declarationCons">
 
@@ -450,7 +450,7 @@
                 android:id="@+id/addAcknowledgementLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="15dp"
                 android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@+id/acknowledgementCons">
 

@@ -34,7 +34,7 @@ class ExperienceAdapter(
 
         holder.titleText.text = list.name
         holder.timing.text = list.todayHours
-        holder.rating.text = list.rating
+        holder.rating.text = "${list.rating} (${list.ratingCount})"
         holder.price.text = "R ${list.activityPrice.toString()}"
 
         Glide.with(holder.itemView.context)

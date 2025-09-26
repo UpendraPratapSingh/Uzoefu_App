@@ -28,10 +28,9 @@
             android:layout_margin="8dp"
             android:background="@drawable/heart_bg"
             android:padding="6dp"
-            android:src="@drawable/ic_wishlist"
+            android:src="@drawable/ic_wish"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@android:color/white" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@+id/forYouDestName"
@@ -52,7 +51,7 @@
             android:id="@+id/daysName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_regular"
+            android:fontFamily="@font/roboto_medium"
             android:text="Open · "
             android:textColor="@color/dark_cyan"
             android:textSize="12sp"
@@ -75,9 +74,9 @@
 
         <ImageView
             android:id="@+id/starIcon"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
-            android:src="@drawable/star"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/stars"
             app:layout_constraintBottom_toBottomOf="@+id/ratingText"
             app:layout_constraintStart_toStartOf="@id/daysName"
             app:layout_constraintTop_toTopOf="@+id/ratingText" />

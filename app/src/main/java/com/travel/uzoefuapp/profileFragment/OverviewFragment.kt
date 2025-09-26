@@ -154,9 +154,7 @@ class OverviewFragment : Fragment() {
             binding.profileImage.setImageURI(uri)
             dialog.dismiss()
 
-            uri.let {
-                uploadProfileImage(it)
-            }
+            uploadProfileImage(uri)
         }
 
         dialogView.findViewById<Button>(R.id.btnCancel).setOnClickListener {
@@ -212,7 +210,7 @@ class OverviewFragment : Fragment() {
             val message = response.peekContent().message
             val data = response.peekContent().data
             if (success == true) {
-                binding.tvName.setText(data?.name.toString() + data?.lastname.toString())
+                binding.tvName.text = "${data?.name.toString()} ${data?.lastname.toString()}"
                 binding.tvUsername.text = data?.username.toString()
 
                 val imagePath = "https://mobappssolutions.in/uzoefu/public/uploads/users/"

@@ -11,11 +11,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.travel.uzoefuapp.AddToWishlistModel.AddWishlistBody
+import com.travel.uzoefuapp.AddToWishlistModel.AddWishlistViewModel
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activityModl.ActivityBody
 import com.travel.uzoefuapp.activityModl.ActivityResponse
 import com.travel.uzoefuapp.activityModl.ActivityViewModel
 import com.travel.uzoefuapp.adapter.ExploreResultAdapter
+import com.travel.uzoefuapp.adapter.OnWishlistListener
 import com.travel.uzoefuapp.adapter.SelectedDestinationAdapter
 import com.travel.uzoefuapp.databinding.ActivityExploreBinding
 import com.travel.uzoefuapp.globalSettings.SettingsActivity
@@ -24,12 +27,13 @@ import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ExploreActivity : AppCompatActivity() {
+class ExploreActivity : AppCompatActivity(), OnWishlistListener {
     lateinit var binding: ActivityExploreBinding
     private val activityViewModel: ActivityViewModel by viewModels()
     private val categoryId = ""
     var data: List<ActivityResponse.Datum> = ArrayList()
     private val progressDialog by lazy { CustomProgressDialog(this) }
+    private val addWishlistViewModel: AddWishlistViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,17 +89,19 @@ class ExploreActivity : AppCompatActivity() {
                     val limitedList = data.take(2)
                     binding.destinationRecycler.layoutManager =
                         LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-                    val categoryAdapter = SelectedDestinationAdapter(this, limitedList)
+                    val categoryAdapter = SelectedDestinationAdapter(this, limitedList, this)
                     binding.destinationRecycler.adapter = categoryAdapter
 
+                    val remainingList = data.drop(2)
                     binding.categoriesRecycler.layoutManager =
                         LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-                    val verticalAdapter = ExploreResultAdapter(this, data)
+                    val verticalAdapter = ExploreResultAdapter(this, remainingList, this)
                     binding.categoriesRecycler.adapter = verticalAdapter
 
                 }
             } else {
-                Toast.makeText(this, message ?: "Failed to load categories", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, message ?: "Failed to load categories", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
         activityViewModel.errorResponse.observe(this) {
@@ -107,4 +113,38 @@ class ExploreActivity : AppCompatActivity() {
         val body = ActivityBody(categoryId = categoryId)
         activityViewModel.getActivitiesByCategory(progressDialog, this, body)
     }
+
+    override fun onWishlistClick(product: ActivityResponse.Datum, position: Int) {
+        product.isWish = !(product.isWish ?: false)
+
+        val viewHolder = binding.destinationRecycler.findViewHolderForAdapterPosition(position)
+                as? SelectedDestinationAdapter.ViewHolder
+
+        viewHolder?.favIcon?.setImageResource(
+            if (product.isWish == true) R.drawable.wishlist_color
+            else R.drawable.ic_wish
+        )
+        addToWishlistApi(product.id)
+
+    }
+
+    override fun onWishlistClicked(product: ActivityResponse.Datum, position: Int) {
+        product.isWish = !(product.isWish ?: false)
+
+        val viewHolder = binding.categoriesRecycler.findViewHolderForAdapterPosition(position)
+                as? ExploreResultAdapter.ViewHolder
+
+        viewHolder?.favIcon?.setImageResource(
+            if (product.isWish == true) R.drawable.wishlist_color
+            else R.drawable.ic_wish
+        )
+        addToWishlistApi(product.id)
+
+    }
+
+    private fun addToWishlistApi(id: Int?) {
+        val body = AddWishlistBody(activity_id = id.toString())
+        addWishlistViewModel.addToWishListApi(progressDialog, this, body)
+    }
+
 }

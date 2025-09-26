@@ -16,7 +16,8 @@ import com.travel.uzoefuapp.companyActivities.BookingProductActivity
 
 class ExploreResultAdapter(
     val context: Context,
-    private val activityList: List<ActivityResponse.Datum>
+    private val activityList: List<ActivityResponse.Datum>,
+    private val wishlistClickListener: OnWishlistListener
 ) :
     RecyclerView.Adapter<ExploreResultAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -32,7 +33,7 @@ class ExploreResultAdapter(
 
         holder.titleText.text = list.name
         holder.timing.text = list.todayHours
-        holder.rating.text = list.rating
+        holder.rating.text = "${list.rating} (${list.ratingCount})"
         holder.price.text = "R ${list.activityPrice.toString()}"
 
         Glide.with(holder.itemView.context)
@@ -44,6 +45,28 @@ class ExploreResultAdapter(
             val intent = Intent(context, BookingProductActivity::class.java)
             intent.putExtra("categoryId", list.id)
             context.startActivity(intent)
+        }
+
+        holder.favIcon.setImageResource(
+            if (list.isWish == true) R.drawable.wishlist_color
+            else R.drawable.ic_wish
+        )
+
+        holder.favIcon.setOnClickListener { view ->
+            view.animate()
+                .scaleX(1.3f)
+                .scaleY(1.3f)
+                .setDuration(150)
+                .withEndAction {
+                    view.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .setDuration(150)
+                        .start()
+                }
+                .start()
+
+            wishlistClickListener.onWishlistClicked(list, position)
         }
     }
 
@@ -57,6 +80,6 @@ class ExploreResultAdapter(
         val timing: TextView = itemView.findViewById(R.id.timing)
         val rating: TextView = itemView.findViewById(R.id.ratingText)
         val price: TextView = itemView.findViewById(R.id.priceTxt1)
-
+        val favIcon : ImageView = itemView.findViewById(R.id.favIcon)
     }
 }

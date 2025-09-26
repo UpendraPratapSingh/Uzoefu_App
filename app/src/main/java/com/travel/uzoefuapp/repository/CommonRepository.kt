@@ -6,6 +6,7 @@ import com.travel.uzoefuapp.GetWishlistModel.GetWishlistResponse
 import com.travel.uzoefuapp.activityModl.ActivityBody
 import com.travel.uzoefuapp.activityModl.ActivityResponse
 import com.travel.uzoefuapp.application.Uzoefu
+import com.travel.uzoefuapp.bookingCompleteModel.BookingCompleteResponse
 import com.travel.uzoefuapp.categoryModel.CategoryResponse
 import com.travel.uzoefuapp.deleteWishlistModel.DeleteWishlistBody
 import com.travel.uzoefuapp.deleteWishlistModel.DeleteWishlistResponse
@@ -119,6 +120,10 @@ class CommonRepository @Inject constructor(private val services: ApiServices) {
 
     fun priceCalculation(body: PriceCalculationBody): Observable<PriceCalculationResponse>{
         return services.priceCalculation(body, Uzoefu.encryptedPrefs.bearerToken)
+    }
+
+    fun bookingComplete(): Observable<BookingCompleteResponse>{
+        return services.bookingComplete(Uzoefu.encryptedPrefs.bearerToken)
     }
 
 }
