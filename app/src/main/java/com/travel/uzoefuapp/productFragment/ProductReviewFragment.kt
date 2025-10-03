@@ -48,6 +48,8 @@ class ProductReviewFragment : Fragment() {
     private val ratingViewModel: RatingViewModel by viewModels()
     private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
     var data: MutableList<DetailPageResponse.Data.ActivityRating> = ArrayList()
+    private var selectedReview: DetailPageResponse.Data.ActivityRating? = null
+
 
     @SuppressLint("NotifyDataSetChanged")
     private val pickImagesLauncher =
@@ -75,7 +77,22 @@ class ProductReviewFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentProductReviewBinding.inflate(inflater, container, false)
         categoryId = arguments?.getInt("categoryId")
-        binding.writeReviewBtn.setOnClickListener { showReviewBottomSheet(requireContext()) }
+
+        /* binding.writeReviewBtn.setOnClickListener {
+             showReviewBottomSheet(requireContext(), selectedReview)
+         }*/
+
+        // SharedPreferences
+        val sharedPref = requireContext().getSharedPreferences("review_pref", Context.MODE_PRIVATE)
+        val hasReviewed = selectedReview?.let { review ->
+            sharedPref.getBoolean("hasReviewed_${review.id}", false)
+        } ?: false
+
+        binding.writeReviewBtn.visibility = if (hasReviewed) View.GONE else View.VISIBLE
+
+        binding.writeReviewBtn.setOnClickListener {
+            showReviewBottomSheet(requireContext(), selectedReview)
+        }
 
         getDetailObserver()
         categoryId?.let { getDetailApi(it) }
@@ -94,6 +111,19 @@ class ProductReviewFragment : Fragment() {
 
             if (success == true) {
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+
+                // ✅ Save flag in SharedPreferences
+                val sharedPref = context?.getSharedPreferences("review_pref", Context.MODE_PRIVATE)
+                with(sharedPref!!.edit()) {
+                    putBoolean("hasReviewed_${selectedReview?.id}", true)
+                    apply()
+                }
+
+                // ✅ Hide button after posting
+                binding.writeReviewBtn.visibility = View.GONE
+
+
+                categoryId?.let { getDetailApi(it) }
             }
         }
         ratingViewModel.errorResponse.observe(viewLifecycleOwner) {
@@ -101,7 +131,10 @@ class ProductReviewFragment : Fragment() {
         }
     }
 
-    private fun showReviewBottomSheet(context: Context) {
+    private fun showReviewBottomSheet(
+        context: Context,
+        selectedReview: DetailPageResponse.Data.ActivityRating?
+    ) {
         val bottomSheetDialog = BottomSheetDialog(context)
         val view = LayoutInflater.from(context).inflate(
             R.layout.layout_review_bottom_sheet,
@@ -114,6 +147,10 @@ class ProductReviewFragment : Fragment() {
         val reviewRecyclerView = view.findViewById<RecyclerView>(R.id.review_photo_recycler_view)
         val postBtn = view.findViewById<Button>(R.id.btnPost)
         val closeBtn = view.findViewById<ImageView>(R.id.ivClose)
+
+        // ✅ Prefill previous rating & review text
+        ratingBar.rating = selectedReview?.rating?.toFloat() ?: 0f
+        experienceEdit.setText(selectedReview?.description ?: "")
 
         closeBtn.setOnClickListener {
             bottomSheetDialog.dismiss()
@@ -148,14 +185,18 @@ class ProductReviewFragment : Fragment() {
         postBtn.setOnClickListener {
             val rating = ratingBar.rating
             val experience = experienceEdit.text.toString().trim()
-            Toast.makeText(context, "Posted: $rating stars, $experience", Toast.LENGTH_SHORT).show()
+            // Toast.makeText(context, "Posted: $rating stars, $experience", Toast.LENGTH_SHORT).show()
+
+            // ✅ Call API with new rating & description
             doRatingApi(rating, experience)
+
             bottomSheetDialog.dismiss()
         }
 
         bottomSheetDialog.setContentView(view)
         bottomSheetDialog.show()
     }
+
 
     private fun doRatingApi(rating: Float, experience: String) {
         val files = getFilesFromUris(photos)
@@ -203,13 +244,25 @@ class ProductReviewFragment : Fragment() {
                 reviews.clear()
                 reviews.addAll(data)
 
+                /* if (!::reviewAdapter.isInitialized) {
+                     reviewAdapter = ReviewAdapter(reviews)
+                     binding.recyclerReviews.layoutManager = LinearLayoutManager(requireContext())
+                     binding.recyclerReviews.adapter = reviewAdapter
+                 } else {
+                     reviewAdapter.notifyDataSetChanged()
+                 }*/
+
                 if (!::reviewAdapter.isInitialized) {
-                    reviewAdapter = ReviewAdapter(reviews)
+                    reviewAdapter = ReviewAdapter(reviews) { selectedReview ->
+                        // Yaha se bottom sheet open hoga
+                        showReviewBottomSheet(requireContext(), selectedReview)
+                    }
                     binding.recyclerReviews.layoutManager = LinearLayoutManager(requireContext())
                     binding.recyclerReviews.adapter = reviewAdapter
                 } else {
                     reviewAdapter.notifyDataSetChanged()
                 }
+
             }
         }
 

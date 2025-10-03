@@ -52,6 +52,8 @@ import com.travel.uzoefuapp.categoryModel.CategoryResponse
 import com.travel.uzoefuapp.categoryModel.CategoryViewModel
 import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.FragmentHomeBinding
+import com.travel.uzoefuapp.discoverDestinationModel.DiscoverDestinationResponse
+import com.travel.uzoefuapp.discoverDestinationModel.DiscoverDestinationViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -65,8 +67,10 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
     private val categoryViewModel: CategoryViewModel by viewModels()
     private val activityViewModel: ActivityViewModel by viewModels()
     private val addWishlistViewModel: AddWishlistViewModel by viewModels()
+    private val discoverDestinationViewModel: DiscoverDestinationViewModel by viewModels()
     var data: List<CategoryResponse.Datum> = ArrayList()
     private var activityList: List<ActivityResponse.Datum> = ArrayList()
+    private var discoverList: List<DiscoverDestinationResponse.Datum> = ArrayList()
     private val categoryId = ""
 
     override fun onCreateView(
@@ -80,17 +84,16 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             insets
         }
 
+        discoverDestinationApi()
         getActivityApi()
         getCategoryApi()
+        discoverDestinationObserver()
         getActivityObserver()
         getActivityByCategory(categoryId)
         getActivityByCategoryObserver()
         getCategoryObserver()
         activityAddToWishListObserver()
 
-        binding.trendingRecyclerview.layoutManager =
-            LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-        binding.trendingRecyclerview.adapter = DiscoverAdapter(requireContext())
 
         binding.filterData.setOnClickListener { showFilterPopup() }
 
@@ -111,6 +114,41 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             startActivity(intent)
         }
         return binding.root
+    }
+
+    private fun discoverDestinationObserver() {
+        discoverDestinationViewModel.progressIndicator.observe(viewLifecycleOwner) {
+
+        }
+        discoverDestinationViewModel.mCategoryResponse.observe(viewLifecycleOwner) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+            discoverList = response.peekContent().data ?: emptyList()
+
+            if (success == true) {
+                if (discoverList.isEmpty()) {
+                    binding.trendingRecyclerview.visibility = View.GONE
+                    binding.trendingConst.visibility = View.GONE
+                } else {
+                    binding.trendingConst.visibility = View.VISIBLE
+                    binding.trendingRecyclerview.visibility = View.VISIBLE
+                    binding.trendingRecyclerview.layoutManager =
+                        LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+                    val categoryAdapter = DiscoverAdapter(requireContext(), discoverList)
+                    binding.trendingRecyclerview.adapter = categoryAdapter
+
+                }
+            } else {
+
+            }
+        }
+        discoverDestinationViewModel.errorResponse.observe(viewLifecycleOwner) {
+            ErrorUtil.handlerGeneralError(requireActivity(), it)
+        }
+    }
+
+    private fun discoverDestinationApi() {
+        discoverDestinationViewModel.discoverDestinationApi(progressDialog, requireActivity())
     }
 
     private fun activityAddToWishListObserver() {
@@ -145,7 +183,8 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
                     binding.popularcontryRecyclerView.visibility = View.VISIBLE
                     binding.popularcontryRecyclerView.layoutManager =
                         LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                    val categoryAdapter = ExploreAdapter(requireContext(), categoryActivityList, this)
+                    val categoryAdapter =
+                        ExploreAdapter(requireContext(), categoryActivityList, this)
                     binding.popularcontryRecyclerView.adapter = categoryAdapter
                 }
             } else {
@@ -194,7 +233,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
     }
 
     private fun getActivityApi() {
-        val body = ActivityBody(categoryId = "")
+        val body = ActivityBody(categoryId = "", branchId = "")
         activityViewModel.getAllActivities(progressDialog, requireActivity(), body)
     }
 
@@ -517,7 +556,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
     }
 
     private fun getActivityByCategory(categoryId: String) {
-        val body = ActivityBody(categoryId = categoryId)
+        val body = ActivityBody(categoryId = categoryId, branchId = "")
         activityViewModel.getActivitiesByCategory(progressDialog, requireActivity(), body)
     }
 

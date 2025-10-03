@@ -78,6 +78,7 @@ class LoginActivity : AppCompatActivity() {
             val response = response.peekContent().data
 
             if (success == true) {
+                Uzoefu.encryptedPrefs.userId = response?.userId.toString()
                 Uzoefu.encryptedPrefs.isFirstTime = false
                 Uzoefu.encryptedPrefs.bearerToken = "Bearer ${response?.token ?: ""}"
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()

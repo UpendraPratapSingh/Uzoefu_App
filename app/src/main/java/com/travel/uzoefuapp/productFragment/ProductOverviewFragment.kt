@@ -2,6 +2,7 @@ package com.travel.uzoefuapp.productFragment
 
 import CustomProgressDialog
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -19,6 +20,7 @@ class ProductOverviewFragment : Fragment() {
     private var _binding: FragmentProductOverviewBinding? = null
     private val binding get() = _binding!!
     private var categoryId: Int? = null
+    private var activeHour = ""
     private val detailPageViewModel: DetailPageViewModel by viewModels()
     private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
 
@@ -29,6 +31,9 @@ class ProductOverviewFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentProductOverviewBinding.inflate(inflater, container, false)
         categoryId = arguments?.getInt("categoryId")
+        activeHour = arguments?.getString("activeHour").toString()
+
+        Log.e("TAG", "onCreateView: $activeHour", )
 
         categoryId?.let { getDetailApi(it) }
         getDetailObserver()
@@ -46,6 +51,7 @@ class ProductOverviewFragment : Fragment() {
             val data1 = response.peekContent().data?.description
             val data2 = response.peekContent().data?.ActivityRating()
             val data3 = response.peekContent().data?.activity?.branch
+            val data4 = response.peekContent().data
             //val description = data1?.highlights.toString().removeSurrounding("[", "]")
             //val description1 = data1?.highlights?.joinToString(separator = "\n") ?: ""
 
@@ -55,6 +61,7 @@ class ProductOverviewFragment : Fragment() {
                 binding.tvLocation.text = "${data3?.address.toString()} , ${data3?.town.toString()}"
                 binding.tvPhone.text = "Tel: +${data3?.teliphoneNumber.toString()}"
                 binding.tvCell.text = "Cel: +${data3?.contactNumber.toString()}"
+                binding.tvTime.text = activeHour
                 val ratingValue = 1.5f  // static rating
                 binding.ratingBar.rating = ratingValue
                 binding.tvRating.text = ratingValue.toString()

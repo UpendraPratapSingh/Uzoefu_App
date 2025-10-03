@@ -20,12 +20,19 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.GetWishlistModel.GetWishlistResponse
 import com.travel.uzoefuapp.GetWishlistModel.GetWishlistViewModel
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.adapter.OnDeleteWishListListener
+import com.travel.uzoefuapp.adapter.TourAdapter
 import com.travel.uzoefuapp.adapter.WishlistAdapter
+import com.travel.uzoefuapp.addTripModel.AddTripBody
+import com.travel.uzoefuapp.addTripModel.AddTripViewModel
+import com.travel.uzoefuapp.addTripModel.GetTripResponse
+import com.travel.uzoefuapp.addTripModel.GetTripViewModel
 import com.travel.uzoefuapp.databinding.FragmentWishlistBinding
 import com.travel.uzoefuapp.deleteWishlistModel.DeleteWishlistBody
 import com.travel.uzoefuapp.deleteWishlistModel.DeleteWishlistViewModel
@@ -41,11 +48,16 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
     private lateinit var adapter: WishlistAdapter
     private var isEditMode = false
     private var wishListId = ""
+    private lateinit var recyclerView: RecyclerView
+
     private val selectedWishlistIds = mutableListOf<String>()
     var data: List<GetWishlistResponse.Datum> = ArrayList()
     private val getWishlistViewModel: GetWishlistViewModel by viewModels()
     private val deleteWishlistViewModel: DeleteWishlistViewModel by viewModels()
     private val progressDialog by lazy { CustomProgressDialog(requireActivity()) }
+    private val addTripViewModel: AddTripViewModel by viewModels()
+    private val getTripViewModel: GetTripViewModel by viewModels()
+    private var getList: List<GetTripResponse.Datum> = ArrayList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,6 +74,8 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
         getWishListApi()
         getWishListObserver()
         deleteWishListObserver()
+        addTripObserver()
+        getTripListObserver()
 
         binding.deleteIcon.setOnClickListener {
             deleteWishListApi()
@@ -94,6 +108,44 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
         binding.copyIcon.setOnClickListener { openBottomSheetTrip() }
 
         return binding.root
+    }
+
+    private fun getTripListObserver() {
+        getTripViewModel.progressIndicator.observe(viewLifecycleOwner) {
+
+        }
+        getTripViewModel.getTripResponse.observe(viewLifecycleOwner) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+            getList = response.peekContent().data ?: emptyList()
+            if (success == true) {
+                recyclerView.layoutManager = LinearLayoutManager(requireContext())
+                val adapter = TourAdapter(getList)
+                recyclerView.adapter = adapter
+            }
+        }
+        getTripViewModel.errorResponse.observe(viewLifecycleOwner) {
+            ErrorUtil.handlerGeneralError(requireContext(), it)
+        }
+    }
+
+    private fun addTripObserver() {
+        addTripViewModel.progressIndicator.observe(viewLifecycleOwner) {
+
+        }
+        addTripViewModel.addTripResponse.observe(viewLifecycleOwner) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+
+            if (success == true) {
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                getWishListApi()
+            }
+
+        }
+        addTripViewModel.errorResponse.observe(viewLifecycleOwner) {
+            ErrorUtil.handlerGeneralError(requireContext(), it)
+        }
     }
 
     private fun deleteWishListApi() {
@@ -167,7 +219,10 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
         bottomSheetDialog.setContentView(view)
 
         val closeBtn = view.findViewById<ImageView>(R.id.tvCloseBtn)
+        recyclerView = view.findViewById(R.id.recyclerView)
         val createNewTrip = view.findViewById<LinearLayout>(R.id.createNewTrip)
+
+        getTripListApi()
 
         closeBtn.setOnClickListener {
             bottomSheetDialog.dismiss()
@@ -182,6 +237,7 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
             val etTripTitle = view.findViewById<EditText>(R.id.etTripTitle)
             val etTripDestination = view.findViewById<EditText>(R.id.etTripDestination)
             val btnSaveTrip = view.findViewById<Button>(R.id.btnSaveTrip)
+
 
             closeBtn.setOnClickListener { bottomSheetDialog.dismiss() }
 
@@ -198,12 +254,27 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
                         "Trip Created: $title → $destination",
                         Toast.LENGTH_SHORT
                     ).show()
+                    addTripApi(title, destination)
+
                     bottomSheetDialog.dismiss()
                 }
             }
             bottomSheetDialog.show()
         }
         bottomSheetDialog.show()
+    }
+
+    private fun getTripListApi() {
+        getTripViewModel.tripListApi(progressDialog, requireActivity())
+    }
+
+    private fun addTripApi(title: String, destination: String) {
+        val body = AddTripBody(
+            title = title,
+            destination = destination
+        )
+        addTripViewModel.addTripApi(progressDialog, requireActivity(), body)
+
     }
 
     override fun onDestroyView() {

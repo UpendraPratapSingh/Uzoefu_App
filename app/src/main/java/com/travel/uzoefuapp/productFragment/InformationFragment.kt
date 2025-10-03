@@ -141,9 +141,10 @@ class InformationFragment : Fragment() {
                     ExpandableItem(
                         "Amenities",
                         answer = response.peekContent().data?.amenities
-                            ?.joinToString(", ") { it.amenity?.name.toString() } ?: ""
+                            ?.joinToString("\n") { it.amenity?.name.toString() } ?: ""
                     )
                 )
+
                 expandableList.add(
                     ExpandableItem(
                         "Terms & Conditions",

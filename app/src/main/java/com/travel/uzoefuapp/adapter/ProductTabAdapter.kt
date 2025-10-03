@@ -9,7 +9,11 @@ import com.travel.uzoefuapp.productFragment.InformationFragment
 import com.travel.uzoefuapp.productFragment.ProductOverviewFragment
 import com.travel.uzoefuapp.productFragment.ProductReviewFragment
 
-class ProductTabAdapter(activity: AppCompatActivity, private val categoryId: Int) :
+class ProductTabAdapter(
+    activity: AppCompatActivity,
+    private val categoryId: Int,
+    private val activeHour: String
+) :
     FragmentStateAdapter(activity) {
 
     override fun getItemCount(): Int = 4
@@ -20,6 +24,7 @@ class ProductTabAdapter(activity: AppCompatActivity, private val categoryId: Int
                 val fragment = ProductOverviewFragment()
                 val bundle = Bundle()
                 bundle.putInt("categoryId", categoryId)
+                bundle.putString("activeHour", activeHour)
                 fragment.arguments = bundle
                 fragment
             }

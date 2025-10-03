@@ -43,6 +43,8 @@ class ExploreAdapter(
         holder.itemView.setOnClickListener {
             val intent = Intent(context, BookingProductActivity::class.java)
             intent.putExtra("categoryId", list.id)
+            intent.putExtra("activeHours", list.todayHours.toString())
+
             context.startActivity(intent)
         }
 

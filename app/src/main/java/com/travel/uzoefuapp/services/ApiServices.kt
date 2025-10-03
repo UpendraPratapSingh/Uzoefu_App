@@ -5,13 +5,22 @@ import com.travel.uzoefuapp.AddToWishlistModel.AddWishlistResponse
 import com.travel.uzoefuapp.GetWishlistModel.GetWishlistResponse
 import com.travel.uzoefuapp.activityModl.ActivityBody
 import com.travel.uzoefuapp.activityModl.ActivityResponse
+import com.travel.uzoefuapp.addTripModel.AddTripBody
+import com.travel.uzoefuapp.addTripModel.AddTripResponse
+import com.travel.uzoefuapp.addTripModel.GetTripResponse
 import com.travel.uzoefuapp.application.Uzoefu
+import com.travel.uzoefuapp.bookingCompleteModel.BookingCompleteBody
 import com.travel.uzoefuapp.bookingCompleteModel.BookingCompleteResponse
+import com.travel.uzoefuapp.bookingCompleteModel.BookingDetailBody
+import com.travel.uzoefuapp.bookingCompleteModel.BookingDetailResponse
 import com.travel.uzoefuapp.categoryModel.CategoryResponse
 import com.travel.uzoefuapp.deleteWishlistModel.DeleteWishlistBody
 import com.travel.uzoefuapp.deleteWishlistModel.DeleteWishlistResponse
 import com.travel.uzoefuapp.detailModel.DetailPageBody
 import com.travel.uzoefuapp.detailModel.DetailPageResponse
+import com.travel.uzoefuapp.discoverDestinationModel.DestinationDetailBody
+import com.travel.uzoefuapp.discoverDestinationModel.DestinationDetailResponse
+import com.travel.uzoefuapp.discoverDestinationModel.DiscoverDestinationResponse
 import com.travel.uzoefuapp.forgetPasswordModel.OtpVerificationBody
 import com.travel.uzoefuapp.forgetPasswordModel.ForgotPasswordBody
 import com.travel.uzoefuapp.forgetPasswordModel.ForgotPasswordResponse
@@ -23,6 +32,8 @@ import com.travel.uzoefuapp.imageUpdateModel.ImageUpdateResponse
 import com.travel.uzoefuapp.loginModel.LoginBody
 import com.travel.uzoefuapp.loginModel.LoginResponse
 import com.travel.uzoefuapp.logoutModel.LogoutResponse
+import com.travel.uzoefuapp.overviewModel.OverviewResponse
+import com.travel.uzoefuapp.paymentModel.PaymentResponse
 import com.travel.uzoefuapp.priceCalculationModel.PriceCalculationBody
 import com.travel.uzoefuapp.priceCalculationModel.PriceCalculationResponse
 import com.travel.uzoefuapp.ratingModel.RatingResponse
@@ -137,9 +148,67 @@ interface ApiServices {
         @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
     ): Observable<PriceCalculationResponse>
 
-    @POST("activity/complete")
+    @POST("booking/list")
     fun bookingComplete(
-        @Header("Authorization") token: String =  Uzoefu.encryptedPrefs.bearerToken
+        @Body body: BookingCompleteBody,
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
     ): Observable<BookingCompleteResponse>
+
+    @Multipart
+    @POST("payment")
+    suspend fun paymentBooking(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
+        @Part("activity_id") activityId: RequestBody,
+        @Part("date") date: RequestBody,
+        @Part("adultcount") adultcount: RequestBody,
+        @Part("kidscount") kidscount: RequestBody,
+        @Part("adultprice") adultprice: RequestBody,
+        @Part("kidsprice") kidsprice: RequestBody,
+        @Part("subtotal") subtotal: RequestBody,
+        @Part("total") total: RequestBody,
+        @Part("firstname") firstname: RequestBody,
+        @Part("surname") surname: RequestBody,
+        @Part("username") username: RequestBody,
+        @Part("mobile_number") mobile_number: RequestBody,
+        @Part("billingaddress") billingaddress: RequestBody,
+        @Part clientNames: List<MultipartBody.Part>,
+        @Part idNumbers: List<MultipartBody.Part>,
+        @Part contactNumbers: List<MultipartBody.Part>,
+        @Part signInDates: List<MultipartBody.Part>,
+        @Part signatureImages: List<MultipartBody.Part>
+    ): Response<PaymentResponse>
+
+    @POST("booking/detail")
+    fun bookingDetail(
+        @Body body: BookingDetailBody,
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
+    ): Observable<BookingDetailResponse>
+
+    @POST("discover/destination")
+    fun discoverDestination(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
+    ): Observable<DiscoverDestinationResponse>
+
+    @POST("discover/detail")
+    fun discoverDetail(
+        @Body body: DestinationDetailBody,
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
+    ): Observable<DestinationDetailResponse>
+
+    @POST("overview")
+    fun overview(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
+    ): Observable<OverviewResponse>
+
+    @POST("add/trip")
+    fun addTrip(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
+        @Body body: AddTripBody
+    ): Observable<AddTripResponse>
+
+    @POST("trip/list")
+    fun tripList(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
+    ): Observable<GetTripResponse>
 
 }

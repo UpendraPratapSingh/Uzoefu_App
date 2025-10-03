@@ -84,6 +84,10 @@ class DetailPageResponse : Serializable {
         @Expose
         var activityRating: List<ActivityRating>? = null
 
+        @SerializedName("iswish")
+        @Expose
+        var iswish: Boolean? = null
+
         inner class Amenity {
             @SerializedName("id")
             @Expose
@@ -226,6 +230,10 @@ class DetailPageResponse : Serializable {
             var user: User? = null
 
             inner class User {
+                @SerializedName("user_id")
+                @Expose
+                var userId: String? = null
+
                 @SerializedName("name")
                 @Expose
                 var name: String? = null

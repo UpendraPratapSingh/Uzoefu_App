@@ -62,7 +62,9 @@ class ExploreCategoriesActivity : AppCompatActivity() {
             if (success == true) {
                 if (data.isEmpty()) {
                     binding.categoriesRecycler.visibility = View.GONE
+                    binding.noDataText.visibility = View.VISIBLE
                 } else {
+                    binding.noDataText.visibility = View.GONE
                     binding.categoriesRecycler.visibility = View.VISIBLE
                     binding.categoriesRecycler.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
                     val categoryAdapter = CategoriesAdapter(this, data)

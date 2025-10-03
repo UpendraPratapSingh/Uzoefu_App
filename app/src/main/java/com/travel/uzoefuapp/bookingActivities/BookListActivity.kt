@@ -12,7 +12,9 @@ import com.travel.uzoefuapp.adapter.BookingTabAdapter
 import com.travel.uzoefuapp.databinding.ActivityBookListBinding
 import com.travel.uzoefuapp.globalSettings.SettingsActivity
 import com.travel.uzoefuapp.notification.NotificationActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class BookListActivity : AppCompatActivity() {
     lateinit var binding: ActivityBookListBinding
     override fun onCreate(savedInstanceState: Bundle?) {

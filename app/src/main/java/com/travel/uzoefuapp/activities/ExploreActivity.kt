@@ -110,7 +110,7 @@ class ExploreActivity : AppCompatActivity(), OnWishlistListener {
     }
 
     private fun getActivityApi(categoryId: String) {
-        val body = ActivityBody(categoryId = categoryId)
+        val body = ActivityBody(categoryId = categoryId, branchId = "")
         activityViewModel.getActivitiesByCategory(progressDialog, this, body)
     }
 

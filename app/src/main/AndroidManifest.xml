@@ -19,6 +19,9 @@
         android:theme="@style/Base.Theme.UzoefuApp"
         tools:targetApi="31">
         <activity
+            android:name=".activities.TermAndConditionActivity"
+            android:exported="false" />
+        <activity
             android:name=".forgetPasswordActivites.ResetPasswordActivity"
             android:exported="false" />
         <activity

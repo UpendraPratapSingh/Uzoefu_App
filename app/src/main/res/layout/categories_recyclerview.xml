@@ -31,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:text="Pretotia"
                 android:textColor="@color/nuetral_bold_color"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:fontFamily="@font/roboto_regular"/>
 
             <TextView
@@ -42,7 +42,7 @@
                 android:text="(67)"
                 android:fontFamily="@font/roboto_regular"
                 android:textColor="@color/gray"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
 
         </LinearLayout>
 

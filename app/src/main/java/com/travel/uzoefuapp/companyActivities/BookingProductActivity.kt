@@ -7,6 +7,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -17,6 +18,8 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
+import com.travel.uzoefuapp.AddToWishlistModel.AddWishlistBody
+import com.travel.uzoefuapp.AddToWishlistModel.AddWishlistViewModel
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.adapter.Action
 import com.travel.uzoefuapp.adapter.ActionAdapter
@@ -41,6 +44,10 @@ class BookingProductActivity : AppCompatActivity() {
     private lateinit var indicator: CircleIndicator3
     private val handler = Handler(Looper.getMainLooper())
     private var currentPage = 0
+    private val addWishlistViewModel: AddWishlistViewModel by viewModels()
+    private var categoryId: Int = -1  // class-level variable
+    private var activeHour = ""
+
 
     private val slideRunnable = object : Runnable {
         override fun run() {
@@ -73,10 +80,14 @@ class BookingProductActivity : AppCompatActivity() {
 
         binding.btnBack.setOnClickListener { finish() }
 
-        val categoryId = intent.getIntExtra("categoryId", -1)
+        categoryId = intent.getIntExtra("categoryId", -1)
+        activeHour = intent.getStringExtra("activeHours").toString()
+
+        Log.e("TAG", "onCreate: $activeHour", )
 
         getDetailApi(categoryId)
         getDetailObserver()
+        activityAddToWishListObserver()
 
 
         binding.btnMore.setOnClickListener {
@@ -92,11 +103,11 @@ class BookingProductActivity : AppCompatActivity() {
         viewPager = findViewById(R.id.viewPager)
         indicator = findViewById(R.id.dotsIndicator)
 
-      /*  val images =
-            listOf(R.drawable.balloonslide, R.drawable.balloonslide, R.drawable.balloonslide)
+        /*  val images =
+              listOf(R.drawable.balloonslide, R.drawable.balloonslide, R.drawable.balloonslide)
 
-        viewPager.adapter = SliderAdapter(images)
-        indicator.setViewPager(viewPager)*/
+          viewPager.adapter = SliderAdapter(images)
+          indicator.setViewPager(viewPager)*/
 
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -153,7 +164,7 @@ class BookingProductActivity : AppCompatActivity() {
 
         binding.actionRecyclerView.adapter = actionAdapter
 
-        val adapter = ProductTabAdapter(this, categoryId)
+        val adapter = ProductTabAdapter(this, categoryId, activeHour)
         binding.viewPagerData.adapter = adapter
 
         TabLayoutMediator(binding.tabLayout, binding.viewPagerData) { tab, position ->
@@ -180,6 +191,24 @@ class BookingProductActivity : AppCompatActivity() {
         })
     }
 
+    private fun activityAddToWishListObserver() {
+        addWishlistViewModel.progressIndicator.observe(this) {
+
+        }
+        addWishlistViewModel.mCategoryResponse.observe(this) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+            if (success == true) {
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                getDetailApi(categoryId)
+            }
+        }
+        addWishlistViewModel.errorResponse.observe(this) {
+            ErrorUtil.handlerGeneralError(this, it)
+        }
+    }
+
+
     private fun getDetailObserver() {
         detailPageViewModel.progressIndicator.observe(this) {
 
@@ -190,8 +219,10 @@ class BookingProductActivity : AppCompatActivity() {
             val data1 = response.peekContent().data?.activity
             val data2 = response.peekContent().data?.activity?.category
             val data3 = response.peekContent().data?.price
-            val activityId = data3?.activityId
+            //val activityId = data3?.activityId
             val address = data1?.branch
+            val isWish = response.peekContent().data?.iswish
+            val activityId = data1?.id
 
             if (success == true) {
                 binding.tvTitle.text = data1?.activityName.toString()
@@ -207,28 +238,80 @@ class BookingProductActivity : AppCompatActivity() {
                 }
                 binding.productRecyclerView.adapter = thumbnailAdapter
 
-                binding.button2.setOnClickListener {
-                    val intent = Intent(this@BookingProductActivity, BookingDetailStep1Activity::class.java)
-                    intent.putExtra("price", data3?.groupPrice.toString())
-                    intent.putExtra("childrenPrice", data3?.childrenBase.toString())
-                    intent.putExtra("activityId", data1?.id.toString())
-                    intent.putExtra("productName", data1?.activityName.toString())
-                    intent.putExtra("address", address?.address.toString())
-                    intent.putExtra("town", address?.town.toString())
-                    startActivity(intent)
+                /*     binding.button2.setOnClickListener {
+                         val intent = Intent(this@BookingProductActivity, BookingDetailStep1Activity::class.java)
+                         intent.putExtra("price", data3?.groupPrice.toString())
+                         intent.putExtra("childrenPrice", data3?.childrenBase.toString())
+                         intent.putExtra("activityId", data1?.id.toString())
+                         intent.putExtra("productName", data1?.activityName.toString())
+                         intent.putExtra("address", address?.address.toString())
+                         intent.putExtra("town", address?.town.toString())
+                         startActivity(intent)
 
+                     }*/
+
+                binding.button2.setOnClickListener {
+                    val price = data3?.groupPrice ?: 0.0
+
+                    if (price == 0.0) {
+                        Toast.makeText(
+                            this,
+                            "This activity cannot be booked (price is 0)",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        val intent = Intent(
+                            this@BookingProductActivity,
+                            BookingDetailStep1Activity::class.java
+                        )
+                        intent.putExtra("price", data3?.groupPrice.toString())
+                        intent.putExtra("childrenPrice", data3?.childrenBase.toString())
+                        intent.putExtra("activityId", data1?.id.toString())
+                        intent.putExtra("productName", data1?.activityName.toString())
+                        intent.putExtra("address", address?.address.toString())
+                        intent.putExtra("town", address?.town.toString())
+                        startActivity(intent)
+                    }
                 }
 
                 viewPager.adapter = SliderAdapter(images)
                 indicator.setViewPager(viewPager)
 
 
+
+                binding.iconFav.setImageResource(
+                    if (isWish == true) R.drawable.wishlist_color
+                    else R.drawable.ic_wish
+                )
+
+                binding.iconFav.setOnClickListener { view ->
+                    view.animate()
+                        .scaleX(1.3f)
+                        .scaleY(1.3f)
+                        .setDuration(150)
+                        .withEndAction {
+                            view.animate()
+                                .scaleX(1f)
+                                .scaleY(1f)
+                                .setDuration(150)
+                                .start()
+                        }
+                        .start()
+
+                    activityId?.let { addToWishlistApi(it) }
+                }
             }
         }
         detailPageViewModel.errorResponse.observe(this) {
             ErrorUtil.handlerGeneralError(this@BookingProductActivity, it)
         }
     }
+
+    private fun addToWishlistApi(id: Int?) {
+        val body = AddWishlistBody(activity_id = id.toString())
+        addWishlistViewModel.addToWishListApi(progressDialog, this, body)
+    }
+
 
     private fun getDetailApi(categoryId: Int) {
         val body = DetailPageBody(

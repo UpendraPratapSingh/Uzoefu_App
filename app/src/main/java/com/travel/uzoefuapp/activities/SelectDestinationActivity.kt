@@ -34,11 +34,16 @@ import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activityModl.ActivityBody
 import com.travel.uzoefuapp.activityModl.ActivityResponse
 import com.travel.uzoefuapp.activityModl.ActivityViewModel
+import com.travel.uzoefuapp.adapter.DestinationDetailAdapter
+import com.travel.uzoefuapp.adapter.DiscoverDestination
 import com.travel.uzoefuapp.adapter.ExploreResultAdapter
 import com.travel.uzoefuapp.adapter.OnWishlistListener
 import com.travel.uzoefuapp.adapter.SelectPriceAdapter
 import com.travel.uzoefuapp.adapter.SelectedDestinationAdapter
 import com.travel.uzoefuapp.databinding.ActivitySelectDestinationBinding
+import com.travel.uzoefuapp.discoverDestinationModel.DestinationDetailBody
+import com.travel.uzoefuapp.discoverDestinationModel.DestinationDetailResponse
+import com.travel.uzoefuapp.discoverDestinationModel.DestinationDetailViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -50,6 +55,8 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener {
     var categoryId = ""
     private val progressDialog by lazy { CustomProgressDialog(this) }
     private val addWishlistViewModel: AddWishlistViewModel by viewModels()
+    private val destinationDetailViewModel: DestinationDetailViewModel by viewModels()
+    private var destinationDetail: List<DestinationDetailResponse.Datum> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,13 +70,17 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener {
             insets
         }
         val categoryId = intent.getStringExtra("categoryId") ?: ""
+        val branchId = intent.getStringExtra("branchId") ?: ""
 
-        Log.e("TAG", "onCreate: $categoryId")
+        Log.e("TAG", "onCreate: $branchId")
 
         //observer
-        getActivityApi(categoryId)
+        getActivityApi(categoryId, branchId)
         getActivityObserver()
         activityAddToWishListObserver()
+
+        /*    destinationDetailApi()
+            destinationDetailObserver()*/
 
         binding.forYouArrowImg.setOnClickListener { finish() }
 
@@ -103,6 +114,54 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener {
 
     }
 
+    private fun destinationDetailObserver() {
+        destinationDetailViewModel.progressIndicator.observe(this) {
+
+        }
+        destinationDetailViewModel.mCategoryResponse.observe(this) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+            destinationDetail = response.peekContent().data ?: emptyList()
+
+            if (success == true) {
+                if (destinationDetail.isEmpty()) {
+                    binding.destinationRecycler.visibility = View.GONE
+                } else {
+                    binding.destinationRecycler.visibility = View.VISIBLE
+                    val limitedList = destinationDetail.take(2)
+                    binding.destinationRecycler.layoutManager =
+                        LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+                    val categoryAdapter = DestinationDetailAdapter(this, limitedList)
+                    binding.destinationRecycler.adapter = categoryAdapter
+
+                    // Vertical
+                    val remainingList = destinationDetail.drop(2)
+                    binding.destinationRecyclerView.layoutManager =
+                        LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                    val verticalAdapter = DiscoverDestination(this, remainingList)
+                    binding.destinationRecyclerView.adapter = verticalAdapter
+
+                }
+            } else {
+                Toast.makeText(this, message ?: "Failed to load categories", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+        }
+
+        destinationDetailViewModel.errorResponse.observe(this) {
+            ErrorUtil.handlerGeneralError(this@SelectDestinationActivity, it)
+        }
+    }
+
+    private fun destinationDetailApi() {
+        val body = DestinationDetailBody(
+            branchId = ""
+        )
+        destinationDetailViewModel.discoverDestinationDetailApi(progressDialog, this, body)
+
+    }
+
     private fun activityAddToWishListObserver() {
         addWishlistViewModel.progressIndicator.observe(this) {
 
@@ -132,7 +191,9 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener {
             if (success == true) {
                 if (data.isEmpty()) {
                     binding.destinationRecycler.visibility = View.GONE
+                    binding.noDataText.visibility = View.VISIBLE
                 } else {
+                    binding.noDataText.visibility = View.GONE
                     binding.destinationRecycler.visibility = View.VISIBLE
                     val limitedList = data.take(2)
                     binding.destinationRecycler.layoutManager =
@@ -158,9 +219,10 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener {
         }
     }
 
-    private fun getActivityApi(categoryId: String) {
+    private fun getActivityApi(categoryId: String, branchId: String) {
         val body = ActivityBody(
-            categoryId = categoryId
+            categoryId = categoryId,
+            branchId = branchId
         )
         activityViewModel.getActivitiesByCategory(progressDialog, this, body)
 

@@ -11,11 +11,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.travel.uzoefuapp.R
-import com.travel.uzoefuapp.activities.SelectDestinationActivity
 import com.travel.uzoefuapp.activityModl.ActivityResponse
-import com.travel.uzoefuapp.bookingActivities.BookingDetailActivity
 import com.travel.uzoefuapp.companyActivities.BookingProductActivity
-import com.travel.uzoefuapp.companyActivities.CompanyLandingActivity
 
 class SelectedDestinationAdapter(
     val context: Context,
@@ -51,6 +48,7 @@ class SelectedDestinationAdapter(
         holder.itemView.setOnClickListener {
             val intent = Intent(context, BookingProductActivity::class.java)
             intent.putExtra("categoryId", list.id)
+            intent.putExtra("activeHours", list.todayHours.toString())
             context.startActivity(intent)
         }
 

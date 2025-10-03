@@ -10,16 +10,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activities.SelectDestinationActivity
+import com.travel.uzoefuapp.discoverDestinationModel.DiscoverDestinationResponse
 
-data class Category(
-    val name: String,
-    val activitiesCount: Int,
-    val imageRes: Int
-)
 
 class DestinationCategoryAdapter(
     private val context: Context,
-    private val categories: List<Category>
+    private val categories: List<DiscoverDestinationResponse.Datum>
 ) : RecyclerView.Adapter<DestinationCategoryAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -30,11 +26,14 @@ class DestinationCategoryAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val category = categories[position]
-        holder.bind(category)
+        //icon.setImageResource(category.imageRes)
+        holder.name.text = category.branchName
+        holder.count.text = "(${category.activityCount})"
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, SelectDestinationActivity::class.java)
-            intent.putExtra("categoryName", "${category.name} (${category.activitiesCount})")
+            intent.putExtra("categoryName", "${category.branchName} (${category.activityCount})")
+            intent.putExtra("branchId", category.branchId.toString())
             context.startActivity(intent)
         }
     }
@@ -43,13 +42,8 @@ class DestinationCategoryAdapter(
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val icon = itemView.findViewById<ImageView>(R.id.placeIcon)
-        private val name = itemView.findViewById<TextView>(R.id.placeTitle)
-        private val count = itemView.findViewById<TextView>(R.id.placeCount)
+        val name = itemView.findViewById<TextView>(R.id.placeTitle)
+        val count = itemView.findViewById<TextView>(R.id.placeCount)
 
-        fun bind(category: Category) {
-            icon.setImageResource(category.imageRes)
-            name.text = category.name
-            count.text = "(${category.activitiesCount})"
-        }
     }
 }

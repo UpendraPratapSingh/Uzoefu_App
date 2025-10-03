@@ -100,9 +100,11 @@
             android:background="@color/white">
 
             <LinearLayout
+                android:id="@+id/bookingSummaryLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:visibility="gone"
                 android:padding="10dp">
 
                 <TextView
@@ -116,6 +118,7 @@
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/activityName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="12dp"
@@ -132,6 +135,7 @@
                     android:weightSum="3">
 
                     <TextView
+                        android:id="@+id/selectedDate"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -151,6 +155,7 @@
                         android:textSize="14dp" />
 
                     <TextView
+                        android:id="@+id/refrenceId"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -181,6 +186,7 @@
                         android:textColor="@color/nuetral_bold_color" />
 
                     <TextView
+                        android:id="@+id/userName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_regular"
@@ -204,6 +210,7 @@
                         android:textColor="@color/nuetral_bold_color" />
 
                     <TextView
+                        android:id="@+id/contactName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_regular"
@@ -227,6 +234,7 @@
                         android:textColor="@color/nuetral_bold_color" />
 
                     <TextView
+                        android:id="@+id/email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/roboto_regular"
@@ -251,6 +259,7 @@
                         android:textColor="@color/nuetral_bold_color" />
 
                     <TextView
+                        android:id="@+id/addresss"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="12dp"
@@ -318,6 +327,7 @@
                     android:weightSum="4">
 
                     <TextView
+                        android:id="@+id/adultDescription"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -335,6 +345,7 @@
                         android:textColor="@color/nuetral_bold_color" />
 
                     <TextView
+                        android:id="@+id/adultQuantity"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -344,6 +355,7 @@
                         android:textColor="@color/nuetral_bold_color" />
 
                     <TextView
+                        android:id="@+id/adultAmount"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -361,6 +373,7 @@
                     android:weightSum="4">
 
                     <TextView
+                        android:id="@+id/kidsDescription"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -378,6 +391,7 @@
                         android:textColor="@color/nuetral_bold_color" />
 
                     <TextView
+                        android:id="@+id/kidsQuantity"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -387,6 +401,7 @@
                         android:textColor="@color/nuetral_bold_color" />
 
                     <TextView
+                        android:id="@+id/kidsAmount"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -413,6 +428,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/subTotal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="R3,200"
@@ -438,6 +454,7 @@
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/totalPrice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="R3,200"

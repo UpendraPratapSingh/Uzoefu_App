@@ -23,6 +23,7 @@ import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activities.LoginActivity
+import com.travel.uzoefuapp.activities.TermAndConditionActivity
 import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.bookingActivities.BookListActivity
 import com.travel.uzoefuapp.dashboard.DashboardActivity
@@ -31,6 +32,7 @@ import com.travel.uzoefuapp.fragment.ProfileFragment
 import com.travel.uzoefuapp.getProfileModel.GetProfileViewModel
 import com.travel.uzoefuapp.imageUpdateModel.ImageUpdateViewModel
 import com.travel.uzoefuapp.logoutModel.LogoutViewModel
+import com.travel.uzoefuapp.overviewModel.OverviewViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -51,25 +53,26 @@ class OverviewFragment : Fragment() {
     private lateinit var galleryLauncher: ActivityResultLauncher<String>
     private var imageUri: Uri? = null
     private val binding get() = _binding!!
+    private val overviewViewModel: OverviewViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentOverviewBinding.inflate(inflater, container, false)
 
         //Called Observer
         getProfileApi()
+        overviewApi()
         getProfileObserver()
         logoutObserver()
-
-        binding.ivEditProfile.setOnClickListener {
-            (parentFragment as? ProfileFragment)?.switchToTab(1)
-        }
+        overviewObserver()
 
         binding.profileImage.setOnClickListener { showImageSourceDialog() }
 
-        cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+        cameraLauncher =
+            registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
                 if (success) {
                     val uri = imageUri
                     if (uri != null) {
@@ -87,11 +90,50 @@ class OverviewFragment : Fragment() {
             startActivity(intent)
         }
 
+        binding.termAndCondition.setOnClickListener {
+            val intent = Intent(requireContext(), TermAndConditionActivity::class.java)
+            startActivity(intent)
+        }
+
         binding.logoutAccount.setOnClickListener { openLogoutCustomPopup() }
 
         binding.wishlistLayout.setOnClickListener { (activity as? DashboardActivity)?.selectWishlistTab() }
 
+
+        binding.ivEditProfile.setOnClickListener {
+            (parentFragment as? ProfileFragment)?.switchToTab(1)
+        }
+
+
         return binding.root
+    }
+
+    private fun overviewObserver() {
+        overviewViewModel.progressIndicator.observe(viewLifecycleOwner) {
+
+        }
+        overviewViewModel.mCategoryResponse.observe(viewLifecycleOwner) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+            val data = response.peekContent().data?.overview
+            if (success == true) {
+                binding.tvWishlist.text = data?.wishlistcount.toString()
+                binding.tvBookings.text = data?.bookingcount.toString()
+                binding.tvTrips.text = data?.tripcount.toString()
+                binding.tvVisited.text = data?.visitedcount.toString()
+                binding.tvReviews.text = data?.reviewcount.toString()
+                binding.tvRewards.text = data?.rewardcount.toString()
+                binding.tvPhotos.text = data?.photoscount.toString()
+            }
+
+        }
+        overviewViewModel.errorResponse.observe(viewLifecycleOwner) {
+            ErrorUtil.handlerGeneralError(requireContext(), it)
+        }
+    }
+
+    private fun overviewApi() {
+        overviewViewModel.overviewApi(progressDialog, requireActivity())
     }
 
     private fun showImageSourceDialog() {
@@ -110,7 +152,11 @@ class OverviewFragment : Fragment() {
         if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA)
             != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(requireActivity(), arrayOf(Manifest.permission.CAMERA), CAMERA_PERMISSION_CODE)
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.CAMERA),
+                CAMERA_PERMISSION_CODE
+            )
         } else {
             openCamera()
         }
@@ -134,7 +180,11 @@ class OverviewFragment : Fragment() {
             cameraLauncher.launch(uri)
         } catch (e: Exception) {
             e.printStackTrace()
-            Toast.makeText(requireContext(), "Failed to open camera: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                requireContext(),
+                "Failed to open camera: ${e.message}",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 

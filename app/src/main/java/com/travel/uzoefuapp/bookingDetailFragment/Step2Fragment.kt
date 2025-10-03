@@ -1,6 +1,7 @@
 package com.travel.uzoefuapp.bookingDetailFragment
 
 import CustomProgressDialog
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -31,6 +32,8 @@ class Step2Fragment : Fragment() {
         return binding.root
     }
     private fun getProfileObserver() {
+        val sharedPref = requireContext().getSharedPreferences("profile_pref", Context.MODE_PRIVATE)
+
         getProfileViewModel.progressIndicator.observe(viewLifecycleOwner) {
 
         }
@@ -44,6 +47,15 @@ class Step2Fragment : Fragment() {
                 binding.etUsername.setText(data?.username.toString())
                 binding.mobileNumber.setText(data?.mobile.toString())
                 binding.billingAddress.setText(data?.city.toString())
+
+                with(sharedPref.edit()) {
+                    putString("first_name", data?.name ?: "")
+                    putString("last_name", data?.lastname ?: "")
+                    putString("username", data?.username ?: "")
+                    putString("mobile", data?.mobile ?: "")
+                    putString("billing_address", data?.city ?: "")
+                    apply()
+                }
 
             }
 

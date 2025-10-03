@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 
-class GetWishlistResponse: Serializable {
+class GetWishlistResponse : Serializable {
     @SerializedName("success")
     @Expose
     var success: Boolean? = null
@@ -22,14 +22,14 @@ class GetWishlistResponse: Serializable {
     @Expose
     var imagePath: String? = null
 
-    inner class Datum{
+    inner class Datum {
         @SerializedName("id")
         @Expose
         var id: Int? = null
 
         @SerializedName("activity_id")
         @Expose
-        var activityId: Int? = null
+        var activityId: String? = null
 
         @SerializedName("name")
         @Expose
@@ -41,7 +41,7 @@ class GetWishlistResponse: Serializable {
 
         @SerializedName("price")
         @Expose
-        var price: Int? = null
+        var price: String? = null
 
         @SerializedName("rating_count")
         @Expose

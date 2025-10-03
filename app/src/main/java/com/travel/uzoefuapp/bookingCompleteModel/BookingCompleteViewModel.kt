@@ -24,18 +24,19 @@ class BookingCompleteViewModel @Inject constructor(application: Application, pri
     val errorResponse = MutableLiveData<Throwable>()
     val mCategoryResponse = MutableLiveData<Event<BookingCompleteResponse>>()
 
-    fun bookingComplete(progressDialog: CustomProgressDialog, activity: Activity) =
+    fun bookingComplete(progressDialog: CustomProgressDialog, activity: Activity, body: BookingCompleteBody) =
         viewModelScope.launch {
-            bookingCompleted(progressDialog, activity)
+            bookingCompleted(progressDialog, activity, body)
         }
 
     private suspend fun bookingCompleted(
         progressDialog: CustomProgressDialog,
         activity: Activity,
+        body: BookingCompleteBody
     ) {
         progressDialog.start("")
         progressIndicator.value = true
-        repository.bookingComplete()
+        repository.bookingComplete(body)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : DisposableObserver<BookingCompleteResponse>() {

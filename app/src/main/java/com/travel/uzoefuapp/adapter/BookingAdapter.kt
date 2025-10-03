@@ -29,7 +29,7 @@ class BookingAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val list = bookingList[position]
-        val imgBase = "https://mobappssolutions.in/uzoefu/public/images/activity_images"
+        val imgBase = "https://mobappssolutions.in/uzoefu/public/images/activity_images/"
         holder.txtTitle.text = list.activityName
         holder.txtDate.text = list.date
         holder.txtPrice.text = "R ${list.total.toString()}"
@@ -59,6 +59,7 @@ class BookingAdapter(
         }
         holder.itemView.setOnClickListener {
             val intent = Intent(context, BookSummaryActivity::class.java)
+            intent.putExtra("bookingId", list.id.toString())
             context.startActivity(intent)
         }
     }

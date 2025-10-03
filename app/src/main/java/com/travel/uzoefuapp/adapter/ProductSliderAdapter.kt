@@ -31,22 +31,26 @@ class ProductSliderAdapter(
     override fun onBindViewHolder(holder: ThumbViewHolder, position: Int) {
         val totalImages = images.size
         val image_path = "https://mobappssolutions.in/uzoefu/public/images/activity_images/"
+
         if (position < 4) {
             Glide.with(holder.thumbImage.context)
-                .load(image_path+images[position].image)
+                .load(image_path + images[position].image)
                 .into(holder.thumbImage)
 
             holder.overlay.visibility = View.GONE
-
             holder.itemView.setOnClickListener { onThumbnailClick(position) }
+
         } else if (position == 4) {
             Glide.with(holder.thumbImage.context)
-                .load(image_path+images[position].image)
+                .load(image_path + images[position].image)
                 .into(holder.thumbImage)
 
-            holder.overlay.visibility = View.VISIBLE
-            holder.overlayText.text = "+${totalImages}"
-
+            if (totalImages > 5) {
+                holder.overlay.visibility = View.VISIBLE
+                holder.overlayText.text = "+${totalImages - 5}"
+            } else {
+                holder.overlay.visibility = View.GONE
+            }
             holder.itemView.setOnClickListener { onThumbnailClick(position) }
         }
     }

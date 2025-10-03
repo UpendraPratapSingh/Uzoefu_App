@@ -19,6 +19,10 @@ class LoginResponse : Serializable {
     var data: Data? = null
 
     inner class Data {
+        @SerializedName("user_id")
+        @Expose
+        var userId: Int? = null
+
         @SerializedName("token")
         @Expose
         var token: String? = null
