@@ -22,6 +22,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
@@ -362,8 +363,20 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener {
         /*    rvCategories.layoutManager = GridLayoutManager(this, 3)
             rvCategories.adapter = CategoryAdapter(this, categoriesList)*/
 
+        val priceRanges = listOf("0 - 150", "151 - 300", "301 - 500", "500+")
+
+        val selectPriceAdapter = SelectPriceAdapter(this, priceRanges) { selectedPrices ->
+            // This lambda is called whenever selection changes
+            // Send selectedPrices to your API
+           //selectedPrice = selectedPrices.toString()
+        }
+
         rvSelectPrice.layoutManager = GridLayoutManager(this, 1)
-        rvSelectPrice.adapter = SelectPriceAdapter(this)
+        rvSelectPrice.adapter = selectPriceAdapter
+
+
+ /*       rvSelectPrice.layoutManager = GridLayoutManager(this, 1)
+        rvSelectPrice.adapter = SelectPriceAdapter(this,)*/
 
         /*   binding.btnApply.setOnClickListener {
                val selectedPrices = adapter.getSelectedFilters()

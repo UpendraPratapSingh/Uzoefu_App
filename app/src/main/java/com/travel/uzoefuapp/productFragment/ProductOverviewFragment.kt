@@ -51,7 +51,7 @@ class ProductOverviewFragment : Fragment() {
             val data1 = response.peekContent().data?.description
             val data2 = response.peekContent().data?.ActivityRating()
             val data3 = response.peekContent().data?.activity?.branch
-            val data4 = response.peekContent().data
+            val data4 = response.peekContent().data?.todayHours
             //val description = data1?.highlights.toString().removeSurrounding("[", "]")
             //val description1 = data1?.highlights?.joinToString(separator = "\n") ?: ""
 
@@ -59,9 +59,9 @@ class ProductOverviewFragment : Fragment() {
                 binding.tvDescription.text = data1?.description ?: ""
                 binding.highlights.text = data1?.highlights?.joinToString("\n") { "• $it" } ?: ""
                 binding.tvLocation.text = "${data3?.address.toString()} , ${data3?.town.toString()}"
-                binding.tvPhone.text = "Tel: +${data3?.teliphoneNumber.toString()}"
-                binding.tvCell.text = "Cel: +${data3?.contactNumber.toString()}"
-                binding.tvTime.text = activeHour
+                binding.tvPhone.text = "Tel:+${data3?.teliphoneNumber.toString()}"
+                binding.tvCell.text = "Cel:+${data3?.contactNumber.toString()}"
+                binding.tvTime.text = data4.toString()
                 val ratingValue = 1.5f  // static rating
                 binding.ratingBar.rating = ratingValue
                 binding.tvRating.text = ratingValue.toString()

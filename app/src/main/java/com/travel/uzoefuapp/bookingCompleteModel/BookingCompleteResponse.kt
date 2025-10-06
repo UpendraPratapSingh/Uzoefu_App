@@ -27,6 +27,10 @@ class BookingCompleteResponse : Serializable {
         @Expose
         var id: Int? = null
 
+        @SerializedName("activity_id")
+        @Expose
+        var activityId: Int? = null
+
         @SerializedName("activity_name")
         @Expose
         var activityName: String? = null
@@ -37,7 +41,7 @@ class BookingCompleteResponse : Serializable {
 
         @SerializedName("total")
         @Expose
-        var total: Int? = null
+        var total: String? = null
 
         @SerializedName("date")
         @Expose

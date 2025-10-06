@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.bookingActivities.BookSummaryActivity
 import com.travel.uzoefuapp.bookingCompleteModel.BookingCompleteResponse
+import com.travel.uzoefuapp.companyActivities.BookingProductActivity
 
 class BookingAdapter(
     private val context: Context,
@@ -57,9 +58,17 @@ class BookingAdapter(
                 holder.layout.setBackgroundColor(ContextCompat.getColor(context, R.color.light_red))
             }
         }
+
         holder.itemView.setOnClickListener {
             val intent = Intent(context, BookSummaryActivity::class.java)
             intent.putExtra("bookingId", list.id.toString())
+            context.startActivity(intent)
+        }
+
+        holder.txtRebook.setOnClickListener {
+            val intent = Intent(context, BookingProductActivity::class.java)
+            intent.putExtra("categoryId", list.activityId)
+            // intent.putExtra("activeHours", list.todayHours.toString())
             context.startActivity(intent)
         }
     }
@@ -75,5 +84,6 @@ class BookingAdapter(
         val txtDate: TextView = itemView.findViewById(R.id.txtDate)
         val txtPrice: TextView = itemView.findViewById(R.id.txtPrice)
         val imgActivity: ImageView = itemView.findViewById(R.id.imgActivity)
+        val txtRebook: TextView = itemView.findViewById(R.id.txtRebook)
     }
 }

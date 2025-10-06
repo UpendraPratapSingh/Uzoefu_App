@@ -45,9 +45,8 @@ class BookingProductActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var currentPage = 0
     private val addWishlistViewModel: AddWishlistViewModel by viewModels()
-    private var categoryId: Int = -1  // class-level variable
+    private var categoryId: Int = -1
     private var activeHour = ""
-
 
     private val slideRunnable = object : Runnable {
         override fun run() {
@@ -81,14 +80,13 @@ class BookingProductActivity : AppCompatActivity() {
         binding.btnBack.setOnClickListener { finish() }
 
         categoryId = intent.getIntExtra("categoryId", -1)
-        activeHour = intent.getStringExtra("activeHours").toString()
+        //activeHour = intent.getStringExtra("activeHours").toString()
 
-        Log.e("TAG", "onCreate: $activeHour", )
+        Log.e("TAG", "onCreate: $activeHour")
 
         getDetailApi(categoryId)
         getDetailObserver()
         activityAddToWishListObserver()
-
 
         binding.btnMore.setOnClickListener {
             val intent = Intent(this@BookingProductActivity, SettingsActivity::class.java)
@@ -103,8 +101,7 @@ class BookingProductActivity : AppCompatActivity() {
         viewPager = findViewById(R.id.viewPager)
         indicator = findViewById(R.id.dotsIndicator)
 
-        /*  val images =
-              listOf(R.drawable.balloonslide, R.drawable.balloonslide, R.drawable.balloonslide)
+        /*  val images = listOf(R.drawable.balloonslide, R.drawable.balloonslide, R.drawable.balloonslide)
 
           viewPager.adapter = SliderAdapter(images)
           indicator.setViewPager(viewPager)*/
@@ -222,6 +219,7 @@ class BookingProductActivity : AppCompatActivity() {
             //val activityId = data3?.activityId
             val address = data1?.branch
             val isWish = response.peekContent().data?.iswish
+            activeHour = response.peekContent().data?.todayHours.toString()
             val activityId = data1?.id
 
             if (success == true) {

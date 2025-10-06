@@ -88,6 +88,10 @@ class DetailPageResponse : Serializable {
         @Expose
         var iswish: Boolean? = null
 
+        @SerializedName("today_hours")
+        @Expose
+        var todayHours: String? = null
+
         inner class Amenity {
             @SerializedName("id")
             @Expose

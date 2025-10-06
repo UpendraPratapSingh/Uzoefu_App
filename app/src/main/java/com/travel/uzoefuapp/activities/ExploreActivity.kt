@@ -3,6 +3,7 @@ package com.travel.uzoefuapp.activities
 import CustomProgressDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -19,8 +20,13 @@ import com.travel.uzoefuapp.activityModl.ActivityResponse
 import com.travel.uzoefuapp.activityModl.ActivityViewModel
 import com.travel.uzoefuapp.adapter.ExploreResultAdapter
 import com.travel.uzoefuapp.adapter.OnWishlistListener
+import com.travel.uzoefuapp.adapter.SearchDestinationAdapter
+import com.travel.uzoefuapp.adapter.SearchVerticleDestinationAdapter
 import com.travel.uzoefuapp.adapter.SelectedDestinationAdapter
 import com.travel.uzoefuapp.databinding.ActivityExploreBinding
+import com.travel.uzoefuapp.filterActivityModel.FilterActivityBody
+import com.travel.uzoefuapp.filterActivityModel.FilterActivityResponse
+import com.travel.uzoefuapp.filterActivityModel.FilterActivityViewModel
 import com.travel.uzoefuapp.globalSettings.SettingsActivity
 import com.travel.uzoefuapp.notification.NotificationActivity
 import com.travel.uzoefuapp.utils.ErrorUtil
@@ -34,6 +40,9 @@ class ExploreActivity : AppCompatActivity(), OnWishlistListener {
     var data: List<ActivityResponse.Datum> = ArrayList()
     private val progressDialog by lazy { CustomProgressDialog(this) }
     private val addWishlistViewModel: AddWishlistViewModel by viewModels()
+    private val filterActivityViewModel: FilterActivityViewModel by viewModels()
+    var filterActivity: List<FilterActivityResponse.Data.Datum> = ArrayList()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,13 +58,35 @@ class ExploreActivity : AppCompatActivity(), OnWishlistListener {
         binding.forYouArrowImg.setOnClickListener { finish() }
         val experienceActivity = intent.getStringExtra("ExperienceActivity")
 
+        val selectedCityId = intent.getStringExtra("selectedCity") ?: ""
+        val selectedCategoryId = intent.getStringExtra("selectedRadius") ?: ""
+        val selectedPrice = intent.getStringExtra("selectedPrice") ?: ""
+        val selectedRatings = intent.getStringExtra("selectedRatings") ?: ""
+
+        val source = intent.getStringExtra("source").toString()
+
+
+
+        Log.e("FilterData", "City: $selectedCityId")
+        Log.e("FilterData", "Radius: $selectedCategoryId")
+        Log.e("FilterData", "Price: $selectedPrice")
+        Log.e("FilterData", "Ratings: $selectedRatings")
+        Log.e("FilterData", "Source: $source ")
+
+        if (source == "filter") {
+            getFilterApi(selectedCityId, selectedCategoryId, selectedPrice, selectedRatings)
+            getFilterObserver()
+        } else {
+            getActivityApi(categoryId)
+            getActivityObserver()
+        }
+
         if (experienceActivity == "1") {
             binding.resultCons.visibility = View.GONE
         } else {
             binding.resultCons.visibility = View.VISIBLE
         }
-        getActivityApi(categoryId)
-        getActivityObserver()
+
 
         binding.notificationLayout.setOnClickListener {
             val intent = Intent(this@ExploreActivity, NotificationActivity::class.java)
@@ -71,6 +102,65 @@ class ExploreActivity : AppCompatActivity(), OnWishlistListener {
             GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false)
         binding.categoriesRecycler.adapter = ExploreResultAdapter(this)*/
 
+    }
+
+    private fun getFilterObserver() {
+        filterActivityViewModel.progressIndicator.observe(this) {
+
+        }
+        filterActivityViewModel.filterActivityResponse.observe(this) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+
+            filterActivity = response.peekContent().data?.data ?: emptyList()
+
+            if (success == true) {
+                if (filterActivity.isEmpty()) {
+                    binding.destinationRecycler.visibility = View.GONE
+                    binding.resultCons.visibility = View.GONE
+                    binding.noDataText.visibility = View.VISIBLE
+                } else {
+                    binding.resultCons.visibility = View.VISIBLE
+                    binding.noDataText.visibility = View.GONE
+                    binding.destinationRecycler.visibility = View.VISIBLE
+                    val limitedList = filterActivity.take(2)
+                    binding.destinationRecycler.layoutManager =
+                        LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+                    val categoryAdapter = SearchDestinationAdapter(this, limitedList, this)
+                    binding.destinationRecycler.adapter = categoryAdapter
+
+                    val remainingList = filterActivity.drop(2)
+                    binding.categoriesRecycler.layoutManager =
+                        LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+                    val verticalAdapter =
+                        SearchVerticleDestinationAdapter(this, remainingList, this)
+                    binding.categoriesRecycler.adapter = verticalAdapter
+
+                }
+            } else {
+                Toast.makeText(this, message ?: "Failed to load categories", Toast.LENGTH_SHORT)
+                    .show()
+            }
+
+        }
+        filterActivityViewModel.errorResponse.observe(this) {
+            ErrorUtil.handlerGeneralError(this@ExploreActivity, it)
+        }
+    }
+
+    private fun getFilterApi(
+        selectedCityId: String,
+        selectedCategoryId: String,
+        selectedPrice: String,
+        selectedRatings: String
+    ) {
+        val body = FilterActivityBody(
+            provinceId = selectedCityId,
+            price = selectedPrice,
+            rating = selectedRatings,
+            categoryId = selectedCategoryId
+        )
+        filterActivityViewModel.filterActivityBody(progressDialog, this, body)
     }
 
     private fun getActivityObserver() {

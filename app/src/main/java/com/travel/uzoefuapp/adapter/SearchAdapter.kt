@@ -1,5 +1,7 @@
 package com.travel.uzoefuapp.adapter
 
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -7,14 +9,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.SearchActivityModel.SearchActivityResponse
+import com.travel.uzoefuapp.companyActivities.BookingProductActivity
 
-data class SearchItem(
-    val iconRes: Int,
-    val title: String,
-    val subtitle: String
-)
-
-class SearchAdapter(private val items: List<SearchItem>) :
+class SearchAdapter(
+    val context: Context,
+    private val items: MutableList<SearchActivityResponse.Datum>
+) :
     RecyclerView.Adapter<SearchAdapter.SearchViewHolder>() {
 
     inner class SearchViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -31,11 +32,22 @@ class SearchAdapter(private val items: List<SearchItem>) :
 
     override fun onBindViewHolder(holder: SearchViewHolder, position: Int) {
         val item = items[position]
-        holder.icon.setImageResource(item.iconRes)
-        holder.title.text = item.title
-        holder.subtitle.text = item.subtitle
+        holder.title.text = item.name
+        holder.subtitle.text = item.categoryName
+
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, BookingProductActivity::class.java)
+            intent.putExtra("categoryId", item.activityId)
+            context.startActivity(intent)
+        }
+
     }
 
     override fun getItemCount() = items.size
-}
 
+    fun updateData(newList: List<SearchActivityResponse.Datum>) {
+        items.clear()
+        items.addAll(newList)
+        notifyDataSetChanged()
+    }
+}

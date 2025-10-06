@@ -7,12 +7,19 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.activityModl.ActivityResponse
 import com.travel.uzoefuapp.adapter.DestinationAdapter
 import com.travel.uzoefuapp.adapter.DestinationCategoryAdapter
+import com.travel.uzoefuapp.adapter.DiscoverAdapter
+import com.travel.uzoefuapp.adapter.OnWishlistClickListener
+import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistBody
+import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistViewModel
 import com.travel.uzoefuapp.databinding.FragmentExploreBinding
 import com.travel.uzoefuapp.discoverDestinationModel.DiscoverDestinationResponse
 import com.travel.uzoefuapp.discoverDestinationModel.DiscoverDestinationViewModel
@@ -23,12 +30,13 @@ import dagger.hilt.android.AndroidEntryPoint
 
 
 @AndroidEntryPoint
-class ExploreFragment : Fragment() {
+class ExploreFragment : Fragment(), OnWishlistClickListener {
     private var _binding: FragmentExploreBinding? = null
     private val binding get() = _binding!!
     private val discoverDestinationViewModel: DiscoverDestinationViewModel by viewModels()
     private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
     private var discoverList: List<DiscoverDestinationResponse.Datum> = ArrayList()
+    private val branchWishlistViewModel: BranchWishlistViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -43,6 +51,7 @@ class ExploreFragment : Fragment() {
 
         discoverDestinationApi()
         discoverDestinationObserver()
+        branchAddToWishlistObserver()
 
         binding.menuIcon.setOnClickListener {
             val intent = Intent(requireContext(), SettingsActivity::class.java)
@@ -54,28 +63,30 @@ class ExploreFragment : Fragment() {
             startActivity(intent)
         }
 
-        /*
-                val categoriesList = listOf(
-                    Category("Pretoria", 64, R.drawable.adventure),
-                    Category("Drakensberg", 56, R.drawable.outdoor_adventures),
-                    Category("Victoria Falls", 54, R.drawable.food),
-                    Category("Kimberly", 46, R.drawable.entertainment),
-                    Category("Brits", 30, R.drawable.tours),
-                    Category("Polokwane", 18, R.drawable.wellness),
-                    Category("Hout Bay", 250, R.drawable.religion),
-                    Category("New Castle", 66, R.drawable.religion),
-                    Category("Njelele", 131, R.drawable.religion),
-                    Category("Wildlife", 65, R.drawable.wildlife),
-                    Category("Sabie", 50, R.drawable.tours),
-                )
-        */
-
         binding.menuIcon.setOnClickListener {
             val intent = Intent(requireContext(), SettingsActivity::class.java)
             startActivity(intent)
         }
 
         return binding.root
+    }
+
+    private fun branchAddToWishlistObserver() {
+        branchWishlistViewModel.progressIndicator.observe(viewLifecycleOwner) {
+
+        }
+        branchWishlistViewModel.branchWishlistResponse.observe(viewLifecycleOwner) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+
+            if (success == true) {
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            }
+
+        }
+        branchWishlistViewModel.errorResponse.observe(viewLifecycleOwner) {
+            ErrorUtil.handlerGeneralError(requireActivity(), it)
+        }
     }
 
     private fun discoverDestinationObserver() {
@@ -96,7 +107,7 @@ class ExploreFragment : Fragment() {
                     binding.destinationRecycler.visibility = View.VISIBLE
                     binding.destinationRecycler.layoutManager =
                         GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
-                    val categoryAdapter = DestinationAdapter(requireContext(), discoverList)
+                    val categoryAdapter = DestinationAdapter(requireContext(), discoverList, this)
                     binding.destinationRecycler.adapter = categoryAdapter
 
                     binding.categoriesRecycler.layoutManager =
@@ -114,6 +125,34 @@ class ExploreFragment : Fragment() {
 
     private fun discoverDestinationApi() {
         discoverDestinationViewModel.discoverDestinationApi(progressDialog, requireActivity())
+
+    }
+
+    override fun onWishlistClicked(product: ActivityResponse.Datum, position: Int) {
+
+    }
+
+    override fun onWishlistDestinationClicked(
+        product: DiscoverDestinationResponse.Datum,
+        position: Int
+    ) {
+        product.iswish = !(product.iswish ?: false)
+
+        val viewHolder = binding.destinationRecycler.findViewHolderForAdapterPosition(position)
+                as? DestinationAdapter.ViewHolder
+
+        viewHolder?.favIcon?.setImageResource(
+            if (product.iswish == true) R.drawable.wishlist_color
+            else R.drawable.ic_wish
+        )
+        branchAddToWishlistApi(product.branchId)
+    }
+
+    private fun branchAddToWishlistApi(branchId: Int?) {
+        val body = BranchWishlistBody(
+            branchId = branchId.toString()
+        )
+        branchWishlistViewModel.addBranchWishlistApi(requireActivity(), progressDialog, body)
 
     }
 }

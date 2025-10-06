@@ -136,10 +136,7 @@ class ProductReviewFragment : Fragment() {
         selectedReview: DetailPageResponse.Data.ActivityRating?
     ) {
         val bottomSheetDialog = BottomSheetDialog(context)
-        val view = LayoutInflater.from(context).inflate(
-            R.layout.layout_review_bottom_sheet,
-            null
-        )
+        val view = LayoutInflater.from(context).inflate(R.layout.layout_review_bottom_sheet, null)
 
         val ratingBar = view.findViewById<RatingBar>(R.id.ratingBar)
         val addPhotosBtn = view.findViewById<Button>(R.id.btnAddPhotos)

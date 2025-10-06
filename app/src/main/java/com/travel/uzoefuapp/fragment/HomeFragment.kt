@@ -2,10 +2,12 @@ package com.travel.uzoefuapp.fragment
 
 import CustomProgressDialog
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.text.TextWatcher
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +27,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +36,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.AddToWishlistModel.AddWishlistBody
 import com.travel.uzoefuapp.AddToWishlistModel.AddWishlistViewModel
 import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.SearchActivityModel.SearchActivityBody
+import com.travel.uzoefuapp.SearchActivityModel.SearchActivityViewModel
 import com.travel.uzoefuapp.activities.ExploreActivity
 import com.travel.uzoefuapp.activities.ExploreCategoriesActivity
 import com.travel.uzoefuapp.activityModl.ActivityBody
@@ -46,7 +51,6 @@ import com.travel.uzoefuapp.adapter.OnCategoryClickListener
 import com.travel.uzoefuapp.adapter.OnWishlistClickListener
 import com.travel.uzoefuapp.adapter.OnWishlistListener
 import com.travel.uzoefuapp.adapter.SearchAdapter
-import com.travel.uzoefuapp.adapter.SearchItem
 import com.travel.uzoefuapp.adapter.SelectPriceAdapter
 import com.travel.uzoefuapp.categoryModel.CategoryResponse
 import com.travel.uzoefuapp.categoryModel.CategoryViewModel
@@ -54,8 +58,17 @@ import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.FragmentHomeBinding
 import com.travel.uzoefuapp.discoverDestinationModel.DiscoverDestinationResponse
 import com.travel.uzoefuapp.discoverDestinationModel.DiscoverDestinationViewModel
+import com.travel.uzoefuapp.provinceModel.ProvinceViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import android.text.Editable
+import android.view.inputmethod.InputMethodManager
+import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistBody
+import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistViewModel
+import kotlinx.coroutines.Job
+
 
 @AndroidEntryPoint
 class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListener,
@@ -64,14 +77,22 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
     private val binding get() = _binding!!
     private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
     private var rvCategories: RecyclerView? = null
+    private lateinit var spinnerCity: AppCompatSpinner
     private val categoryViewModel: CategoryViewModel by viewModels()
     private val activityViewModel: ActivityViewModel by viewModels()
     private val addWishlistViewModel: AddWishlistViewModel by viewModels()
+    private val provinceViewModel: ProvinceViewModel by viewModels()
     private val discoverDestinationViewModel: DiscoverDestinationViewModel by viewModels()
     var data: List<CategoryResponse.Datum> = ArrayList()
     private var activityList: List<ActivityResponse.Datum> = ArrayList()
     private var discoverList: List<DiscoverDestinationResponse.Datum> = ArrayList()
-    private val categoryId = ""
+    private var categoryId = ""
+    var selectedCity = ""
+    private var selectedProvinceId: String = ""
+    private var selectedPrice: String = ""
+    private val searchActivityViewModel: SearchActivityViewModel by viewModels()
+    private val branchWishlistViewModel: BranchWishlistViewModel by viewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -93,7 +114,8 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         getActivityByCategoryObserver()
         getCategoryObserver()
         activityAddToWishListObserver()
-
+        provinceListObserver()
+        branchAddToWishListObserver()
 
         binding.filterData.setOnClickListener { showFilterPopup() }
 
@@ -116,6 +138,73 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         return binding.root
     }
 
+    private fun branchAddToWishListObserver() {
+        branchWishlistViewModel.progressIndicator.observe(viewLifecycleOwner) {
+
+        }
+        branchWishlistViewModel.branchWishlistResponse.observe(viewLifecycleOwner) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+
+            if (success == true) {
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+            }
+        }
+        branchWishlistViewModel.errorResponse.observe(viewLifecycleOwner) {
+            ErrorUtil.handlerGeneralError(requireContext(), it)
+        }
+    }
+
+    private fun provinceListObserver() {
+        provinceViewModel.progressIndicator.observe(viewLifecycleOwner) {}
+
+        provinceViewModel.getTripResponse.observe(viewLifecycleOwner) { event ->
+            val response = event.peekContent()
+            val success = response.success
+            val provinces = response.data ?: emptyList()
+
+            if (success == true) {
+                val provinceNames = mutableListOf("Select Province")
+                provinceNames.addAll(provinces.mapNotNull { it.name })
+
+                val provinceAdapter = ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_spinner_dropdown_item,
+                    provinceNames
+                )
+                spinnerCity.adapter = provinceAdapter
+
+                spinnerCity.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        parent: AdapterView<*>?,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                    ) {
+                        if (position > 0) {
+                            // Get selected province ID
+                            selectedProvinceId = provinces[position - 1].id.toString()
+
+                            // 🔹 Fetch cities for this province
+
+                        } else {
+                            selectedProvinceId = ""
+                        }
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                        selectedProvinceId = ""
+                    }
+                }
+            }
+        }
+
+        provinceViewModel.errorResponse.observe(viewLifecycleOwner) {
+            ErrorUtil.handlerGeneralError(requireContext(), it)
+        }
+    }
+
+
     private fun discoverDestinationObserver() {
         discoverDestinationViewModel.progressIndicator.observe(viewLifecycleOwner) {
 
@@ -134,9 +223,8 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
                     binding.trendingRecyclerview.visibility = View.VISIBLE
                     binding.trendingRecyclerview.layoutManager =
                         LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
-                    val categoryAdapter = DiscoverAdapter(requireContext(), discoverList)
+                    val categoryAdapter = DiscoverAdapter(requireContext(), discoverList, this)
                     binding.trendingRecyclerview.adapter = categoryAdapter
-
                 }
             } else {
 
@@ -275,7 +363,60 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         categoryViewModel.getCategory(progressDialog, requireActivity())
     }
 
-    @SuppressLint("CutPasteId")
+    /*    @SuppressLint("CutPasteId")
+        private fun searchExperience() {
+            val bottomSheetDialog = BottomSheetDialog(requireContext())
+            val view = layoutInflater.inflate(R.layout.search_bottom_sheet, null)
+            bottomSheetDialog.setContentView(view)
+
+            val etSearch = view.findViewById<EditText>(R.id.etSearch)
+            val btnClose = view.findViewById<ImageView>(R.id.btnClose)
+
+            val bottomSheet =
+                bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+
+            bottomSheet?.let {
+                val params = it.layoutParams as ViewGroup.MarginLayoutParams
+                params.height = ViewGroup.LayoutParams.MATCH_PARENT
+                params.topMargin = (30 * resources.displayMetrics.density).toInt()
+                it.layoutParams = params
+            }
+
+            bottomSheet?.setBackgroundResource(R.drawable.bg_bottom_sheet_rounded)
+            val behavior = BottomSheetBehavior.from(bottomSheet!!)
+            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            behavior.skipCollapsed = true
+            behavior.isFitToContents = false
+
+            btnClose.setOnClickListener { bottomSheetDialog.dismiss() }
+
+            val recycler = view.findViewById<RecyclerView>(R.id.rvResults)
+            recycler.layoutManager = LinearLayoutManager(requireContext())
+
+            val sampleData = listOf(
+                SearchItem(R.drawable.ic_paw, "Magaliesburg Game Reserve", "Wildlife · Magaliesburg"),
+                SearchItem(R.drawable.food, "Magaliesburg Eatery", "Food & Cuisine · Magaliesburg"),
+                SearchItem(R.drawable.ic_paw, "Magaliesburg Spa", "Food & Cuisine · Magaliesburg"),
+                SearchItem(
+                    R.drawable.food,
+                    "Magaliesburg Sports Club",
+                    "Food & Cuisine · Magaliesburg"
+                ),
+                SearchItem(
+                    R.drawable.ic_paw,
+                    "Magaliesburg Swimming Pool",
+                    "Food & Cuisine · Magaliesburg"
+                )
+            )
+
+            val adapter = SearchAdapter(sampleData)
+            recycler.adapter = adapter
+
+            bottomSheetDialog.show()
+        }*/
+
+    private var searchJob: Job? = null
+
     private fun searchExperience() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())
         val view = layoutInflater.inflate(R.layout.search_bottom_sheet, null)
@@ -283,6 +424,11 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
 
         val etSearch = view.findViewById<EditText>(R.id.etSearch)
         val btnClose = view.findViewById<ImageView>(R.id.btnClose)
+        val recycler = view.findViewById<RecyclerView>(R.id.rvResults)
+
+        recycler.layoutManager = LinearLayoutManager(requireContext())
+        val adapter = SearchAdapter(requireContext(), mutableListOf())
+        recycler.adapter = adapter
 
         val bottomSheet =
             bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
@@ -292,9 +438,9 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             params.height = ViewGroup.LayoutParams.MATCH_PARENT
             params.topMargin = (30 * resources.displayMetrics.density).toInt()
             it.layoutParams = params
+            it.setBackgroundResource(R.drawable.bg_bottom_sheet_rounded)
         }
 
-        bottomSheet?.setBackgroundResource(R.drawable.bg_bottom_sheet_rounded)
         val behavior = BottomSheetBehavior.from(bottomSheet!!)
         behavior.state = BottomSheetBehavior.STATE_EXPANDED
         behavior.skipCollapsed = true
@@ -302,30 +448,45 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
 
         btnClose.setOnClickListener { bottomSheetDialog.dismiss() }
 
-        val recycler = view.findViewById<RecyclerView>(R.id.rvResults)
-        recycler.layoutManager = LinearLayoutManager(requireContext())
+        // Keep keyboard always open
+        etSearch.requestFocus()
+        etSearch.post {
+            val imm =
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(etSearch, InputMethodManager.SHOW_IMPLICIT)
+        }
 
-        val sampleData = listOf(
-            SearchItem(R.drawable.ic_paw, "Magaliesburg Game Reserve", "Wildlife · Magaliesburg"),
-            SearchItem(R.drawable.food, "Magaliesburg Eatery", "Food & Cuisine · Magaliesburg"),
-            SearchItem(R.drawable.ic_paw, "Magaliesburg Spa", "Food & Cuisine · Magaliesburg"),
-            SearchItem(
-                R.drawable.food,
-                "Magaliesburg Sports Club",
-                "Food & Cuisine · Magaliesburg"
-            ),
-            SearchItem(
-                R.drawable.ic_paw,
-                "Magaliesburg Swimming Pool",
-                "Food & Cuisine · Magaliesburg"
-            )
-        )
+        // API search with debounce
+        etSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s.toString().trim()
+                searchJob?.cancel()
 
-        val adapter = SearchAdapter(sampleData)
-        recycler.adapter = adapter
+                searchJob = lifecycleScope.launch {
+                    delay(400) // debounce
+
+
+                    val body = SearchActivityBody(activityName = query)
+                    searchActivityViewModel.searchActivityApi(requireActivity(), body)
+                }
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
+
+        // Observe API response
+        searchActivityViewModel.searchActivityResponse.observe(viewLifecycleOwner) { event ->
+            val response = event.peekContent()
+            val success = response.status
+            val data = response.data ?: emptyList()
+
+            adapter.updateData(if (success == true) data else emptyList())
+        }
 
         bottomSheetDialog.show()
     }
+
 
     @SuppressLint("MissingInflatedId")
     private fun showFilterPopup() {
@@ -362,7 +523,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         rvCategories = view.findViewById(R.id.rvCategories)
         val rvSelectPrice = view.findViewById<RecyclerView>(R.id.rvSelectPrice)
 
-        val spinnerCity = view.findViewById<AppCompatSpinner>(R.id.spinnerCity)
+        spinnerCity = view.findViewById(R.id.spinnerCity)
         val spinnerRadius = view.findViewById<Spinner>(R.id.spinnerRadius)
 
         val cbAllRatings = view.findViewById<CheckBox>(R.id.cbAllRatings)
@@ -384,24 +545,8 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             }
         }
 
-        val cities = arrayOf("Select City", "Johannesburg", "Cape Town", "Durban", "Pretoria")
-        val cityAdapter =
-            ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, cities)
-        spinnerCity.adapter = cityAdapter
-
-        var selectedCity = ""
-        spinnerCity.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                selectedCity = if (position > 0) cities[position] else ""
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
+        //call api province
+        provinceListApi()
 
         getCategoryBottomSheetApi()
         getCategoryBottomSheetObserver()
@@ -479,23 +624,68 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
                 rvCategories.layoutManager = GridLayoutManager(requireContext(), 3)
                 rvCategories.adapter = CategoryAdapter(requireContext(), categoriesList)
         */
+        val priceRanges = listOf("0 - 150", "151 - 300", "301 - 500", "500+")
 
-
+        val selectPriceAdapter =
+            SelectPriceAdapter(requireContext(), priceRanges) { selectedPrices ->
+                // This lambda is called whenever selection changes
+                // Send selectedPrices to your API
+                selectedPrice = selectedPrices.toString()
+            }
         rvSelectPrice.layoutManager = GridLayoutManager(requireContext(), 1)
-        rvSelectPrice.adapter = SelectPriceAdapter(requireContext())
+        rvSelectPrice.adapter = selectPriceAdapter
+
+
+        /*
+                rvSelectPrice.adapter = SelectPriceAdapter(requireContext())
+        */
 
         backIcon.setOnClickListener { bottomSheetDialog.dismiss() }
         closePopup.setOnClickListener { bottomSheetDialog.dismiss() }
 
         btnApply.setOnClickListener {
+            // 1️⃣ Selected City
+            val selectedCityValue = spinnerCity.selectedItem?.toString() ?: ""
+
+            // 2️⃣ Selected Radius
+            val selectedRadiusValue = selectedRadius
+
+            // 3️⃣ Selected Prices (from SelectPriceAdapter singleton or callback)
+            //  val selectedPriceValue = SelectedFilters.selectedPrices.joinToString(",")
+
+            // 4️⃣ Selected Ratings (from rating checkboxes)
+            val selectedRatingsValue = ratingCheckboxes
+                .filter { it.isChecked }
+                .mapIndexed { index, _ -> index + 1 }  // rating 1..5
+                .joinToString(",")
+
+            // Send via Intent
             val intent = Intent(requireContext(), ExploreActivity::class.java)
-            intent.putExtra("categoryId", categoryId)
+            intent.putExtra("selectedCity", selectedProvinceId)
+            intent.putExtra("selectedRadius", categoryId)
+            intent.putExtra("selectedPrice", selectedPrice)
+            intent.putExtra("selectedRatings", selectedRatingsValue)
+            intent.putExtra("source", "filter")
 
             startActivity(intent)
             bottomSheetDialog.dismiss()
         }
 
         bottomSheetDialog.show()
+    }
+
+    /*    private fun filterActivityApi() {
+            val body = FilterActivityBody(
+                provinceId = selectedProvinceId,
+                price = selectedPrice,
+                rating = ,
+                categoryId = categoryId
+            )
+
+        }*/
+
+    private fun provinceListApi() {
+        provinceViewModel.provinceListApi(progressDialog, requireActivity())
     }
 
     private fun getCategoryBottomSheetObserver() {
@@ -506,6 +696,8 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             val success = content.success
             val message = content.message
             data = content.data ?: emptyList()
+
+            val category = content.Datum()
 
             if (success == true) {
                 if (data.isEmpty()) {
@@ -552,6 +744,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
     }
 
     override fun onCategoryClick(categoryId: String, categoryName: String) {
+        this.categoryId = categoryId
         getActivityByCategory(categoryId)
     }
 
@@ -581,6 +774,31 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
                    else R.drawable.ic_wish
                )
                addToWishlistApi(product.id)*/
+
+    }
+
+    override fun onWishlistDestinationClicked(
+        product: DiscoverDestinationResponse.Datum,
+        position: Int
+    ) {
+        product.iswish = !(product.iswish ?: false)
+
+        val viewHolder = binding.trendingRecyclerview.findViewHolderForAdapterPosition(position)
+                as? DiscoverAdapter.ViewHolder
+
+        viewHolder?.favIcon?.setImageResource(
+            if (product.iswish == true) R.drawable.wishlist_color
+            else R.drawable.ic_wish
+        )
+        branchAddToWishlistApi(product.branchId)
+
+    }
+
+    private fun branchAddToWishlistApi(id: Int?) {
+        val body = BranchWishlistBody(
+            branchId = id.toString()
+        )
+        branchWishlistViewModel.addBranchWishlistApi(requireActivity(), progressDialog, body)
 
     }
 

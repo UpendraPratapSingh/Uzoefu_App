@@ -44,53 +44,95 @@ class WishlistAdapter(
 
         val imagePath = "https://mobappssolutions.in/uzoefu/public/images/activity_images/"
 
-        holder.itemView.setOnClickListener {
-            val checkBox = holder.deleteIcon
-            checkBox.isChecked = !checkBox.isChecked
-            wishlistData.id?.let { it1 ->
-                onclickDeleteWishListListener.onWishlistClicked(listOf(it1.toString()), position)
-            }
-        }
-
+        // Click on item to open details OR toggle checkbox if in edit mode
         holder.itemView.setOnClickListener {
             if (!isEditMode) {
-                // Only navigate to booking if NOT in edit mode
                 val intent = Intent(context, BookingProductActivity::class.java)
                 intent.putExtra("categoryId", wishlistData.activityId)
                 context.startActivity(intent)
             } else {
-                // Optional: show a message if user clicks in edit mode
-                val checkBox = holder.deleteIcon
-                checkBox.isChecked = !checkBox.isChecked
-                wishlistData.id?.let { it1 ->
-                    onclickDeleteWishListListener.onWishlistClicked(
-                        listOf(it1.toString()),
-                        position
-                    )
-                }
+                holder.deleteIcon.isChecked = !holder.deleteIcon.isChecked
             }
         }
 
         Glide.with(holder.itemView.context)
             .load(imagePath + wishlistData.image)
             .into(holder.itemImage)
+
         holder.deleteIcon.visibility = if (isEditMode) View.VISIBLE else View.GONE
 
-        holder.deleteIcon.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                wishlistData.id?.toString()?.let {
-                    if (!selectedIds.contains(it)) {
-                        selectedIds.add(it)
-                    }
-                }
-            } else {
-                selectedIds.remove(wishlistData.id.toString())
-            }
+        holder.deleteIcon.setOnCheckedChangeListener(null) // prevent recycling bug
+        holder.deleteIcon.isChecked = selectedIds.contains(wishlistData.id.toString())
 
+        holder.deleteIcon.setOnCheckedChangeListener { _, isChecked ->
+            val id = wishlistData.id.toString()
+            if (isChecked) {
+                if (!selectedIds.contains(id)) selectedIds.add(id)
+            } else {
+                selectedIds.remove(id)
+            }
             onclickDeleteWishListListener.onWishlistClicked(selectedIds, position)
         }
-
     }
+
+
+    /*
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            val wishlistData = wishList[position]
+            holder.title.text = wishlistData.name
+            holder.itemPrice.text = "R ${wishlistData.price.toString()}"
+            holder.rateText.text = "(${wishlistData.ratingCount.toString()})"
+
+            val imagePath = "https://mobappssolutions.in/uzoefu/public/images/activity_images/"
+
+            holder.itemView.setOnClickListener {
+                val checkBox = holder.deleteIcon
+                checkBox.isChecked = !checkBox.isChecked
+                wishlistData.id?.let { it1 ->
+                    onclickDeleteWishListListener.onWishlistClicked(listOf(it1.toString()), position)
+                }
+            }
+
+            holder.itemView.setOnClickListener {
+                if (!isEditMode) {
+                    // Only navigate to booking if NOT in edit mode
+                    val intent = Intent(context, BookingProductActivity::class.java)
+                    intent.putExtra("categoryId", wishlistData.activityId)
+                    context.startActivity(intent)
+                } else {
+                    // Optional: show a message if user clicks in edit mode
+                    val checkBox = holder.deleteIcon
+                    checkBox.isChecked = !checkBox.isChecked
+                    wishlistData.id?.let { it1 ->
+                        onclickDeleteWishListListener.onWishlistClicked(
+                            listOf(it1.toString()),
+                            position
+                        )
+                    }
+                }
+            }
+
+            Glide.with(holder.itemView.context)
+                .load(imagePath + wishlistData.image)
+                .into(holder.itemImage)
+            holder.deleteIcon.visibility = if (isEditMode) View.VISIBLE else View.GONE
+
+            holder.deleteIcon.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    wishlistData.id?.toString()?.let {
+                        if (!selectedIds.contains(it)) {
+                            selectedIds.add(it)
+                        }
+                    }
+                } else {
+                    selectedIds.remove(wishlistData.id.toString())
+                }
+
+                onclickDeleteWishListListener.onWishlistClicked(selectedIds, position)
+            }
+
+        }
+    */
 
     override fun getItemCount(): Int {
         return wishList.size

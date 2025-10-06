@@ -26,8 +26,7 @@
             android:layout_margin="8dp"
             android:background="@drawable/heart_bg"
             android:padding="6dp"
-            android:src="@drawable/ic_wishlist"
-            app:tint="@color/white" />
+            android:src="@drawable/ic_wish" />
 
         <View
             android:layout_width="match_parent"

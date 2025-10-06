@@ -282,7 +282,7 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
         _binding = null
     }
 
-    // Agar adapter se poori selectedIds list mil rahi ho (ex: multiple selection)
+/*    // Agar adapter se poori selectedIds list mil rahi ho (ex: multiple selection)
     override fun onWishlistClicked(selectedIds: List<String>, position: Int) {
         // Pehle purani IDs clear nahi karenge, sirf naye add karenge jo already list me nahi hain
         selectedWishlistIds.addAll(
@@ -291,6 +291,22 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
         )
 
         Log.d("SelectedIDs", selectedWishlistIds.toString())
+    }*/
+
+    override fun onWishlistClicked(selectedIds: List<String>, position: Int) {
+        // Step 1: Naye selected IDs list me rakh lo (adapter se mil rahi hai)
+        val newSelectedIds = selectedIds.map { it.toString() }
+
+        // Step 2: Purani list me se un IDs ko hata do jo ab selected nahi hain
+        selectedWishlistIds.retainAll(newSelectedIds)
+
+        // Step 3: Nayi IDs add kar do jo abhi tak list me nahi hain
+        selectedWishlistIds.addAll(
+            newSelectedIds.filter { !selectedWishlistIds.contains(it) }
+        )
+
+        Log.d("SelectedIDs", selectedWishlistIds.toString())
     }
+
 
 }

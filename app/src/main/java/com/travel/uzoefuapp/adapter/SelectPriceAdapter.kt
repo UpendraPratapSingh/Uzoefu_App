@@ -1,5 +1,6 @@
 package com.travel.uzoefuapp.adapter
 
+
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.travel.uzoefuapp.R
 
 class SelectPriceAdapter(
-    val context: Context
+    private val context: Context,
+    private val prices: List<String>, // pass dynamic price ranges
+    private val onPriceSelected: (List<String>) -> Unit // callback for selection
 ) : RecyclerView.Adapter<SelectPriceAdapter.ViewHolder>() {
 
     private val selectedFilters = mutableSetOf<String>()
@@ -21,11 +24,11 @@ class SelectPriceAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val price = "0 - 150"
+        val price = prices[position]
         holder.bind(price, selectedFilters.contains(price))
     }
 
-    override fun getItemCount(): Int = 4
+    override fun getItemCount(): Int = prices.size
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val checkBox: CheckBox = itemView.findViewById(R.id.checkboxPrice)
@@ -33,17 +36,18 @@ class SelectPriceAdapter(
         fun bind(price: String, isSelected: Boolean) {
             checkBox.text = price
 
+            // Remove previous listener to prevent wrong state
             checkBox.setOnCheckedChangeListener(null)
-
             checkBox.isChecked = isSelected
 
             checkBox.setOnCheckedChangeListener { _, checked ->
-                if (checked) {
-                    selectedFilters.add(price)
-                } else {
-                    selectedFilters.remove(price)
-                }
+                if (checked) selectedFilters.add(price) else selectedFilters.remove(price)
+                // Notify selected prices
+                onPriceSelected(selectedFilters.toList())
             }
         }
     }
+
+    // Optional: get selected prices manually
+    fun getSelectedPrices(): List<String> = selectedFilters.toList()
 }

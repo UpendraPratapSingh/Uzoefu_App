@@ -3,6 +3,8 @@ package com.travel.uzoefuapp.repository
 import com.travel.uzoefuapp.AddToWishlistModel.AddWishlistBody
 import com.travel.uzoefuapp.AddToWishlistModel.AddWishlistResponse
 import com.travel.uzoefuapp.GetWishlistModel.GetWishlistResponse
+import com.travel.uzoefuapp.SearchActivityModel.SearchActivityBody
+import com.travel.uzoefuapp.SearchActivityModel.SearchActivityResponse
 import com.travel.uzoefuapp.activityModl.ActivityBody
 import com.travel.uzoefuapp.activityModl.ActivityResponse
 import com.travel.uzoefuapp.addTripModel.AddTripBody
@@ -13,6 +15,8 @@ import com.travel.uzoefuapp.bookingCompleteModel.BookingCompleteBody
 import com.travel.uzoefuapp.bookingCompleteModel.BookingCompleteResponse
 import com.travel.uzoefuapp.bookingCompleteModel.BookingDetailBody
 import com.travel.uzoefuapp.bookingCompleteModel.BookingDetailResponse
+import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistBody
+import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistResponse
 import com.travel.uzoefuapp.categoryModel.CategoryResponse
 import com.travel.uzoefuapp.deleteWishlistModel.DeleteWishlistBody
 import com.travel.uzoefuapp.deleteWishlistModel.DeleteWishlistResponse
@@ -21,6 +25,8 @@ import com.travel.uzoefuapp.detailModel.DetailPageResponse
 import com.travel.uzoefuapp.discoverDestinationModel.DestinationDetailBody
 import com.travel.uzoefuapp.discoverDestinationModel.DestinationDetailResponse
 import com.travel.uzoefuapp.discoverDestinationModel.DiscoverDestinationResponse
+import com.travel.uzoefuapp.filterActivityModel.FilterActivityBody
+import com.travel.uzoefuapp.filterActivityModel.FilterActivityResponse
 import com.travel.uzoefuapp.forgetPasswordModel.ForgotPasswordBody
 import com.travel.uzoefuapp.forgetPasswordModel.ForgotPasswordResponse
 import com.travel.uzoefuapp.forgetPasswordModel.OtpVerificationBody
@@ -36,6 +42,7 @@ import com.travel.uzoefuapp.overviewModel.OverviewResponse
 import com.travel.uzoefuapp.paymentModel.PaymentResponse
 import com.travel.uzoefuapp.priceCalculationModel.PriceCalculationBody
 import com.travel.uzoefuapp.priceCalculationModel.PriceCalculationResponse
+import com.travel.uzoefuapp.provinceModel.ProvinceResponse
 import com.travel.uzoefuapp.ratingModel.RatingResponse
 import com.travel.uzoefuapp.services.ApiServices
 import com.travel.uzoefuapp.signUpModel.SignUpBody
@@ -171,6 +178,22 @@ class CommonRepository @Inject constructor(private val services: ApiServices) {
 
     fun tripList(): Observable<GetTripResponse>{
         return services.tripList(Uzoefu.encryptedPrefs.bearerToken)
+    }
+
+    fun province(): Observable<ProvinceResponse>{
+        return services.provinceList(Uzoefu.encryptedPrefs.bearerToken)
+    }
+
+    fun filterActivity(body: FilterActivityBody): Observable<FilterActivityResponse>{
+        return services.filterActivity(Uzoefu.encryptedPrefs.bearerToken, body)
+    }
+
+    fun searchActivity(body: SearchActivityBody): Observable<SearchActivityResponse>{
+        return services.searchActivity(Uzoefu.encryptedPrefs.bearerToken, body)
+    }
+
+    fun addBranchWishlist(body: BranchWishlistBody): Observable<BranchWishlistResponse>{
+        return services.addBranchWishlist(Uzoefu.encryptedPrefs.bearerToken, body)
     }
 
     suspend fun makePayment(

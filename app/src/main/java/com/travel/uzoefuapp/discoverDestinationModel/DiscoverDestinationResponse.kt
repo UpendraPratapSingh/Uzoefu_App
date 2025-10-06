@@ -34,5 +34,10 @@ class DiscoverDestinationResponse : Serializable {
         @SerializedName("activity_image")
         @Expose
         var activityImage: String? = null
+
+        @SerializedName("iswish")
+        @Expose
+        var iswish: Boolean? = null
+
     }
 }

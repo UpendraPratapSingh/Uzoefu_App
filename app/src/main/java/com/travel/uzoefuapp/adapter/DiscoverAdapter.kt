@@ -14,8 +14,11 @@ import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.discoverDestinationModel.DiscoverDestinationResponse
 
 
-class DiscoverAdapter(val context: Context,
-    val destinationList: List<DiscoverDestinationResponse.Datum>
+class DiscoverAdapter(
+    val context: Context,
+    val destinationList: List<DiscoverDestinationResponse.Datum>,
+    private val wishlistClickListener: OnWishlistClickListener,
+
     ) : RecyclerView.Adapter<DiscoverAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -34,6 +37,27 @@ class DiscoverAdapter(val context: Context,
             .diskCacheStrategy(DiskCacheStrategy.ALL)
             .into(holder.backImage)
 
+        holder.favIcon.setImageResource(
+            if (discoverList.iswish == true) R.drawable.wishlist_color
+            else R.drawable.ic_wish
+        )
+
+        holder.favIcon.setOnClickListener { view ->
+            view.animate()
+                .scaleX(1.3f)
+                .scaleY(1.3f)
+                .setDuration(150)
+                .withEndAction {
+                    view.animate()
+                        .scaleX(1f)
+                        .scaleY(1f)
+                        .setDuration(150)
+                        .start()
+                }
+                .start()
+
+            wishlistClickListener.onWishlistDestinationClicked(discoverList, position)
+        }
     }
 
     override fun getItemCount(): Int {
@@ -44,6 +68,7 @@ class DiscoverAdapter(val context: Context,
         val titleText: TextView = itemView.findViewById(R.id.titleText)
         val activityCount: TextView = itemView.findViewById(R.id.subText)
         val backImage: ImageView = itemView.findViewById(R.id.cardImage)
+        val favIcon: ImageView = itemView.findViewById(R.id.favIcon)
 
     }
 }
