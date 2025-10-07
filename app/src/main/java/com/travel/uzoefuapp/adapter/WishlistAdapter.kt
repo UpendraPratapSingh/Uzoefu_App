@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.imageview.ShapeableImageView
@@ -48,7 +47,7 @@ class WishlistAdapter(
         holder.itemView.setOnClickListener {
             if (!isEditMode) {
                 val intent = Intent(context, BookingProductActivity::class.java)
-                intent.putExtra("categoryId", wishlistData.activityId)
+                intent.putExtra("categoryId", wishlistData.activityId?.toIntOrNull() ?: -1)
                 context.startActivity(intent)
             } else {
                 holder.deleteIcon.isChecked = !holder.deleteIcon.isChecked
@@ -61,7 +60,7 @@ class WishlistAdapter(
 
         holder.deleteIcon.visibility = if (isEditMode) View.VISIBLE else View.GONE
 
-        holder.deleteIcon.setOnCheckedChangeListener(null) // prevent recycling bug
+        holder.deleteIcon.setOnCheckedChangeListener(null)
         holder.deleteIcon.isChecked = selectedIds.contains(wishlistData.id.toString())
 
         holder.deleteIcon.setOnCheckedChangeListener { _, isChecked ->

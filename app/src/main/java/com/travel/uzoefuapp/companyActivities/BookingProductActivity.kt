@@ -121,7 +121,6 @@ class BookingProductActivity : AppCompatActivity() {
         val actions = listOf(
             Action(R.drawable.ic_call, "Call"),
             Action(R.drawable.ic_shared, "Map"),
-            Action(R.drawable.ic_copy, "Add to Trip"),
             Action(R.drawable.ic_shared, "Share")
         )
 

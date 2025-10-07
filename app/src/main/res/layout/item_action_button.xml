@@ -9,7 +9,7 @@
     android:background="@drawable/category_background"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:paddingHorizontal="12dp"
+    android:paddingHorizontal="20dp"
     android:paddingVertical="10dp">
 
     <ImageView

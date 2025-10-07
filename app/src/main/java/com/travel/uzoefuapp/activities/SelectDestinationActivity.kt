@@ -22,7 +22,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatSpinner
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
@@ -35,29 +34,41 @@ import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activityModl.ActivityBody
 import com.travel.uzoefuapp.activityModl.ActivityResponse
 import com.travel.uzoefuapp.activityModl.ActivityViewModel
+import com.travel.uzoefuapp.adapter.CategoryAdapter
 import com.travel.uzoefuapp.adapter.DestinationDetailAdapter
 import com.travel.uzoefuapp.adapter.DiscoverDestination
 import com.travel.uzoefuapp.adapter.ExploreResultAdapter
+import com.travel.uzoefuapp.adapter.OnCategoryClickListener
 import com.travel.uzoefuapp.adapter.OnWishlistListener
 import com.travel.uzoefuapp.adapter.SelectPriceAdapter
 import com.travel.uzoefuapp.adapter.SelectedDestinationAdapter
+import com.travel.uzoefuapp.categoryModel.CategoryResponse
+import com.travel.uzoefuapp.categoryModel.CategoryViewModel
 import com.travel.uzoefuapp.databinding.ActivitySelectDestinationBinding
 import com.travel.uzoefuapp.discoverDestinationModel.DestinationDetailBody
 import com.travel.uzoefuapp.discoverDestinationModel.DestinationDetailResponse
 import com.travel.uzoefuapp.discoverDestinationModel.DestinationDetailViewModel
+import com.travel.uzoefuapp.provinceModel.ProvinceViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener {
+class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCategoryClickListener {
     lateinit var binding: ActivitySelectDestinationBinding
     private val activityViewModel: ActivityViewModel by viewModels()
     var data: List<ActivityResponse.Datum> = ArrayList()
+    var data1: List<CategoryResponse.Datum> = ArrayList()
+    private var selectedPrice: String = ""
     var categoryId = ""
+    private var rvCategories: RecyclerView? = null
+    private var selectedProvinceId: String = ""
+    private lateinit var spinnerCity: AppCompatSpinner
     private val progressDialog by lazy { CustomProgressDialog(this) }
     private val addWishlistViewModel: AddWishlistViewModel by viewModels()
     private val destinationDetailViewModel: DestinationDetailViewModel by viewModels()
     private var destinationDetail: List<DestinationDetailResponse.Datum> = ArrayList()
+    private val provinceViewModel: ProvinceViewModel by viewModels()
+    private val categoryViewModel: CategoryViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +81,7 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
         val categoryId = intent.getStringExtra("categoryId") ?: ""
         val branchId = intent.getStringExtra("branchId") ?: ""
 
@@ -79,6 +91,7 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener {
         getActivityApi(categoryId, branchId)
         getActivityObserver()
         activityAddToWishListObserver()
+        provinceListObserver()
 
         /*    destinationDetailApi()
             destinationDetailObserver()*/
@@ -114,6 +127,56 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener {
                 binding.destinationRecyclerView.adapter = ExploreResultAdapter(this)*/
 
     }
+
+    private fun provinceListObserver() {
+        provinceViewModel.progressIndicator.observe(this) {}
+
+        provinceViewModel.getTripResponse.observe(this) { event ->
+            val response = event.peekContent()
+            val success = response.success
+            val provinces = response.data ?: emptyList()
+
+            if (success == true) {
+                val provinceNames = mutableListOf("Select Province")
+                provinceNames.addAll(provinces.mapNotNull { it.name })
+
+                val provinceAdapter = ArrayAdapter(
+                    this,
+                    android.R.layout.simple_spinner_dropdown_item,
+                    provinceNames
+                )
+                spinnerCity.adapter = provinceAdapter
+
+                spinnerCity.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                    override fun onItemSelected(
+                        parent: AdapterView<*>?,
+                        view: View?,
+                        position: Int,
+                        id: Long
+                    ) {
+                        if (position > 0) {
+                            // Get selected province ID
+                            selectedProvinceId = provinces[position - 1].id.toString()
+
+                            // 🔹 Fetch cities for this province
+
+                        } else {
+                            selectedProvinceId = ""
+                        }
+                    }
+
+                    override fun onNothingSelected(parent: AdapterView<*>?) {
+                        selectedProvinceId = ""
+                    }
+                }
+            }
+        }
+
+        provinceViewModel.errorResponse.observe(this) {
+            ErrorUtil.handlerGeneralError(this, it)
+        }
+    }
+
 
     private fun destinationDetailObserver() {
         destinationDetailViewModel.progressIndicator.observe(this) {
@@ -261,10 +324,10 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener {
         val categoriesSection = view.findViewById<ConstraintLayout>(R.id.categoriesSection)
         val ratingFilterContainer = view.findViewById<LinearLayout>(R.id.ratingFilterContainer)
 
-        val rvCategories = view.findViewById<RecyclerView>(R.id.rvCategories)
+        rvCategories = view.findViewById(R.id.rvCategories)
         val rvSelectPrice = view.findViewById<RecyclerView>(R.id.rvSelectPrice)
 
-        val spinnerCity = view.findViewById<AppCompatSpinner>(R.id.spinnerCity)
+        spinnerCity = view.findViewById(R.id.spinnerCity)
         val spinnerRadius = view.findViewById<Spinner>(R.id.spinnerRadius)
 
         val cbAllRatings = view.findViewById<CheckBox>(R.id.cbAllRatings)
@@ -286,20 +349,10 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener {
             }
         }
 
-        val cities = arrayOf("Select City", "Johannesburg", "Cape Town", "Durban", "Pretoria")
-        val cityAdapter = ArrayAdapter(this, android.R.layout.simple_spinner_dropdown_item, cities)
-        spinnerCity.adapter = cityAdapter
+        provinceListApi()
 
-        var selectedCity = ""
-        spinnerCity.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?, view: View?, position: Int, id: Long
-            ) {
-                selectedCity = if (position > 0) cities[position] else ""
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {}
-        }
+        getCategoryBottomSheetApi()
+        getCategoryBottomSheetObserver()
 
         val radiusOptions = arrayOf(
             "Select Radius", "2 Kilometres", "5 Kilometres", "10 Kilometres", "20 Kilometres"
@@ -368,15 +421,15 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener {
         val selectPriceAdapter = SelectPriceAdapter(this, priceRanges) { selectedPrices ->
             // This lambda is called whenever selection changes
             // Send selectedPrices to your API
-           //selectedPrice = selectedPrices.toString()
+            selectedPrice = selectedPrices.toString()
         }
 
         rvSelectPrice.layoutManager = GridLayoutManager(this, 1)
         rvSelectPrice.adapter = selectPriceAdapter
 
 
- /*       rvSelectPrice.layoutManager = GridLayoutManager(this, 1)
-        rvSelectPrice.adapter = SelectPriceAdapter(this,)*/
+        /*       rvSelectPrice.layoutManager = GridLayoutManager(this, 1)
+               rvSelectPrice.adapter = SelectPriceAdapter(this,)*/
 
         /*   binding.btnApply.setOnClickListener {
                val selectedPrices = adapter.getSelectedFilters()
@@ -387,13 +440,90 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener {
         closePopup.setOnClickListener { bottomSheetDialog.dismiss() }
 
         btnApply.setOnClickListener {
+            // 1️⃣ Selected City
+            val selectedCityValue = spinnerCity.selectedItem?.toString() ?: ""
+
+            // 2️⃣ Selected Radius
+            val selectedRadiusValue = selectedRadius
+
+            // 3️⃣ Selected Prices (from SelectPriceAdapter singleton or callback)
+            //  val selectedPriceValue = SelectedFilters.selectedPrices.joinToString(",")
+
+            // 4️⃣ Selected Ratings (from rating checkboxes)
+            val selectedRatingsValue = ratingCheckboxes
+                .filter { it.isChecked }
+                .mapIndexed { index, _ -> index + 1 }  // rating 1..5
+                .joinToString(",")
+
             val intent = Intent(this@SelectDestinationActivity, ExploreActivity::class.java)
+            intent.putExtra("selectedCity", selectedProvinceId)
+            intent.putExtra("selectedRadius", categoryId)
+            intent.putExtra("selectedPrice", selectedPrice)
+            intent.putExtra("selectedRatings", selectedRatingsValue)
+            intent.putExtra("source", "filter")
+
             startActivity(intent)
             bottomSheetDialog.dismiss()
         }
 
+        /*
+                btnApply.setOnClickListener {
+                    val intent = Intent(this@SelectDestinationActivity, ExploreActivity::class.java)
+                    intent.putExtra("selectedCity", selectedProvinceId)
+                    intent.putExtra("selectedRadius", categoryId)
+                    intent.putExtra("selectedPrice", selectedPrice)
+                    intent.putExtra("selectedRatings", selectedRatingsValue)
+                    intent.putExtra("source", "filter")
+                    startActivity(intent)
+                    bottomSheetDialog.dismiss()
+                }
+        */
+
         bottomSheetDialog.show()
     }
+
+    private fun getCategoryBottomSheetObserver() {
+        categoryViewModel.progressIndicator.observe(this) {}
+
+        categoryViewModel.mCategoryResponse.observe(this) { event ->
+            val content = event.peekContent()
+            val success = content.success
+            val message = content.message
+            data1 = content.data ?: emptyList()
+
+            val category = content.Datum()
+
+            if (success == true) {
+                if (data1.isEmpty()) {
+                    rvCategories?.visibility = View.GONE
+                } else {
+                    rvCategories?.visibility = View.VISIBLE
+                    rvCategories?.layoutManager =
+                        GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false)
+                    val categoryAdapter = CategoryAdapter(this, data1, this)
+                    rvCategories?.adapter = categoryAdapter
+                }
+            } else {
+                Toast.makeText(
+                    this, message ?: "Failed to load categories",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+        categoryViewModel.errorResponse.observe(this) { error ->
+            ErrorUtil.handlerGeneralError(this@SelectDestinationActivity, error)
+        }
+    }
+
+
+    private fun getCategoryBottomSheetApi() {
+        categoryViewModel.getCategory(progressDialog, this)
+    }
+
+    private fun provinceListApi() {
+        provinceViewModel.provinceListApi(progressDialog, this)
+    }
+
 
     override fun onWishlistClick(product: ActivityResponse.Datum, position: Int) {
         product.isWish = !(product.isWish ?: false)
@@ -427,5 +557,9 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener {
     private fun addToWishlistApi(id: Int?) {
         val body = AddWishlistBody(activity_id = id.toString())
         addWishlistViewModel.addToWishListApi(progressDialog, this, body)
+    }
+
+    override fun onCategoryClick(categoryId: String, categoryName: String) {
+
     }
 }

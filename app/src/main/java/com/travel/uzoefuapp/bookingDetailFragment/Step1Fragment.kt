@@ -1,6 +1,7 @@
 package com.travel.uzoefuapp.bookingDetailFragment
 
 import CustomProgressDialog
+import android.R
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
@@ -8,7 +9,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.Spinner
+import android.widget.Toast
 import androidx.fragment.app.viewModels
+import com.travel.uzoefuapp.activityTimeModel.ActivityTimeBody
+import com.travel.uzoefuapp.activityTimeModel.ActivityTimeViewModel
 import com.travel.uzoefuapp.databinding.FragmentStep1Binding
 import com.travel.uzoefuapp.priceCalculationModel.PriceCalculationBody
 import com.travel.uzoefuapp.priceCalculationModel.PriceCalculationViewModel
@@ -23,6 +30,7 @@ class Step1Fragment() :
     private val binding get() = _binding!!
     private val priceCalculationViewModel: PriceCalculationViewModel by viewModels()
     private val progressDialog by lazy { CustomProgressDialog(requireActivity()) }
+    private val activityTimeViewModel: ActivityTimeViewModel by viewModels()
     private var adultCount = 1
     private var kidCount = 1
     private var selectedDate = ""
@@ -86,6 +94,8 @@ class Step1Fragment() :
         // priceCalculateApi()
         priceCalculateObserver()
         priceCalculateApi()
+        activityTimeApi()
+        activityTimeObserver()
 
         binding.btnPlusAdult.setOnClickListener {
             adultCount++
@@ -107,8 +117,9 @@ class Step1Fragment() :
             calculateLocalPrice()
             triggerPriceCalculation()
         }
+
         binding.btnMinusKids.setOnClickListener {
-            if (kidCount > 1) {
+            if (kidCount > 0) { // allow zero
                 kidCount--
                 binding.tvKidCount.text = kidCount.toString()
                 calculateLocalPrice()
@@ -116,7 +127,82 @@ class Step1Fragment() :
             }
         }
 
+
+        val timeSlots = listOf(
+            "09:00 - 10:00",
+            "10:00 - 11:00",
+            "11:00 - 12:00",
+            "12:00 - 13:00",
+            "13:00 - 14:00",
+            "14:00 - 15:00",
+            "15:00 - 16:00",
+            "16:00 - 17:00"
+        )
+
+
+
+
         return binding.root
+    }
+
+    private fun activityTimeObserver() {
+        activityTimeViewModel.progressIndicator.observe(viewLifecycleOwner) {
+            // handle loader if needed
+        }
+
+        activityTimeViewModel.activityTimeResponse.observe(viewLifecycleOwner) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+            val data = response.peekContent().data
+
+            if (success == true && data != null) {
+                val timeSlots = listOf(
+                    "Mon: ${data.monFrom} - ${data.monTo}",
+                    "Tue: ${data.tueFrom} - ${data.tueTo}",
+                    "Wed: ${data.wedFrom} - ${data.wedTo}",
+                    "Thu: ${data.thuFrom} - ${data.thuTo}",
+                    "Fri: ${data.friFrom} - ${data.friTo}",
+                    "Sat: ${data.satFrom} - ${data.satTo}",
+                    "Sun: ${data.sunFrom} - ${data.sunTo}"
+                )
+
+                val adapter = ArrayAdapter(
+                    requireContext(),
+                    android.R.layout.simple_spinner_dropdown_item,
+                    timeSlots
+                )
+                binding.spinnerSelectTime.adapter = adapter
+
+                binding.spinnerSelectTime.onItemSelectedListener =
+                    object : AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(
+                            parent: AdapterView<*>?,
+                            view: View?,
+                            position: Int,
+                            id: Long
+                        ) {
+                            val selectedTime = timeSlots[position]
+
+                        }
+
+                        override fun onNothingSelected(parent: AdapterView<*>?) {}
+                    }
+            } else {
+                Toast.makeText(requireContext(), message ?: "Something went wrong", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        activityTimeViewModel.errorResponse.observe(viewLifecycleOwner) {
+            ErrorUtil.handlerGeneralError(requireActivity(), it)
+        }
+    }
+
+    private fun activityTimeApi() {
+        val body = ActivityTimeBody(
+            activityId = activityId.toString()
+        )
+        activityTimeViewModel.activityTimeApi(requireActivity(), progressDialog, body)
+
     }
 
 
@@ -162,7 +248,6 @@ class Step1Fragment() :
                 binding.tvSubtotal.text = "R${priceResponse?.prcingDetail?.subtotal}"
                 binding.tvTotal.text = "R${priceResponse?.prcingDetail?.total}"
 
-
                 // Convert prices to integers before storing
                 val adultPriceInt =
                     (priceResponse?.prcingDetail?.adultCount ?: "0.00").toDouble().toInt()
@@ -172,7 +257,7 @@ class Step1Fragment() :
                     (priceResponse?.prcingDetail?.subtotal ?: "0.00").toDouble().toInt()
                 val totalInt = (priceResponse?.prcingDetail?.total ?: "0.00").toDouble().toInt()
 
-// Store in SharedPreferences
+                // Store in SharedPreferences
                 with(sharedPref.edit()) {
                     putString("activity_id", activityId)
                     putString("date", priceResponse?.prcingDetail?.date ?: "")
@@ -187,50 +272,50 @@ class Step1Fragment() :
             }
         }
 
-            priceCalculationViewModel.errorResponse.observe(viewLifecycleOwner) {
-                ErrorUtil.handlerGeneralError(requireContext(), it)
-            }
-        }
-
-        private fun priceCalculateApi() {
-            val body = activityId?.let {
-                PriceCalculationBody(
-                    activity_id = it,
-                    date = selectedDate,
-                    adultcount = adultCount.toString(),
-                    kidscount = kidCount.toString()
-                )
-            }
-            if (body != null) {
-                priceCalculationViewModel.priceCalculationApi(
-                    progressDialog,
-                    requireActivity(),
-                    body
-                )
-            }
-        }
-
-        private fun datePickerCode() {
-            val calendar = Calendar.getInstance()
-            val year = calendar.get(Calendar.YEAR)
-            val month = calendar.get(Calendar.MONTH)
-            val day = calendar.get(Calendar.DAY_OF_MONTH)
-
-            val datePickerDialog = DatePickerDialog(
-                requireContext(),
-                { _, selectedYear, selectedMonth, selectedDay ->
-                    val monthFormatted = String.format("%02d", selectedMonth + 1)
-                    val dayFormatted = String.format("%02d", selectedDay)
-
-                    // yyyy-MM-dd format
-                    selectedDate = "$selectedYear-$monthFormatted-$dayFormatted"
-
-                    binding.tvDate.text = selectedDate
-                    triggerPriceCalculation()
-                },
-                year, month, day
-            )
-            datePickerDialog.datePicker.minDate = calendar.timeInMillis
-            datePickerDialog.show()
+        priceCalculationViewModel.errorResponse.observe(viewLifecycleOwner) {
+            ErrorUtil.handlerGeneralError(requireContext(), it)
         }
     }
+
+    private fun priceCalculateApi() {
+        val body = activityId?.let {
+            PriceCalculationBody(
+                activity_id = it,
+                date = selectedDate,
+                adultcount = adultCount.toString(),
+                kidscount = kidCount.toString()
+            )
+        }
+        if (body != null) {
+            priceCalculationViewModel.priceCalculationApi(
+                progressDialog,
+                requireActivity(),
+                body
+            )
+        }
+    }
+
+    private fun datePickerCode() {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog = DatePickerDialog(
+            requireContext(),
+            { _, selectedYear, selectedMonth, selectedDay ->
+                val monthFormatted = String.format("%02d", selectedMonth + 1)
+                val dayFormatted = String.format("%02d", selectedDay)
+
+                // yyyy-MM-dd format
+                selectedDate = "$selectedYear-$monthFormatted-$dayFormatted"
+
+                binding.tvDate.text = selectedDate
+                triggerPriceCalculation()
+            },
+            year, month, day
+        )
+        datePickerDialog.datePicker.minDate = calendar.timeInMillis
+        datePickerDialog.show()
+    }
+}

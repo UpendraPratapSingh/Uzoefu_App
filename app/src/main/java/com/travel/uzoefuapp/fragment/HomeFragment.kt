@@ -92,6 +92,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
     private var selectedPrice: String = ""
     private val searchActivityViewModel: SearchActivityViewModel by viewModels()
     private val branchWishlistViewModel: BranchWishlistViewModel by viewModels()
+    private var searchJob: Job? = null
 
 
     override fun onCreateView(
@@ -362,60 +363,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
     private fun getCategoryApi() {
         categoryViewModel.getCategory(progressDialog, requireActivity())
     }
-
-    /*    @SuppressLint("CutPasteId")
-        private fun searchExperience() {
-            val bottomSheetDialog = BottomSheetDialog(requireContext())
-            val view = layoutInflater.inflate(R.layout.search_bottom_sheet, null)
-            bottomSheetDialog.setContentView(view)
-
-            val etSearch = view.findViewById<EditText>(R.id.etSearch)
-            val btnClose = view.findViewById<ImageView>(R.id.btnClose)
-
-            val bottomSheet =
-                bottomSheetDialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-
-            bottomSheet?.let {
-                val params = it.layoutParams as ViewGroup.MarginLayoutParams
-                params.height = ViewGroup.LayoutParams.MATCH_PARENT
-                params.topMargin = (30 * resources.displayMetrics.density).toInt()
-                it.layoutParams = params
-            }
-
-            bottomSheet?.setBackgroundResource(R.drawable.bg_bottom_sheet_rounded)
-            val behavior = BottomSheetBehavior.from(bottomSheet!!)
-            behavior.state = BottomSheetBehavior.STATE_EXPANDED
-            behavior.skipCollapsed = true
-            behavior.isFitToContents = false
-
-            btnClose.setOnClickListener { bottomSheetDialog.dismiss() }
-
-            val recycler = view.findViewById<RecyclerView>(R.id.rvResults)
-            recycler.layoutManager = LinearLayoutManager(requireContext())
-
-            val sampleData = listOf(
-                SearchItem(R.drawable.ic_paw, "Magaliesburg Game Reserve", "Wildlife · Magaliesburg"),
-                SearchItem(R.drawable.food, "Magaliesburg Eatery", "Food & Cuisine · Magaliesburg"),
-                SearchItem(R.drawable.ic_paw, "Magaliesburg Spa", "Food & Cuisine · Magaliesburg"),
-                SearchItem(
-                    R.drawable.food,
-                    "Magaliesburg Sports Club",
-                    "Food & Cuisine · Magaliesburg"
-                ),
-                SearchItem(
-                    R.drawable.ic_paw,
-                    "Magaliesburg Swimming Pool",
-                    "Food & Cuisine · Magaliesburg"
-                )
-            )
-
-            val adapter = SearchAdapter(sampleData)
-            recycler.adapter = adapter
-
-            bottomSheetDialog.show()
-        }*/
-
-    private var searchJob: Job? = null
 
     private fun searchExperience() {
         val bottomSheetDialog = BottomSheetDialog(requireContext())

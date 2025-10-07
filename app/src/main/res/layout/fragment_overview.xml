@@ -81,8 +81,8 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="0"
                             android:layout_marginStart="5dp"
+                            android:text="0"
                             android:textColor="@color/gray"
                             android:textSize="12sp" />
 
@@ -123,7 +123,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="20dp"
                 android:alignmentMode="alignMargins"
-                android:columnCount="4"
+                android:columnCount="3"
                 android:columnOrderPreserved="false"
                 android:rowCount="2"
                 android:rowOrderPreserved="false"
@@ -206,87 +206,86 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
+                <!-- <LinearLayout
+                     android:layout_width="0dp"
+                     android:layout_height="wrap_content"
+                     android:layout_columnWeight="1"
+                     android:background="@drawable/profile_background"
+                     android:gravity="center"
+                     android:orientation="vertical"
+                     android:paddingTop="5dp"
+                     android:paddingBottom="5dp">
+
+                     <TextView
+                         android:id="@+id/tvTrips"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_marginTop="10dp"
+                         android:text="0"
+                         android:textSize="16sp"
+                         android:textStyle="bold" />
+
+                     <ImageView
+                         android:layout_width="20dp"
+                         android:layout_height="20dp"
+                         android:layout_marginTop="5dp"
+                         android:layout_marginBottom="4dp"
+                         android:src="@drawable/ic_copy" />
+
+                     <TextView
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_marginTop="5dp"
+                         android:layout_marginBottom="10dp"
+                         android:fontFamily="@font/roboto_regular"
+                         android:text="Trips"
+                         android:textColor="@color/gray"
+                         android:textSize="12sp" />
+
+                 </LinearLayout>
+
+                 <LinearLayout
+                     android:layout_width="0dp"
+                     android:layout_height="wrap_content"
+                     android:layout_columnWeight="1"
+                     android:background="@drawable/profile_background"
+                     android:gravity="center"
+                     android:orientation="vertical"
+                     android:paddingTop="5dp"
+                     android:paddingBottom="5dp">
+
+                     <TextView
+                         android:id="@+id/tvVisited"
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_marginTop="10dp"
+                         android:text="0"
+                         android:textSize="16sp"
+                         android:textStyle="bold" />
+
+                     <ImageView
+                         android:layout_width="20dp"
+                         android:layout_height="20dp"
+                         android:layout_marginTop="5dp"
+                         android:layout_marginBottom="4dp"
+                         android:src="@drawable/location" />
+
+                     <TextView
+                         android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_marginTop="5dp"
+                         android:layout_marginBottom="10dp"
+                         android:fontFamily="@font/roboto_regular"
+                         android:text="Visited"
+                         android:textColor="@color/gray"
+                         android:textSize="12sp" />
+
+                 </LinearLayout>-->
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_columnWeight="1"
-                    android:background="@drawable/profile_background"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
-                    <TextView
-                        android:id="@+id/tvTrips"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="0"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="4dp"
-                        android:src="@drawable/ic_copy" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="10dp"
-                        android:fontFamily="@font/roboto_regular"
-                        android:text="Trips"
-                        android:textColor="@color/gray"
-                        android:textSize="12sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:background="@drawable/profile_background"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
-
-                    <TextView
-                        android:id="@+id/tvVisited"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="0"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="4dp"
-                        android:src="@drawable/location" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="10dp"
-                        android:fontFamily="@font/roboto_regular"
-                        android:text="Visited"
-                        android:textColor="@color/gray"
-                        android:textSize="12sp" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:layout_marginTop="10dp"
                     android:background="@drawable/profile_background"
                     android:gravity="center"
                     android:orientation="vertical"
@@ -320,81 +319,81 @@
                         android:textSize="12sp" />
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/profile_background"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
+                <!--  <LinearLayout
+                      android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_columnWeight="1"
+                      android:layout_marginTop="10dp"
+                      android:background="@drawable/profile_background"
+                      android:gravity="center"
+                      android:orientation="vertical"
+                      android:paddingTop="5dp"
+                      android:paddingBottom="5dp">
 
-                    <TextView
-                        android:id="@+id/tvRewards"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="0"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                      <TextView
+                          android:id="@+id/tvRewards"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="10dp"
+                          android:text="0"
+                          android:textSize="16sp"
+                          android:textStyle="bold" />
 
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="4dp"
-                        android:src="@drawable/ic_rewards" />
+                      <ImageView
+                          android:layout_width="16dp"
+                          android:layout_height="16dp"
+                          android:layout_marginTop="5dp"
+                          android:layout_marginBottom="4dp"
+                          android:src="@drawable/ic_rewards" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="9dp"
-                        android:layout_marginBottom="10dp"
-                        android:fontFamily="@font/roboto_regular"
-                        android:text="Rewards"
-                        android:textColor="@color/gray"
-                        android:textSize="12sp" />
-                </LinearLayout>
+                      <TextView
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="9dp"
+                          android:layout_marginBottom="10dp"
+                          android:fontFamily="@font/roboto_regular"
+                          android:text="Rewards"
+                          android:textColor="@color/gray"
+                          android:textSize="12sp" />
+                  </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_columnWeight="1"
-                    android:layout_marginTop="10dp"
-                    android:background="@drawable/profile_background"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp">
+                  <LinearLayout
+                      android:layout_width="0dp"
+                      android:layout_height="wrap_content"
+                      android:layout_columnWeight="1"
+                      android:layout_marginTop="10dp"
+                      android:background="@drawable/profile_background"
+                      android:gravity="center"
+                      android:orientation="vertical"
+                      android:paddingTop="5dp"
+                      android:paddingBottom="5dp">
 
-                    <TextView
-                        android:id="@+id/tvPhotos"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:text="0"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
+                      <TextView
+                          android:id="@+id/tvPhotos"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="10dp"
+                          android:text="0"
+                          android:textSize="16sp"
+                          android:textStyle="bold" />
 
-                    <ImageView
-                        android:layout_width="16dp"
-                        android:layout_height="16dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="4dp"
-                        android:src="@drawable/photo" />
+                      <ImageView
+                          android:layout_width="16dp"
+                          android:layout_height="16dp"
+                          android:layout_marginTop="5dp"
+                          android:layout_marginBottom="4dp"
+                          android:src="@drawable/photo" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="9dp"
-                        android:layout_marginBottom="10dp"
-                        android:fontFamily="@font/roboto_regular"
-                        android:text="Photos"
-                        android:textColor="@color/gray"
-                        android:textSize="12sp" />
-                </LinearLayout>
+                      <TextView
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:layout_marginTop="9dp"
+                          android:layout_marginBottom="10dp"
+                          android:fontFamily="@font/roboto_regular"
+                          android:text="Photos"
+                          android:textColor="@color/gray"
+                          android:textSize="12sp" />
+                  </LinearLayout>-->
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -408,7 +407,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginTop="15dp"
                 android:orientation="vertical">
 
                 <LinearLayout

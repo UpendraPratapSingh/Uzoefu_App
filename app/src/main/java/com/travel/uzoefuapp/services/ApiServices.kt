@@ -7,6 +7,8 @@ import com.travel.uzoefuapp.SearchActivityModel.SearchActivityBody
 import com.travel.uzoefuapp.SearchActivityModel.SearchActivityResponse
 import com.travel.uzoefuapp.activityModl.ActivityBody
 import com.travel.uzoefuapp.activityModl.ActivityResponse
+import com.travel.uzoefuapp.activityTimeModel.ActivityTimeBody
+import com.travel.uzoefuapp.activityTimeModel.ActivityTimeResponse
 import com.travel.uzoefuapp.addTripModel.AddTripBody
 import com.travel.uzoefuapp.addTripModel.AddTripResponse
 import com.travel.uzoefuapp.addTripModel.GetTripResponse
@@ -38,6 +40,8 @@ import com.travel.uzoefuapp.imageUpdateModel.ImageUpdateResponse
 import com.travel.uzoefuapp.loginModel.LoginBody
 import com.travel.uzoefuapp.loginModel.LoginResponse
 import com.travel.uzoefuapp.logoutModel.LogoutResponse
+import com.travel.uzoefuapp.notificationModel.NotificationCountResponse
+import com.travel.uzoefuapp.notificationModel.NotificationListResponse
 import com.travel.uzoefuapp.overviewModel.OverviewResponse
 import com.travel.uzoefuapp.paymentModel.PaymentResponse
 import com.travel.uzoefuapp.priceCalculationModel.PriceCalculationBody
@@ -240,5 +244,21 @@ interface ApiServices {
         @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
         @Body body: BranchWishlistBody
     ): Observable<BranchWishlistResponse>
+
+    @POST("notificationlist")
+    fun notificationList(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
+    ): Observable<NotificationListResponse>
+
+    @POST("notificationcount")
+    fun notificationCount(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
+    ): Observable<NotificationCountResponse>
+
+    @POST("activity/time")
+    fun activityTime(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
+        @Body body: ActivityTimeBody
+    ): Observable<ActivityTimeResponse>
 
 }

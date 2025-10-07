@@ -6,6 +6,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.travel.uzoefuapp.profileFragment.CompanyFragment
 import com.travel.uzoefuapp.profileFragment.OverviewFragment
 import com.travel.uzoefuapp.profileFragment.ProfileDetailFragment
+import com.travel.uzoefuapp.profileFragment.ReviewsFragment
 import com.travel.uzoefuapp.profileFragment.RewardFragment
 
 class TabAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(fragmentActivity) {
@@ -13,6 +14,7 @@ class TabAdapter(fragmentActivity: FragmentActivity) : FragmentStateAdapter(frag
     private val fragments = listOf(
         OverviewFragment(),
         ProfileDetailFragment(),
+        ReviewsFragment(),
         RewardFragment(),
     )
 

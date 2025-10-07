@@ -99,11 +99,9 @@ class OverviewFragment : Fragment() {
 
         binding.wishlistLayout.setOnClickListener { (activity as? DashboardActivity)?.selectWishlistTab() }
 
-
         binding.ivEditProfile.setOnClickListener {
             (parentFragment as? ProfileFragment)?.switchToTab(1)
         }
-
 
         return binding.root
     }
@@ -119,11 +117,7 @@ class OverviewFragment : Fragment() {
             if (success == true) {
                 binding.tvWishlist.text = data?.wishlistcount.toString()
                 binding.tvBookings.text = data?.bookingcount.toString()
-                binding.tvTrips.text = data?.tripcount.toString()
-                binding.tvVisited.text = data?.visitedcount.toString()
                 binding.tvReviews.text = data?.reviewcount.toString()
-                binding.tvRewards.text = data?.rewardcount.toString()
-                binding.tvPhotos.text = data?.photoscount.toString()
             }
 
         }

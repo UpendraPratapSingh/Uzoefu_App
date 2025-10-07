@@ -48,13 +48,15 @@ class ProfileFragment : Fragment() {
             tab.text = when (position) {
                 0 -> "Overview"
                 1 -> "Profile"
-                2 -> "Rewards"
+                2 -> "Reviews"
+                3 -> "Rewards"
                 else -> ""
             }
         }.attach()
 
         return binding.root
     }
+
     fun switchToTab(index: Int) {
         binding.viewPager.currentItem = index
         Log.d("ProfileFragment", "switchToTab: $index")

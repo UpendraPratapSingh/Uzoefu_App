@@ -17,7 +17,7 @@ import com.travel.uzoefuapp.discoverDestinationModel.DiscoverDestinationResponse
 
 class DestinationAdapter(
     val context: Context,
-    val discoverList: List<DiscoverDestinationResponse.Datum>,
+    private val discoverList: List<DiscoverDestinationResponse.Datum>,
     private val wishlistClickListener: OnWishlistClickListener,
 
     ) : RecyclerView.Adapter<DestinationAdapter.ViewHolder>() {
@@ -40,10 +40,7 @@ class DestinationAdapter(
 
         holder.itemView.setOnClickListener {
             val intent = Intent(context, SelectDestinationActivity::class.java)
-            intent.putExtra(
-                "categoryName",
-                "${destinationList.branchName} (${destinationList.activityCount})"
-            )
+            intent.putExtra("categoryName", "${destinationList.branchName} (${destinationList.activityCount})")
             intent.putExtra("branchId", destinationList.branchId.toString())
             context.startActivity(intent)
         }
@@ -69,8 +66,6 @@ class DestinationAdapter(
 
             wishlistClickListener.onWishlistDestinationClicked(destinationList, position)
         }
-
-
     }
 
     override fun getItemCount(): Int {

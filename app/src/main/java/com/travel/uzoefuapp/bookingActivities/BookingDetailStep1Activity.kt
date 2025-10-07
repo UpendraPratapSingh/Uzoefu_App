@@ -160,7 +160,7 @@ class BookingDetailStep1Activity : AppCompatActivity() {
                 currentStep == 5 -> {
                     // ✅ Step5 confirmation pe Finish -> Dashboard
                     val intent =
-                        Intent(this@BookingDetailStep1Activity, BookListActivity::class.java)
+                        Intent(this@BookingDetailStep1Activity, DashboardActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                     startActivity(intent)
                     finish()
@@ -172,7 +172,7 @@ class BookingDetailStep1Activity : AppCompatActivity() {
 
     private fun callPaymentApi() {
         // 1️⃣ Toast for testing
-         Toast.makeText(this, "Payment Done Successfully", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, "Payment Done Successfully", Toast.LENGTH_SHORT).show()
 
         currentStep = 5
         openFragment(Step5Fragment.newInstance(activityId, productName))
@@ -197,7 +197,10 @@ class BookingDetailStep1Activity : AppCompatActivity() {
 
 
         Log.d("PaymentLog", "SharedPrefs -> Date: $date, Adults: $adultCount, Kids: $kidsCount")
-        Log.d("PaymentLog", "Prices -> Adult: $adultPrice, Kids: $kidsPrice, Subtotal: $subtotal, Total: $total")
+        Log.d(
+            "PaymentLog",
+            "Prices -> Adult: $adultPrice, Kids: $kidsPrice, Subtotal: $subtotal, Total: $total"
+        )
         Log.d("PaymentLog", "ActivityId: $activityId")
 
         // 3️⃣ Profile info dynamic
@@ -208,7 +211,10 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         val mobile = sharedPrefProfile.getString("mobile", "") ?: ""
         val billingAddress = sharedPrefProfile.getString("billing_address", "") ?: ""
 
-        Log.d("PaymentLog", "Profile -> First: $firstName, Last: $lastName, Username: $username, Mobile: $mobile")
+        Log.d(
+            "PaymentLog",
+            "Profile -> First: $firstName, Last: $lastName, Username: $username, Mobile: $mobile"
+        )
         Log.d("PaymentLog", "Billing Address: $billingAddress")
 
         // 4️⃣ Null-safe extension
@@ -239,21 +245,21 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         }
 
 
- /*       val clientNamesParts = participants.mapIndexed { index, participant ->
-            MultipartBody.Part.createFormData("clientname[]", "client_$index", participant.clientName.toSafeRequestBody())
-        }
+        /*       val clientNamesParts = participants.mapIndexed { index, participant ->
+                   MultipartBody.Part.createFormData("clientname[]", "client_$index", participant.clientName.toSafeRequestBody())
+               }
 
-        val idNumbersParts = participants.mapIndexed { index, participant ->
-            MultipartBody.Part.createFormData("idnumber[]", "id_$index", participant.idNumber.toSafeRequestBody())
-        }
+               val idNumbersParts = participants.mapIndexed { index, participant ->
+                   MultipartBody.Part.createFormData("idnumber[]", "id_$index", participant.idNumber.toSafeRequestBody())
+               }
 
-        val contactNumbersParts = participants.mapIndexed { index, participant ->
-            MultipartBody.Part.createFormData("contactnumber[]", "contact_$index", participant.contactNumber.toSafeRequestBody())
-        }
+               val contactNumbersParts = participants.mapIndexed { index, participant ->
+                   MultipartBody.Part.createFormData("contactnumber[]", "contact_$index", participant.contactNumber.toSafeRequestBody())
+               }
 
-        val signInDatesParts = participants.mapIndexed { index, participant ->
-            MultipartBody.Part.createFormData("signindate[]", "date_$index", participant.dateSigned.toSafeRequestBody())
-        }*/
+               val signInDatesParts = participants.mapIndexed { index, participant ->
+                   MultipartBody.Part.createFormData("signindate[]", "date_$index", participant.dateSigned.toSafeRequestBody())
+               }*/
 
         // 3️⃣ Convert Base64 signatures to files and prepare multipart
         fun base64ToFile(base64String: String, fileName: String): File {
@@ -284,7 +290,10 @@ class BookingDetailStep1Activity : AppCompatActivity() {
 
 
         // Log all parts
-        Log.d("PaymentLog", "ClientNames: ${clientNamesParts.size}, IDNumbers: ${idNumbersParts.size}, ContactNumbers: ${contactNumbersParts.size}, SignInDates: ${signInDatesParts.size}, Signatures: ${signatureFilesParts.size}")
+        Log.d(
+            "PaymentLog",
+            "ClientNames: ${clientNamesParts.size}, IDNumbers: ${idNumbersParts.size}, ContactNumbers: ${contactNumbersParts.size}, SignInDates: ${signInDatesParts.size}, Signatures: ${signatureFilesParts.size}"
+        )
 
         //  Call ViewModel API
         paymentViewModel.ratingApi(
