@@ -43,7 +43,7 @@ class ForgetPasswordActivity : AppCompatActivity() {
     private fun formVelidation() {
         val email = binding.emailtext.text.toString().trim()
 
-        if (VelidationInputs(email)){
+        if (VelidationInputs(email)) {
             //calling api here
             forgotPasswordApi(email)
 
@@ -57,23 +57,24 @@ class ForgetPasswordActivity : AppCompatActivity() {
         forgotPasswordViewModel.forgetPasswordApi(progressDialog, this, body)
     }
 
-    private fun forgotPasswordObserver(){
-        forgotPasswordViewModel.progressIndicator.observe(this){
+    private fun forgotPasswordObserver() {
+        forgotPasswordViewModel.progressIndicator.observe(this) {
 
         }
-        forgotPasswordViewModel.mCategoryResponse.observe(this){response ->
+        forgotPasswordViewModel.mCategoryResponse.observe(this) { response ->
             val success = response.peekContent().success
             val message = response.peekContent().message
-            val id = response.peekContent().data.toString()
+            val id = response.peekContent().data?.id ?: 0
 
-            if (success ==true) {
-                val intent = Intent(this@ForgetPasswordActivity, OtpVerificationActivity::class.java)
-                intent.putExtra("userId",id)
+            if (success == true) {
+                val intent =
+                    Intent(this@ForgetPasswordActivity, OtpVerificationActivity::class.java)
+                intent.putExtra("userId", id)
                 startActivity(intent)
             }
 
         }
-        forgotPasswordViewModel.errorResponse.observe(this){
+        forgotPasswordViewModel.errorResponse.observe(this) {
             ErrorUtil.handlerGeneralError(this@ForgetPasswordActivity, it)
         }
     }
@@ -84,8 +85,8 @@ class ForgetPasswordActivity : AppCompatActivity() {
                 binding.emailtext.error = "Please enter your email"
                 false
             }
+
             else -> true
         }
     }
-
 }

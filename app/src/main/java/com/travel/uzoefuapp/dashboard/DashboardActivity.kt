@@ -3,7 +3,7 @@ package com.travel.uzoefuapp.dashboard
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -16,10 +16,11 @@ import com.travel.uzoefuapp.fragment.ExploreFragment
 import com.travel.uzoefuapp.fragment.HomeFragment
 import com.travel.uzoefuapp.fragment.ProfileFragment
 import com.travel.uzoefuapp.fragment.WishlistFragment
+import com.travel.uzoefuapp.profileFragment.OverviewFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DashboardActivity : AppCompatActivity() {
+class DashboardActivity : AppCompatActivity(), OverviewFragment.OnTabSwitchListener{
     private lateinit var binding: ActivityDashboardBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -169,7 +170,7 @@ class DashboardActivity : AppCompatActivity() {
             )
         )
 
-        replaceFragment(ProfileFragment(), true)
+        replaceFragment(ProfileFragment(0), true)
     }
 
     private fun replaceFragment(fragment: Fragment, addToBackStack: Boolean) {
@@ -180,5 +181,16 @@ class DashboardActivity : AppCompatActivity() {
             fragmentTransaction.addToBackStack(null)
         }
         fragmentTransaction.commit()
+    }
+
+    override fun switchToPage(position: Int) {
+        //binding.viewPager.currentItem = position
+        Log.e("GetPo", "switchToPageAAAAAA: $position", )
+        replaceFragment(ProfileFragment(2), true)
+    }
+
+    override fun switchToProfile(position: Int) {
+        Log.e("GetPo", "switchToPageAAAAAA: $position", )
+        replaceFragment(ProfileFragment(1), true)
     }
 }

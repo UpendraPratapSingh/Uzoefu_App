@@ -42,12 +42,15 @@ import com.travel.uzoefuapp.loginModel.LoginResponse
 import com.travel.uzoefuapp.logoutModel.LogoutResponse
 import com.travel.uzoefuapp.notificationModel.NotificationCountResponse
 import com.travel.uzoefuapp.notificationModel.NotificationListResponse
+import com.travel.uzoefuapp.notificationModel.NotificationSeenBody
+import com.travel.uzoefuapp.notificationModel.NotificationSeenResponse
 import com.travel.uzoefuapp.overviewModel.OverviewResponse
 import com.travel.uzoefuapp.paymentModel.PaymentResponse
 import com.travel.uzoefuapp.priceCalculationModel.PriceCalculationBody
 import com.travel.uzoefuapp.priceCalculationModel.PriceCalculationResponse
 import com.travel.uzoefuapp.provinceModel.ProvinceResponse
 import com.travel.uzoefuapp.ratingModel.RatingResponse
+import com.travel.uzoefuapp.ratingReviewModel.RatingReviewResponse
 import com.travel.uzoefuapp.services.ApiServices
 import com.travel.uzoefuapp.signUpModel.SignUpBody
 import com.travel.uzoefuapp.signUpModel.SignUpResponse
@@ -212,9 +215,18 @@ class CommonRepository @Inject constructor(private val services: ApiServices) {
         return services.activityTime(Uzoefu.encryptedPrefs.bearerToken, body)
     }
 
+    fun notificationSeen(body: NotificationSeenBody): Observable<NotificationSeenResponse>{
+        return services.notificationSeen(Uzoefu.encryptedPrefs.bearerToken, body)
+    }
+
+    fun ratingReview(): Observable<RatingReviewResponse>{
+        return services.ratingReview(Uzoefu.encryptedPrefs.bearerToken)
+    }
+
     suspend fun makePayment(
         activityId: String,
         date: String,
+        times: String,
         adultCount: String,
         kidsCount: String,
         adultPrice: String,
@@ -236,6 +248,7 @@ class CommonRepository @Inject constructor(private val services: ApiServices) {
         // Single values as RequestBody
         val activityIdBody = activityId.toRequestBody("text/plain".toMediaTypeOrNull())
         val dateBody = date.toRequestBody("text/plain".toMediaTypeOrNull())
+        val timeBody = times.toRequestBody("text/plain".toMediaTypeOrNull())
         val adultCountBody = adultCount.toRequestBody("text/plain".toMediaTypeOrNull())
         val kidsCountBody = kidsCount.toRequestBody("text/plain".toMediaTypeOrNull())
         val adultPriceBody = adultPrice.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -270,6 +283,7 @@ class CommonRepository @Inject constructor(private val services: ApiServices) {
             Uzoefu.encryptedPrefs.bearerToken,
             activityId = activityIdBody,
             date = dateBody,
+            times = timeBody,
             adultcount = adultCountBody,
             kidscount = kidsCountBody,
             adultprice = adultPriceBody,

@@ -119,28 +119,13 @@ class Step1Fragment() :
         }
 
         binding.btnMinusKids.setOnClickListener {
-            if (kidCount > 0) { // allow zero
+            if (kidCount > 0) {
                 kidCount--
                 binding.tvKidCount.text = kidCount.toString()
                 calculateLocalPrice()
                 triggerPriceCalculation()
             }
         }
-
-
-        val timeSlots = listOf(
-            "09:00 - 10:00",
-            "10:00 - 11:00",
-            "11:00 - 12:00",
-            "12:00 - 13:00",
-            "13:00 - 14:00",
-            "14:00 - 15:00",
-            "15:00 - 16:00",
-            "16:00 - 17:00"
-        )
-
-
-
 
         return binding.root
     }
@@ -156,6 +141,8 @@ class Step1Fragment() :
             val data = response.peekContent().data
 
             if (success == true && data != null) {
+
+                // ✅ Display with day name, but store only time
                 val timeSlots = listOf(
                     "Mon: ${data.monFrom} - ${data.monTo}",
                     "Tue: ${data.tueFrom} - ${data.tueTo}",
@@ -181,8 +168,16 @@ class Step1Fragment() :
                             position: Int,
                             id: Long
                         ) {
-                            val selectedTime = timeSlots[position]
+                            val selectedFullText = timeSlots[position]
+                            // ✅ Extract only time range part after colon
+                            val selectedTime = selectedFullText.substringAfter(":").trim()
 
+                            // ✅ Save only "09:00 - 10:00" in SharedPreferences
+                            val sharedPref = requireContext()
+                                .getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
+                            sharedPref.edit()
+                                .putString("selected_time", selectedTime)
+                                .apply()
                         }
 
                         override fun onNothingSelected(parent: AdapterView<*>?) {}

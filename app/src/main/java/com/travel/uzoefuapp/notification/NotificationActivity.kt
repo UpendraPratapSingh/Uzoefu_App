@@ -11,20 +11,24 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.adapter.NotificationAdapter
+import com.travel.uzoefuapp.adapter.NotificationOnClickListener
 import com.travel.uzoefuapp.databinding.ActivityNotificationBinding
 import com.travel.uzoefuapp.notificationModel.NotificationCountViewModel
 import com.travel.uzoefuapp.notificationModel.NotificationListResponse
 import com.travel.uzoefuapp.notificationModel.NotificationListViewModel
+import com.travel.uzoefuapp.notificationModel.NotificationSeenBody
+import com.travel.uzoefuapp.notificationModel.NotificationSeenViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class NotificationActivity : AppCompatActivity() {
+class NotificationActivity : AppCompatActivity(), NotificationOnClickListener {
     private lateinit var binding: ActivityNotificationBinding
     private val notificationListViewModel: NotificationListViewModel by viewModels()
     private val progressDialog by lazy { CustomProgressDialog(this) }
     private var notifications: List<NotificationListResponse.Datum> = ArrayList()
     private val notificationCountViewModel: NotificationCountViewModel by viewModels()
+    private val notificationSeenViewModel: NotificationSeenViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +47,27 @@ class NotificationActivity : AppCompatActivity() {
         notificationListObserver()
         notificationCountApi()
         notificationCountObserver()
+        notificationSeenObserver()
 
+    }
+
+    private fun notificationSeenObserver() {
+        notificationSeenViewModel.progressIndicator.observe(this){
+
+        }
+        notificationSeenViewModel.notificationSeenResponse.observe(this){ response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+
+            if (success == true){
+                notificationListApi()
+                notificationCountApi()
+
+            }
+        }
+        notificationSeenViewModel.errorResponse.observe(this){
+            ErrorUtil.handlerGeneralError(this, it)
+        }
     }
 
     private fun notificationCountObserver() {
@@ -89,7 +113,7 @@ class NotificationActivity : AppCompatActivity() {
                     binding.notificationRecyclerView.visibility = View.VISIBLE
 
                     binding.notificationRecyclerView.layoutManager = GridLayoutManager(this, 1)
-                    binding.notificationRecyclerView.adapter = NotificationAdapter(this,notifications)
+                    binding.notificationRecyclerView.adapter = NotificationAdapter(this,notifications, this)
                 }
             } else {
                 binding.tvNoData.visibility = View.VISIBLE
@@ -106,5 +130,18 @@ class NotificationActivity : AppCompatActivity() {
     private fun notificationListApi() {
         notificationListViewModel.notificationListApi(this, progressDialog)
 
+    }
+
+    override fun onNotificationClick(notificationId: String) {
+
+        notificationSeenApi(notificationId)
+
+    }
+
+    private fun notificationSeenApi(notificationId: String) {
+        val body = NotificationSeenBody(
+            notificationId = notificationId
+        )
+        notificationSeenViewModel.notificationSeenApi(this, progressDialog, body)
     }
 }

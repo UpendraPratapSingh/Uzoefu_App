@@ -141,7 +141,9 @@ class InformationFragment : Fragment() {
                     ExpandableItem(
                         "Amenities",
                         answer = response.peekContent().data?.amenities
-                            ?.joinToString("\n") { it.amenity?.name.toString() } ?: ""
+                            ?.mapNotNull { it.amenity?.name?.let { name -> "• $name" } }
+                            ?.joinToString(separator = "\n")
+                            ?: "No amenities available"
                     )
                 )
 
@@ -152,21 +154,26 @@ class InformationFragment : Fragment() {
                             ?: "").toString()
                     )
                 )
-                // 1️⃣ Combine all Indemnity fields
-                val indemnityAnswer = listOfNotNull(
+                // 1️⃣ Combine all Indemnity fields with bullets and new lines
+                val indemnityFields = listOfNotNull(
                     response.peekContent().data?.indemnity?.agreement,
                     response.peekContent().data?.indemnity?.waiverAndIndemnity,
                     response.peekContent().data?.indemnity?.declaration,
                     response.peekContent().data?.indemnity?.acknowledgement
-                ).joinToString(separator = "\n") { "• $it" }
+                )
 
-               // 2️⃣ Add to expandable list
+                val indemnityAnswer = indemnityFields.joinToString(separator = "\n") { field ->
+                    "• $field"
+                }
+
+// Add to expandable list
                 expandableList.add(
                     ExpandableItem(
                         title = "Indemnity",
                         answer = indemnityAnswer
                     )
                 )
+
 
                 val adapter = InformationAdapter(expandableList)
                 binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())

@@ -3,10 +3,12 @@ package com.travel.uzoefuapp.profileFragment
 import CustomProgressDialog
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -20,6 +22,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activities.LoginActivity
@@ -54,6 +57,8 @@ class OverviewFragment : Fragment() {
     private var imageUri: Uri? = null
     private val binding get() = _binding!!
     private val overviewViewModel: OverviewViewModel by viewModels()
+    private var tabSwitchListener: OnTabSwitchListener? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -95,13 +100,22 @@ class OverviewFragment : Fragment() {
             startActivity(intent)
         }
 
+        binding.reviewLayout.setOnClickListener {
+            Log.e("reviewLayoutAA", "22")
+            tabSwitchListener?.switchToPage(2)
+        }
+
+        binding.ivEditProfile.setOnClickListener {
+            tabSwitchListener?.switchToProfile(1)
+        }
+
+        binding.profileDetailLayout.setOnClickListener {
+            tabSwitchListener?.switchToProfile(1)
+        }
+
         binding.logoutAccount.setOnClickListener { openLogoutCustomPopup() }
 
         binding.wishlistLayout.setOnClickListener { (activity as? DashboardActivity)?.selectWishlistTab() }
-
-        binding.ivEditProfile.setOnClickListener {
-            (parentFragment as? ProfileFragment)?.switchToTab(1)
-        }
 
         return binding.root
     }
@@ -341,5 +355,20 @@ class OverviewFragment : Fragment() {
             .replace(R.id.userFrameLayout, fragment)
             .addToBackStack(null)
             .commit()
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        try {
+            tabSwitchListener = context as OnTabSwitchListener
+        } catch (e: ClassCastException) {
+            throw ClassCastException("$context must implement OnNextButtonClickListener")
+        }
+    }
+
+    interface OnTabSwitchListener {
+        fun switchToPage(position: Int)
+        fun switchToProfile(position: Int)
+
     }
 }

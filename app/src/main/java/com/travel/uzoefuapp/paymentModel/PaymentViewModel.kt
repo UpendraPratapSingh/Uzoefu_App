@@ -24,6 +24,7 @@ class PaymentViewModel @Inject constructor(
         progressDialog: CustomProgressDialog,
         activityId: String,
         date: String,
+        times: String,
         adultCount: String,
         kidsCount: String,
         adultPrice: String,
@@ -49,6 +50,7 @@ class PaymentViewModel @Inject constructor(
                 val response = repository.makePayment(
                     activityId,
                     date,
+                    times,
                     adultCount,
                     kidsCount,
                     adultPrice,

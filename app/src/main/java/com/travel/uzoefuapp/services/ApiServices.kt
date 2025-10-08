@@ -42,12 +42,15 @@ import com.travel.uzoefuapp.loginModel.LoginResponse
 import com.travel.uzoefuapp.logoutModel.LogoutResponse
 import com.travel.uzoefuapp.notificationModel.NotificationCountResponse
 import com.travel.uzoefuapp.notificationModel.NotificationListResponse
+import com.travel.uzoefuapp.notificationModel.NotificationSeenBody
+import com.travel.uzoefuapp.notificationModel.NotificationSeenResponse
 import com.travel.uzoefuapp.overviewModel.OverviewResponse
 import com.travel.uzoefuapp.paymentModel.PaymentResponse
 import com.travel.uzoefuapp.priceCalculationModel.PriceCalculationBody
 import com.travel.uzoefuapp.priceCalculationModel.PriceCalculationResponse
 import com.travel.uzoefuapp.provinceModel.ProvinceResponse
 import com.travel.uzoefuapp.ratingModel.RatingResponse
+import com.travel.uzoefuapp.ratingReviewModel.RatingReviewResponse
 import com.travel.uzoefuapp.signUpModel.SignUpBody
 import com.travel.uzoefuapp.signUpModel.SignUpResponse
 import com.travel.uzoefuapp.updateProfileModel.UpdateProfileBody
@@ -171,6 +174,7 @@ interface ApiServices {
         @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
         @Part("activity_id") activityId: RequestBody,
         @Part("date") date: RequestBody,
+        @Part("times") times: RequestBody,
         @Part("adultcount") adultcount: RequestBody,
         @Part("kidscount") kidscount: RequestBody,
         @Part("adultprice") adultprice: RequestBody,
@@ -260,5 +264,16 @@ interface ApiServices {
         @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
         @Body body: ActivityTimeBody
     ): Observable<ActivityTimeResponse>
+
+    @POST("notification/seen")
+    fun notificationSeen(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
+        @Body body: NotificationSeenBody
+    ): Observable<NotificationSeenResponse>
+
+    @POST("review")
+    fun ratingReview(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
+    ): Observable<RatingReviewResponse>
 
 }

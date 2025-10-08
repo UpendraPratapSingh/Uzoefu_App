@@ -2,7 +2,6 @@ package com.travel.uzoefuapp.fragment
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +15,7 @@ import com.travel.uzoefuapp.globalSettings.SettingsActivity
 import com.travel.uzoefuapp.notification.NotificationActivity
 
 
-class ProfileFragment : Fragment() {
+class ProfileFragment(private var i: Int) : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
 
@@ -41,8 +40,18 @@ class ProfileFragment : Fragment() {
             startActivity(intent)
         }
 
+     /*   val adapter = TabAdapter(requireActivity())
+        binding.viewPager.adapter = adapter
+*/
         val adapter = TabAdapter(requireActivity())
         binding.viewPager.adapter = adapter
+
+// Set default tab based on i
+        binding.viewPager.currentItem = when (i) {
+            2 -> 2   // Reviews
+            1 -> 1   // Profile
+            else -> 0 // Overview
+        }
 
         TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
             tab.text = when (position) {
@@ -57,13 +66,10 @@ class ProfileFragment : Fragment() {
         return binding.root
     }
 
-    fun switchToTab(index: Int) {
-        binding.viewPager.currentItem = index
-        Log.d("ProfileFragment", "switchToTab: $index")
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+
+
 }

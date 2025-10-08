@@ -30,5 +30,17 @@ class NotificationListResponse : Serializable {
         @SerializedName("message")
         @Expose
         var message: String? = null
+
+        @SerializedName("is_seen")
+        @Expose
+        var isSeen: Int? = null
+
+        @SerializedName("time_ago")
+        @Expose
+        var timeAgo: String? = null
+
+        @SerializedName("created_at")
+        @Expose
+        var createdAt: String? = null
     }
 }

@@ -63,18 +63,15 @@ class InformationAdapter(
             }
 
             // Add answer text if available
-            item.answer?.let {
-                /*  val textView = TextView(holder.itemView.context).apply {
-                      text = it
-                      setTextColor(Color.DKGRAY)
-                      textSize = 14f
-                      setPadding(0, 8, 0, 0)
-                  }*/
+            item.answer?.let { answerText ->
+                val formattedText = answerText.replace("\n", "<br>") // convert line breaks to HTML
                 val textView = TextView(holder.itemView.context).apply {
-                    text = Html.fromHtml(it, Html.FROM_HTML_MODE_LEGACY)
+                    text = Html.fromHtml(formattedText, Html.FROM_HTML_MODE_LEGACY)
                     setTextColor(Color.DKGRAY)
                     textSize = 14f
                     setPadding(0, 8, 0, 0)
+                    isSingleLine = false // important
+                    ellipsize = null
                 }
                 holder.containerContent.addView(textView)
             }

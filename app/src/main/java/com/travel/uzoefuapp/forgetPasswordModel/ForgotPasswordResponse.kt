@@ -16,5 +16,11 @@ class ForgotPasswordResponse: Serializable {
 
     @SerializedName("data")
     @Expose
-    var data: Int? = null
+    var data: Data? = null
+
+    inner class Data{
+        @SerializedName("id")
+        @Expose
+        var id: Int? = null
+    }
 }

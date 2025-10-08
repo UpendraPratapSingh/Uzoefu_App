@@ -17,7 +17,8 @@ import com.travel.uzoefuapp.notificationModel.NotificationListResponse
 
 class NotificationAdapter(
     private val context: Context,
-    private val notificationList: List<NotificationListResponse.Datum>
+    private val notificationList: List<NotificationListResponse.Datum>,
+    private val notificationClickListener: NotificationOnClickListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemViewType(position: Int): Int {
@@ -39,38 +40,38 @@ class NotificationAdapter(
         when (holder) {
             is NormalViewHolder -> holder.bind(item)
             is AlertViewHolder -> holder.bind(item)
+
         }
 
         holder.itemView.setOnClickListener {
             showPopUpNotification(messTitle, mess, notiIdss)
-        }
 
+            notificationClickListener.onNotificationClick(notiIdss)
+        }
     }
-        private fun showPopUpNotification(heading: String?, message: String?, id: String?) {
-            val dialogView =  LayoutInflater.from(context).inflate(R.layout.notification_layout, null)
-            val builder = AlertDialog.Builder(context).setView(dialogView)
-            val dialog = builder.create()
-            dialog.window?.setBackgroundDrawableResource(R.drawable.dialog_box)
-            val closedialog =dialogView.findViewById<ImageView>(R.id.closedNotibox)
-            val messTextTitle =dialogView.findViewById<TextView>(R.id.messTextTitle)
-            val contentMessNoti =dialogView.findViewById<TextView>(R.id.contentMessNoti)
-            messTextTitle.text=heading
-            contentMessNoti.text=message
-           // getChangeNotiStatus(notiIdss)
-         //   getChangeNotiStatusObserver()
-            closedialog.setOnClickListener {
-                dialog.dismiss()
-            }
-            dialog.show()
-        }
 
+    private fun showPopUpNotification(heading: String?, message: String?, id: String?) {
+        val dialogView = LayoutInflater.from(context).inflate(R.layout.notification_layout, null)
+        val builder = AlertDialog.Builder(context).setView(dialogView)
+        val dialog = builder.create()
+        dialog.window?.setBackgroundDrawableResource(R.drawable.dialog_box)
+        val closedialog = dialogView.findViewById<ImageView>(R.id.closedNotibox)
+        val messTextTitle = dialogView.findViewById<TextView>(R.id.messTextTitle)
+        val contentMessNoti = dialogView.findViewById<TextView>(R.id.contentMessNoti)
+        messTextTitle.text = heading
+        contentMessNoti.text = message
+        closedialog.setOnClickListener {
+            dialog.dismiss()
+        }
+        dialog.show()
+    }
 
     override fun getItemCount(): Int = notificationList.size
 
-
     class NormalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val title = itemView.findViewById<TextView>(R.id.notificationText)
-
+        private val notificationSee = itemView.findViewById<View>(R.id.notificationSeen)
+        private val timeText = itemView.findViewById<TextView>(R.id.timeText)
         fun bind(item: NotificationListResponse.Datum) {
             val fullText = "${item.title} : ${item.message}"
             val spannable = SpannableString(fullText)
@@ -81,6 +82,14 @@ class NotificationAdapter(
                 Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
             )
             title.text = spannable
+            timeText.text = item.timeAgo
+
+            // Hide or show the green dot based on isSeen
+            if (item.isSeen == 1) {
+                notificationSee.visibility = View.GONE
+            } else {
+                notificationSee.visibility = View.VISIBLE
+            }
         }
     }
 

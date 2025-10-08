@@ -167,7 +167,6 @@ class BookingDetailStep1Activity : AppCompatActivity() {
                 }
             }
         }
-
     }
 
     private fun callPaymentApi() {
@@ -211,18 +210,16 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         val mobile = sharedPrefProfile.getString("mobile", "") ?: ""
         val billingAddress = sharedPrefProfile.getString("billing_address", "") ?: ""
 
-        Log.d(
-            "PaymentLog",
-            "Profile -> First: $firstName, Last: $lastName, Username: $username, Mobile: $mobile"
-        )
-        Log.d("PaymentLog", "Billing Address: $billingAddress")
+        val sharedPrefTime = getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
+        val selectedTime = sharedPrefTime.getString("selected_time", "")
+
 
         // 4️⃣ Null-safe extension
         fun String?.toSafeRequestBody(): RequestBody =
             (this ?: "").toRequestBody("text/plain".toMediaTypeOrNull())
 
         // 5️⃣ Get participants dynamically from SharedPreferences
-        val participants = getParticipantsFromPrefs() // your existing function
+        val participants = getParticipantsFromPrefs()
         if (participants.isEmpty()) {
             Toast.makeText(this, "Add at least one participant", Toast.LENGTH_SHORT).show()
             return
@@ -245,23 +242,6 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         }
 
 
-        /*       val clientNamesParts = participants.mapIndexed { index, participant ->
-                   MultipartBody.Part.createFormData("clientname[]", "client_$index", participant.clientName.toSafeRequestBody())
-               }
-
-               val idNumbersParts = participants.mapIndexed { index, participant ->
-                   MultipartBody.Part.createFormData("idnumber[]", "id_$index", participant.idNumber.toSafeRequestBody())
-               }
-
-               val contactNumbersParts = participants.mapIndexed { index, participant ->
-                   MultipartBody.Part.createFormData("contactnumber[]", "contact_$index", participant.contactNumber.toSafeRequestBody())
-               }
-
-               val signInDatesParts = participants.mapIndexed { index, participant ->
-                   MultipartBody.Part.createFormData("signindate[]", "date_$index", participant.dateSigned.toSafeRequestBody())
-               }*/
-
-        // 3️⃣ Convert Base64 signatures to files and prepare multipart
         fun base64ToFile(base64String: String, fileName: String): File {
             val bytes = android.util.Base64.decode(base64String, android.util.Base64.DEFAULT)
             val file = File(cacheDir, fileName)
@@ -269,11 +249,12 @@ class BookingDetailStep1Activity : AppCompatActivity() {
             return file
         }
 
-        val signatureFilesParts = participants.mapIndexedNotNull { index, p ->
-            p.signatureBase64.let { base64 ->
+        val signatureFilesParts = participants.mapIndexedNotNull { index, participant ->
+            participant.signatureBase64.takeIf { it.isNotBlank() }?.let { base64 ->
                 try {
                     val file = base64ToFile(base64, "signature_$index.png")
                     val requestFile = file.asRequestBody("image/png".toMediaTypeOrNull())
+                    Log.d("SignatureFile", "File path: ${file.absolutePath}, Size: ${file.length()} bytes")
                     MultipartBody.Part.createFormData("signature[]", file.name, requestFile)
                 } catch (e: Exception) {
                     Log.e("SignatureError", "Failed to create file from base64: ${e.message}")
@@ -282,24 +263,21 @@ class BookingDetailStep1Activity : AppCompatActivity() {
             }
         }
 
-// ✅ Ensure at least one signature
+        // ✅ Ensure at least one signature
         if (signatureFilesParts.isEmpty()) {
             Toast.makeText(this, "Please add at least one signature", Toast.LENGTH_SHORT).show()
             return
         }
 
-
         // Log all parts
-        Log.d(
-            "PaymentLog",
-            "ClientNames: ${clientNamesParts.size}, IDNumbers: ${idNumbersParts.size}, ContactNumbers: ${contactNumbersParts.size}, SignInDates: ${signInDatesParts.size}, Signatures: ${signatureFilesParts.size}"
-        )
+        Log.d("PaymentLog", "ClientNames: ${clientNamesParts.size}, IDNumbers: ${idNumbersParts.size}, ContactNumbers: ${contactNumbersParts.size}, SignInDates: ${signInDatesParts.size}, Signatures: ${signatureFilesParts.size}")
 
         //  Call ViewModel API
         paymentViewModel.ratingApi(
             progressDialog,
             activityId = activityId,
             date = date,
+            times = selectedTime.toString(),
             adultCount = adultCount.toString(),
             kidsCount = kidsCount.toString(),
             adultPrice = adultPrice.toString(),

@@ -1,4 +1,4 @@
-package com.travel.uzoefuapp.notificationModel
+package com.travel.uzoefuapp.ratingReviewModel
 
 import CustomProgressDialog
 import android.app.Activity
@@ -18,37 +18,35 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NotificationSeenViewModel @Inject constructor(
+class RatingReviewViewModel @Inject constructor(
     application: Application, private val repository: CommonRepository
 ) : AndroidViewModel(application) {
     val progressIndicator = MutableLiveData<Boolean>()
     val errorResponse = MutableLiveData<Throwable>()
-    val notificationSeenResponse = MutableLiveData<Event<NotificationSeenResponse>>()
+    val ratingReviewResponse = MutableLiveData<Event<RatingReviewResponse>>()
 
-    fun notificationSeenApi(
+    fun ratingReviewApi(
         activity: Activity,
-        progressDialog: CustomProgressDialog,
-        body: NotificationSeenBody
+        progressDialog: CustomProgressDialog
     ) =
         viewModelScope.launch {
-            notificationSeen(activity, progressDialog, body)
+            ratingReview(activity, progressDialog)
         }
 
-    private suspend fun notificationSeen(
+    private suspend fun ratingReview(
         activity: Activity,
         progressDialog: CustomProgressDialog,
-        body: NotificationSeenBody
     ) {
         progressDialog.start("")
         progressIndicator.value = true
-        repository.notificationSeen(body)
+        repository.ratingReview()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : DisposableObserver<NotificationSeenResponse>() {
+            .subscribe(object : DisposableObserver<RatingReviewResponse>() {
                 @RequiresApi(Build.VERSION_CODES.S)
-                override fun onNext(value: NotificationSeenResponse) {
+                override fun onNext(value: RatingReviewResponse) {
                     progressIndicator.value = false
-                    notificationSeenResponse.value = Event(value)
+                    ratingReviewResponse.value = Event(value)
                     progressDialog.stop()
                 }
 
