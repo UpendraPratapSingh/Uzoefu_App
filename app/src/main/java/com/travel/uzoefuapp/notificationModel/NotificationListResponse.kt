@@ -18,6 +18,7 @@ class NotificationListResponse : Serializable {
     @Expose
     var data: List<Datum>? = null
 
+
     inner class Datum {
         @SerializedName("id")
         @Expose
@@ -38,9 +39,5 @@ class NotificationListResponse : Serializable {
         @SerializedName("time_ago")
         @Expose
         var timeAgo: String? = null
-
-        @SerializedName("created_at")
-        @Expose
-        var createdAt: String? = null
     }
 }

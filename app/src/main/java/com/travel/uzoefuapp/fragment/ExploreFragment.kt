@@ -25,6 +25,7 @@ import com.travel.uzoefuapp.discoverDestinationModel.DiscoverDestinationResponse
 import com.travel.uzoefuapp.discoverDestinationModel.DiscoverDestinationViewModel
 import com.travel.uzoefuapp.globalSettings.SettingsActivity
 import com.travel.uzoefuapp.notification.NotificationActivity
+import com.travel.uzoefuapp.notificationModel.NotificationCountViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -37,6 +38,7 @@ class ExploreFragment : Fragment(), OnWishlistClickListener {
     private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
     private var discoverList: List<DiscoverDestinationResponse.Datum> = ArrayList()
     private val branchWishlistViewModel: BranchWishlistViewModel by viewModels()
+    private val notificationCountViewModel: NotificationCountViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,6 +54,8 @@ class ExploreFragment : Fragment(), OnWishlistClickListener {
         discoverDestinationApi()
         discoverDestinationObserver()
         branchAddToWishlistObserver()
+        notificationCountApi()
+        notificationCountObserver()
 
         binding.menuIcon.setOnClickListener {
             val intent = Intent(requireContext(), SettingsActivity::class.java)
@@ -127,6 +131,30 @@ class ExploreFragment : Fragment(), OnWishlistClickListener {
         discoverDestinationViewModel.discoverDestinationApi(progressDialog, requireActivity())
 
     }
+
+    private fun notificationCountObserver() {
+        notificationCountViewModel.progressIndicator.observe(viewLifecycleOwner) {
+
+        }
+        notificationCountViewModel.notificationCountResponse.observe(viewLifecycleOwner) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+            val data = response.peekContent().data
+            if (success == true) {
+                binding.notificationBadge.text = data.toString()
+            }
+
+        }
+        notificationCountViewModel.errorResponse.observe(viewLifecycleOwner) {
+            ErrorUtil.handlerGeneralError(requireContext(), it)
+        }
+    }
+
+    private fun notificationCountApi() {
+        notificationCountViewModel.notificationCountApi(requireActivity(), progressDialog)
+
+    }
+
 
     override fun onWishlistClicked(product: ActivityResponse.Datum, position: Int) {
 

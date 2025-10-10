@@ -35,9 +35,7 @@ class ForgetPasswordActivity : AppCompatActivity() {
 
         forgotPasswordObserver()
 
-        binding.forgotbutton.setOnClickListener {
-            formVelidation()
-        }
+        binding.forgotbutton.setOnClickListener { formVelidation() }
     }
 
     private fun formVelidation() {
@@ -51,9 +49,7 @@ class ForgetPasswordActivity : AppCompatActivity() {
     }
 
     private fun forgotPasswordApi(email: String) {
-        val body = ForgotPasswordBody(
-            email = email
-        )
+        val body = ForgotPasswordBody(email = email)
         forgotPasswordViewModel.forgetPasswordApi(progressDialog, this, body)
     }
 
@@ -64,7 +60,7 @@ class ForgetPasswordActivity : AppCompatActivity() {
         forgotPasswordViewModel.mCategoryResponse.observe(this) { response ->
             val success = response.peekContent().success
             val message = response.peekContent().message
-            val id = response.peekContent().data?.id ?: 0
+            val id = response.peekContent().data?.id.toString()
 
             if (success == true) {
                 val intent =

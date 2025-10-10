@@ -49,7 +49,12 @@ class OnboardingAdapter(
         val spannable = SpannableString(desc)
         val firstSpace = desc.indexOf(" ")
         if (firstSpace != -1) {
-            spannable.setSpan(StyleSpan(Typeface.BOLD),0, firstSpace, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spannable.setSpan(
+                StyleSpan(Typeface.BOLD),
+                0,
+                firstSpace,
+                Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
         descriptionText.text = spannable
 

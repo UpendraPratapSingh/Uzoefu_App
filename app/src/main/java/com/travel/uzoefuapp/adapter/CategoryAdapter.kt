@@ -1,6 +1,7 @@
 package com.travel.uzoefuapp.adapter
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +16,8 @@ import com.travel.uzoefuapp.categoryModel.CategoryResponse
 class CategoryAdapter(
     private val context: Context,
     private val categories: List<CategoryResponse.Datum>,
-    private val listener: OnCategoryClickListener // callback interface
+    private val listener: OnCategoryClickListener,
+    private var selectedId: String = ""
 
 ) : RecyclerView.Adapter<CategoryAdapter.ViewHolder>() {
 
@@ -27,21 +29,71 @@ class CategoryAdapter(
         return ViewHolder(view)
     }
 
+    /*
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            val category = categories[position]
+            holder.categoryText.text = category.name
+            val categoryId = category.id.toString()
+            val baseImagePath = "https://mobappssolutions.in/uzoefu/public/icons/"
+            Glide.with(context)
+                .load(baseImagePath + category.icon)
+                .placeholder(R.drawable.wellness)
+                .into(holder.categoryIcon)
+
+            Log.e("SelectedId", "onBindViewHolderAAAAAAAAA: $selectedId", )
+            Log.e("SelectedId", "categoryIdAAAAAAAAA: ${category.id}", )
+
+            if (selectedId == categoryId) {
+                holder.itemView.setBackgroundResource(R.drawable.category_selected_background)
+                holder.categoryText.setTextColor(ContextCompat.getColor(context, R.color.dark_cyan))
+                holder.categoryIcon.setColorFilter(ContextCompat.getColor(context, R.color.dark_cyan))
+            } else {
+                holder.itemView.setBackgroundResource(R.drawable.category_background)
+                holder.categoryText.setTextColor(ContextCompat.getColor(context, R.color.gray))
+                holder.categoryIcon.setColorFilter(ContextCompat.getColor(context, R.color.gray))
+            }
+
+            if (position == selectedPosition) {
+                holder.itemView.setBackgroundResource(R.drawable.category_selected_background)
+                holder.categoryText.setTextColor(ContextCompat.getColor(context, R.color.dark_cyan))
+                holder.categoryIcon.setColorFilter(ContextCompat.getColor(context, R.color.dark_cyan))
+                listener.onCategoryClick((category.id ?: "").toString(), category.name ?: "")
+
+            } else {
+                holder.itemView.setBackgroundResource(R.drawable.category_background)
+                holder.categoryText.setTextColor(ContextCompat.getColor(context, R.color.gray))
+                holder.categoryIcon.setColorFilter(ContextCompat.getColor(context, R.color.gray))
+            }
+
+            holder.itemView.setOnClickListener {
+                selectedId = category.id.toString()
+                val previousPosition = selectedPosition
+                selectedPosition = if (selectedPosition == position) -1 else position
+                if (previousPosition != -1) notifyItemChanged(previousPosition)
+                notifyItemChanged(position)
+                listener.onCategoryClick((category.id ?: "").toString(), category.name ?: "")
+            }
+
+        }
+    */
+
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val category = categories[position]
         holder.categoryText.text = category.name
+
         val baseImagePath = "https://mobappssolutions.in/uzoefu/public/icons/"
         Glide.with(context)
             .load(baseImagePath + category.icon)
             .placeholder(R.drawable.wellness)
             .into(holder.categoryIcon)
 
-        if (position == selectedPosition) {
+        Log.e("SelectedId", "selectedId: $selectedId")
+        Log.e("SelectedId", "categoryId: ${category.id}")
+
+        if (category.id.toString() == selectedId) {
             holder.itemView.setBackgroundResource(R.drawable.category_selected_background)
             holder.categoryText.setTextColor(ContextCompat.getColor(context, R.color.dark_cyan))
             holder.categoryIcon.setColorFilter(ContextCompat.getColor(context, R.color.dark_cyan))
-            listener.onCategoryClick((category.id ?: "").toString(), category.name ?: "")
-
         } else {
             holder.itemView.setBackgroundResource(R.drawable.category_background)
             holder.categoryText.setTextColor(ContextCompat.getColor(context, R.color.gray))
@@ -49,11 +101,9 @@ class CategoryAdapter(
         }
 
         holder.itemView.setOnClickListener {
-            val previousPosition = selectedPosition
-            selectedPosition = if (selectedPosition == position) -1 else position
-            if (previousPosition != -1) notifyItemChanged(previousPosition)
-            notifyItemChanged(position)
-            listener.onCategoryClick((category.id ?: "").toString(), category.name ?: "")
+            selectedId = category.id.toString()
+            notifyDataSetChanged()
+            listener.onCategoryClick(category.id.toString(), category.name ?: "")
         }
     }
 

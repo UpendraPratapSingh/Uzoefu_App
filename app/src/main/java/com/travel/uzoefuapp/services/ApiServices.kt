@@ -41,6 +41,8 @@ import com.travel.uzoefuapp.loginModel.LoginBody
 import com.travel.uzoefuapp.loginModel.LoginResponse
 import com.travel.uzoefuapp.logoutModel.LogoutResponse
 import com.travel.uzoefuapp.notificationModel.NotificationCountResponse
+import com.travel.uzoefuapp.notificationModel.NotificationDeleteBody
+import com.travel.uzoefuapp.notificationModel.NotificationDeleteResponse
 import com.travel.uzoefuapp.notificationModel.NotificationListResponse
 import com.travel.uzoefuapp.notificationModel.NotificationSeenBody
 import com.travel.uzoefuapp.notificationModel.NotificationSeenResponse
@@ -275,5 +277,11 @@ interface ApiServices {
     fun ratingReview(
         @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
     ): Observable<RatingReviewResponse>
+
+    @POST("notification/delete")
+    fun notificationDelete(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
+        @Body body: NotificationDeleteBody
+    ): Observable<NotificationDeleteResponse>
 
 }

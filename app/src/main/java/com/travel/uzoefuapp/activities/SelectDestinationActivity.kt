@@ -35,8 +35,6 @@ import com.travel.uzoefuapp.activityModl.ActivityBody
 import com.travel.uzoefuapp.activityModl.ActivityResponse
 import com.travel.uzoefuapp.activityModl.ActivityViewModel
 import com.travel.uzoefuapp.adapter.CategoryAdapter
-import com.travel.uzoefuapp.adapter.DestinationDetailAdapter
-import com.travel.uzoefuapp.adapter.DiscoverDestination
 import com.travel.uzoefuapp.adapter.ExploreResultAdapter
 import com.travel.uzoefuapp.adapter.OnCategoryClickListener
 import com.travel.uzoefuapp.adapter.OnWishlistListener
@@ -45,9 +43,9 @@ import com.travel.uzoefuapp.adapter.SelectedDestinationAdapter
 import com.travel.uzoefuapp.categoryModel.CategoryResponse
 import com.travel.uzoefuapp.categoryModel.CategoryViewModel
 import com.travel.uzoefuapp.databinding.ActivitySelectDestinationBinding
-import com.travel.uzoefuapp.discoverDestinationModel.DestinationDetailBody
 import com.travel.uzoefuapp.discoverDestinationModel.DestinationDetailResponse
 import com.travel.uzoefuapp.discoverDestinationModel.DestinationDetailViewModel
+import com.travel.uzoefuapp.notificationModel.NotificationCountViewModel
 import com.travel.uzoefuapp.provinceModel.ProvinceViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -69,6 +67,7 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCat
     private var destinationDetail: List<DestinationDetailResponse.Datum> = ArrayList()
     private val provinceViewModel: ProvinceViewModel by viewModels()
     private val categoryViewModel: CategoryViewModel by viewModels()
+    private val notificationCountViewModel: NotificationCountViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,9 +91,8 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCat
         getActivityObserver()
         activityAddToWishListObserver()
         provinceListObserver()
-
-        /*    destinationDetailApi()
-            destinationDetailObserver()*/
+        notificationCountApi()
+        notificationCountObserver()
 
         binding.forYouArrowImg.setOnClickListener { finish() }
 
@@ -118,13 +116,6 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCat
         }
 
         binding.filterData.setOnClickListener { showFilterPopup() }
-
-        /*binding.destinationRecycler.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-        binding.destinationRecycler.adapter = SelectedDestinationAdapter(this)
-*//*        binding.destinationRecyclerView.layoutManager =
-                    GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false)
-                binding.destinationRecyclerView.adapter = ExploreResultAdapter(this)*/
 
     }
 
@@ -177,54 +168,6 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCat
         }
     }
 
-
-    private fun destinationDetailObserver() {
-        destinationDetailViewModel.progressIndicator.observe(this) {
-
-        }
-        destinationDetailViewModel.mCategoryResponse.observe(this) { response ->
-            val success = response.peekContent().success
-            val message = response.peekContent().message
-            destinationDetail = response.peekContent().data ?: emptyList()
-
-            if (success == true) {
-                if (destinationDetail.isEmpty()) {
-                    binding.destinationRecycler.visibility = View.GONE
-                } else {
-                    binding.destinationRecycler.visibility = View.VISIBLE
-                    val limitedList = destinationDetail.take(2)
-                    binding.destinationRecycler.layoutManager =
-                        LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
-                    val categoryAdapter = DestinationDetailAdapter(this, limitedList)
-                    binding.destinationRecycler.adapter = categoryAdapter
-
-                    // Vertical
-                    val remainingList = destinationDetail.drop(2)
-                    binding.destinationRecyclerView.layoutManager =
-                        LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-                    val verticalAdapter = DiscoverDestination(this, remainingList)
-                    binding.destinationRecyclerView.adapter = verticalAdapter
-
-                }
-            } else {
-                Toast.makeText(this, message ?: "Failed to load categories", Toast.LENGTH_SHORT)
-                    .show()
-            }
-
-        }
-
-        destinationDetailViewModel.errorResponse.observe(this) {
-            ErrorUtil.handlerGeneralError(this@SelectDestinationActivity, it)
-        }
-    }
-
-    private fun destinationDetailApi() {
-        val body = DestinationDetailBody(
-            branchId = ""
-        )
-        destinationDetailViewModel.discoverDestinationDetailApi(progressDialog, this, body)
-
-    }
 
     private fun activityAddToWishListObserver() {
         addWishlistViewModel.progressIndicator.observe(this) {
@@ -289,6 +232,29 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCat
             branchId = branchId
         )
         activityViewModel.getActivitiesByCategory(progressDialog, this, body)
+
+    }
+
+    private fun notificationCountObserver() {
+        notificationCountViewModel.progressIndicator.observe(this) {
+
+        }
+        notificationCountViewModel.notificationCountResponse.observe(this) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+            val data = response.peekContent().data
+            if (success == true) {
+                binding.notificationBadge.text = data.toString()
+            }
+
+        }
+        notificationCountViewModel.errorResponse.observe(this) {
+            ErrorUtil.handlerGeneralError(this@SelectDestinationActivity, it)
+        }
+    }
+
+    private fun notificationCountApi() {
+        notificationCountViewModel.notificationCountApi(this, progressDialog)
 
     }
 
@@ -500,7 +466,7 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCat
                     rvCategories?.visibility = View.VISIBLE
                     rvCategories?.layoutManager =
                         GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false)
-                    val categoryAdapter = CategoryAdapter(this, data1, this)
+                    val categoryAdapter = CategoryAdapter(this, data1, this, categoryId)
                     rvCategories?.adapter = categoryAdapter
                 }
             } else {

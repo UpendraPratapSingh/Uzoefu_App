@@ -114,10 +114,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="textPersonName"
-                        android:text="James Mackleton" />
+                        android:text="" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- ID Number -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilIdNumber"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -135,7 +134,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="number"
-                        android:text="8012046399258" />
+                        android:text="" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Contact Number -->
@@ -156,10 +155,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="phone"
-                        android:text="James Mackleton" />
+                        android:text="" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Date Signed -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilDateSigned"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -176,8 +174,10 @@
                         android:id="@+id/etDateSigned"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:clickable="true"
                         android:drawableEnd="@android:drawable/ic_menu_today"
-                        android:text="23-01-2025" />
+                        android:focusable="false"
+                        android:text="" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <!-- Signature Box -->

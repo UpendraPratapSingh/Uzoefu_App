@@ -1,6 +1,7 @@
 package com.travel.uzoefuapp.bookingDetailFragment
 
 import CustomProgressDialog
+import android.app.DatePickerDialog
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -8,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.telecom.util.ExperimentalAppActions
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.google.gson.Gson
@@ -20,7 +20,9 @@ import com.travel.uzoefuapp.detailModel.DetailPageViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.ByteArrayOutputStream
-import android.util.Base64  // <-- Correct Android Base64 import
+import android.util.Base64
+import com.google.android.material.textfield.TextInputEditText
+import java.util.Calendar
 
 data class Participant(
     val clientName: String,
@@ -36,8 +38,6 @@ class Step3Fragment(val activityId: String) : Fragment() {
     private val binding get() = _binding!!
     private val detailPageViewModel: DetailPageViewModel by viewModels()
     private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
-
-    @OptIn(ExperimentalAppActions::class)
     private val participants = mutableListOf<Participant>()
 
     override fun onCreateView(
@@ -54,10 +54,13 @@ class Step3Fragment(val activityId: String) : Fragment() {
             addParticipant()
         }
 
+        binding.etDateSigned.setOnClickListener {
+            showDatePicker(binding.etDateSigned)
+        }
+
         getDetailApi()
         getDetailObserver()
 
-        // Expand/collapse layouts
         binding.signingCons.setOnClickListener {
             if (binding.addParticipantLayout.visibility == View.VISIBLE) {
                 binding.addParticipantLayout.visibility = View.GONE
@@ -121,7 +124,25 @@ class Step3Fragment(val activityId: String) : Fragment() {
         return binding.root
     }
 
-    @OptIn(ExperimentalAppActions::class)
+    private fun showDatePicker(editText: TextInputEditText) {
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val datePickerDialog =
+            DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
+                val formattedDate =
+                    String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay)
+                editText.setText(formattedDate)
+            }, year, month, day)
+
+        // Prevent selecting previous dates
+        datePickerDialog.datePicker.minDate = calendar.timeInMillis
+
+        datePickerDialog.show()
+    }
+
     private fun addParticipant() {
         val clientName = binding.etClientName.text.toString()
         val idNumber = binding.etIdNumber.text.toString()
@@ -133,7 +154,7 @@ class Step3Fragment(val activityId: String) : Fragment() {
             Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
             return
         }
-
+        // val testBitmap = BitmapFactory.decodeResource(resources, R.drawable.balloon)
         val signatureBase64 = bitmapToBase64(signatureBitmap)
         val participant =
             Participant(clientName, idNumber, contactNumber, dateSigned, signatureBase64)
@@ -141,7 +162,6 @@ class Step3Fragment(val activityId: String) : Fragment() {
 
         saveParticipantsToPrefs()
 
-        // Clear fields
         binding.etClientName.text?.clear()
         binding.etIdNumber.text?.clear()
         binding.etContactNumber.text?.clear()
@@ -151,7 +171,53 @@ class Step3Fragment(val activityId: String) : Fragment() {
         Toast.makeText(requireContext(), "Participant added", Toast.LENGTH_SHORT).show()
     }
 
-    @OptIn(ExperimentalAppActions::class)
+    /*    private fun addParticipant() {
+            val clientName = binding.etClientName.text.toString()
+            val idNumber = binding.etIdNumber.text.toString()
+            val contactNumber = binding.etContactNumber.text.toString()
+            val dateSigned = binding.etDateSigned.text.toString()
+            val signatureBitmap = binding.signaturePad.signatureBitmap
+
+            if (clientName.isBlank() || idNumber.isBlank() || contactNumber.isBlank() || dateSigned.isBlank()) {
+                Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            // Save signature as PNG file
+            val signatureFile = saveSignatureAsFile(signatureBitmap, clientName)
+
+            val participant = Participant(
+                clientName,
+                idNumber,
+                contactNumber,
+                dateSigned,
+                signatureFile.absolutePath // store file path instead of Base64
+            )
+            participants.add(participant)
+
+            saveParticipantsToPrefs()
+
+            binding.etClientName.text?.clear()
+            binding.etIdNumber.text?.clear()
+            binding.etContactNumber.text?.clear()
+            binding.etDateSigned.text?.clear()
+            binding.signaturePad.clear()
+
+            Toast.makeText(requireContext(), "Participant added", Toast.LENGTH_SHORT).show()
+        }
+
+        // Helper function to save bitmap as PNG file
+        private fun saveSignatureAsFile(bitmap: Bitmap, fileName: String): File {
+            val file = File(requireContext().cacheDir, "$fileName.png")
+            file.createNewFile()
+            val fos = FileOutputStream(file)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+            fos.flush()
+            fos.close()
+            return file
+        }*/
+
+
     private fun saveParticipantsToPrefs() {
         val sharedPref = requireContext().getSharedPreferences("participants_pref", 0)
         val gson = Gson()
@@ -163,7 +229,6 @@ class Step3Fragment(val activityId: String) : Fragment() {
         }
     }
 
-    @OptIn(ExperimentalAppActions::class)
     private fun getParticipantsFromPrefs(): MutableList<Participant> {
         val sharedPref = requireContext().getSharedPreferences("participants_pref", 0)
         val gson = Gson()
@@ -178,10 +243,35 @@ class Step3Fragment(val activityId: String) : Fragment() {
 
     private fun bitmapToBase64(bitmap: Bitmap): String {
         val byteArrayOutputStream = ByteArrayOutputStream()
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream)
+        val resizedBitmap = resizeBitmap(bitmap, 500, 500) // smaller size
+        resizedBitmap.compress(
+            Bitmap.CompressFormat.JPEG,
+            50,
+            byteArrayOutputStream
+        ) // more compression
         val byteArray = byteArrayOutputStream.toByteArray()
-        return Base64.encodeToString(byteArray, Base64.DEFAULT)  // Android Base64
+        return Base64.encodeToString(byteArray, Base64.DEFAULT)
     }
+
+    private fun resizeBitmap(bitmap: Bitmap, maxWidth: Int, maxHeight: Int): Bitmap {
+        val width = bitmap.width
+        val height = bitmap.height
+
+        val ratioBitmap = width.toFloat() / height.toFloat()
+        val ratioMax = maxWidth.toFloat() / maxHeight.toFloat()
+
+        var finalWidth = maxWidth
+        var finalHeight = maxHeight
+
+        if (ratioMax > ratioBitmap) {
+            finalWidth = (maxHeight.toFloat() * ratioBitmap).toInt()
+        } else {
+            finalHeight = (maxWidth.toFloat() / ratioBitmap).toInt()
+        }
+
+        return Bitmap.createScaledBitmap(bitmap, finalWidth, finalHeight, true)
+    }
+
 
     private fun base64ToBitmap(base64: String): Bitmap {
         val bytes = Base64.decode(base64, Base64.DEFAULT)

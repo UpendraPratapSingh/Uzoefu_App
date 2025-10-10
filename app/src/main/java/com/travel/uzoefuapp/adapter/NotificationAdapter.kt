@@ -18,7 +18,9 @@ import com.travel.uzoefuapp.notificationModel.NotificationListResponse
 class NotificationAdapter(
     private val context: Context,
     private val notificationList: List<NotificationListResponse.Datum>,
-    private val notificationClickListener: NotificationOnClickListener
+    private val notificationClickListener: NotificationOnClickListener,
+    private val deleteListener: NotificationDeleteListener
+
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     override fun getItemViewType(position: Int): Int {
@@ -28,7 +30,7 @@ class NotificationAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         val view = inflater.inflate(R.layout.notification_recyclerview, parent, false)
-        return NormalViewHolder(view)
+        return NormalViewHolder(view, deleteListener)
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -68,10 +70,13 @@ class NotificationAdapter(
 
     override fun getItemCount(): Int = notificationList.size
 
-    class NormalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class NormalViewHolder(itemView: View,
+                           private val deleteListener: NotificationDeleteListener
+    ) : RecyclerView.ViewHolder(itemView) {
         private val title = itemView.findViewById<TextView>(R.id.notificationText)
         private val notificationSee = itemView.findViewById<View>(R.id.notificationSeen)
         private val timeText = itemView.findViewById<TextView>(R.id.timeText)
+        private val deleteNotification: ImageView = itemView.findViewById(R.id.deleteIcon)
         fun bind(item: NotificationListResponse.Datum) {
             val fullText = "${item.title} : ${item.message}"
             val spannable = SpannableString(fullText)
@@ -84,12 +89,35 @@ class NotificationAdapter(
             title.text = spannable
             timeText.text = item.timeAgo
 
+            // Delete icon click
+            deleteNotification.setOnClickListener {
+                showDeletePopup(item)
+            }
+
             // Hide or show the green dot based on isSeen
             if (item.isSeen == 1) {
                 notificationSee.visibility = View.GONE
             } else {
                 notificationSee.visibility = View.VISIBLE
             }
+        }
+
+        private fun showDeletePopup(item: NotificationListResponse.Datum) {
+            AlertDialog.Builder(itemView.context)
+                .setTitle("Delete Notification")
+                .setMessage("Are you sure you want to delete this notification?")
+                .setPositiveButton("Yes") { dialog, _ ->
+                    val position = bindingAdapterPosition
+                    if (position != RecyclerView.NO_POSITION) {
+                        deleteListener.onDeleteNotification(item.id.toString()) // now works
+                    }
+                    dialog.dismiss()
+                }
+                .setNegativeButton("No") { dialog, _ ->
+                    dialog.dismiss()
+                }
+                .create()
+                .show()
         }
     }
 

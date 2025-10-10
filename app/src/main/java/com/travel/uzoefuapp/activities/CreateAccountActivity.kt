@@ -9,6 +9,7 @@ import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.travel.uzoefuapp.R
 import android.text.Editable
+import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
@@ -26,6 +27,7 @@ class CreateAccountActivity : AppCompatActivity() {
     lateinit var binding: ActivityCreateAccountBinding
     private val progressDialog by lazy { CustomProgressDialog(this) }
     private val signUpViewModel: SignUpViewModel by viewModels()
+    private var isPasswordVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,7 +51,18 @@ class CreateAccountActivity : AppCompatActivity() {
             val intent = Intent(this@CreateAccountActivity, LoginActivity::class.java)
             startActivity(intent)
         }
-
+        binding.passwordToggle.setOnClickListener {
+            isPasswordVisible = !isPasswordVisible
+            if (isPasswordVisible) {
+                binding.passwordEdit.transformationMethod = null
+                binding.passwordToggle.setImageResource(R.drawable.passwordhide)
+            } else {
+                binding.passwordEdit.transformationMethod =
+                    PasswordTransformationMethod.getInstance()
+                binding.passwordToggle.setImageResource(R.drawable.passwordshow)
+            }
+            binding.passwordEdit.setSelection(binding.passwordEdit.text?.length ?: 0)
+        }
         binding.passwordEdit.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
@@ -106,7 +119,7 @@ class CreateAccountActivity : AppCompatActivity() {
             password = binding.passwordEdit.text.toString(),
 
             )
-        signUpViewModel.signUpUser(progressDialog,this, signUpBody)
+        signUpViewModel.signUpUser(progressDialog, this, signUpBody)
     }
 
     private fun signUpObserver() {

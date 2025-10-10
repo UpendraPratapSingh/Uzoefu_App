@@ -52,15 +52,20 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+        binding.signUpText.setOnClickListener {
+            val intent = Intent(this@LoginActivity, CreateAccountActivity::class.java)
+            startActivity(intent)
+        }
+
         binding.emailIcon.setOnClickListener {
             isPasswordVisible = !isPasswordVisible
             if (isPasswordVisible) {
                 binding.passwordEdit.transformationMethod = null
-                binding.emailIcon.setImageResource(R.drawable.lock)
+                binding.emailIcon.setImageResource(R.drawable.passwordhide)
             } else {
                 binding.passwordEdit.transformationMethod =
                     PasswordTransformationMethod.getInstance()
-                binding.emailIcon.setImageResource(R.drawable.lock)
+                binding.emailIcon.setImageResource(R.drawable.passwordshow)
             }
             binding.passwordEdit.setSelection(binding.passwordEdit.text?.length ?: 0)
         }

@@ -4,7 +4,10 @@ import CustomProgressDialog
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
+import android.util.Base64
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -29,6 +32,7 @@ import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.ActivityBookingDetailStep1Binding
 import com.travel.uzoefuapp.globalSettings.SettingsActivity
 import com.travel.uzoefuapp.notification.NotificationActivity
+import com.travel.uzoefuapp.notificationModel.NotificationCountViewModel
 import com.travel.uzoefuapp.paymentModel.PaymentViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,6 +42,7 @@ import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.File
+import java.io.FileOutputStream
 
 @AndroidEntryPoint
 class BookingDetailStep1Activity : AppCompatActivity() {
@@ -54,6 +59,7 @@ class BookingDetailStep1Activity : AppCompatActivity() {
     private var productName = ""
     private val paymentViewModel: PaymentViewModel by viewModels()
     private val progressDialog by lazy { CustomProgressDialog(this) }
+    private val notificationCountViewModel: NotificationCountViewModel by viewModels()
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,6 +82,8 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         productName = intent.getStringExtra("productName").toString()
 
         paymentObserver()
+        notificationCountApi()
+        notificationCountObserver()
 
         binding.notificationLayout.setOnClickListener {
             val intent = Intent(this@BookingDetailStep1Activity, NotificationActivity::class.java)
@@ -155,6 +163,7 @@ class BookingDetailStep1Activity : AppCompatActivity() {
                 currentStep == 4 -> {
                     // ✅ Step4 pe Pay Now button click -> API call
                     callPaymentApi()
+                    paymentObserver()
                 }
 
                 currentStep == 5 -> {
@@ -243,21 +252,58 @@ class BookingDetailStep1Activity : AppCompatActivity() {
 
 
         fun base64ToFile(base64String: String, fileName: String): File {
-            val bytes = android.util.Base64.decode(base64String, android.util.Base64.DEFAULT)
+            val cleanBase64 = base64String.substringAfter(",")
+            val bytes = Base64.decode(cleanBase64, Base64.DEFAULT)
+
+            val bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+            val resized = Bitmap.createScaledBitmap(bitmap, 500, 500, true)
+
             val file = File(cacheDir, fileName)
-            file.outputStream().use { it.write(bytes) }
+            FileOutputStream(file).use { fos ->
+                resized.compress(Bitmap.CompressFormat.JPEG, 60, fos)
+            }
+
+            Log.d(
+                "SignatureFile",
+                "File path: ${file.absolutePath}, Size: ${file.length() / 1024} KB"
+            )
             return file
         }
+
 
         val signatureFilesParts = participants.mapIndexedNotNull { index, participant ->
             participant.signatureBase64.takeIf { it.isNotBlank() }?.let { base64 ->
                 try {
-                    val file = base64ToFile(base64, "signature_$index.png")
-                    val requestFile = file.asRequestBody("image/png".toMediaTypeOrNull())
-                    Log.d("SignatureFile", "File path: ${file.absolutePath}, Size: ${file.length()} bytes")
-                    MultipartBody.Part.createFormData("signature[]", file.name, requestFile)
+                    // Build actual file name based on participant name or index
+                    val safeName = participant.clientName
+                        ?.replace("\\s+".toRegex(), "_")  // Replace spaces with underscores
+                        ?.replace("[^A-Za-z0-9_]".toRegex(), "")  // Remove invalid characters
+                        ?: "participant_$index"
+
+                    val fileName = "${safeName}_signature_${System.currentTimeMillis()}.png"
+
+                    // Convert base64 to file with actual name
+                    val file = base64ToFile(base64, fileName)
+
+                    if (file.exists() && file.length() > 0) {
+                        val requestFile = file.asRequestBody("image/png".toMediaTypeOrNull())
+                        Log.d(
+                            "SignatureFile",
+                            "✅ Created file: ${file.name}, Size: ${file.length() / 1024} KB, Path: ${file.absolutePath}"
+                        )
+                        MultipartBody.Part.createFormData("signature[]", file.name, requestFile)
+                    } else {
+                        Log.e(
+                            "SignatureError",
+                            "⚠️ File not created or empty for participant: ${participant.clientName}"
+                        )
+                        null
+                    }
                 } catch (e: Exception) {
-                    Log.e("SignatureError", "Failed to create file from base64: ${e.message}")
+                    Log.e(
+                        "SignatureError",
+                        "❌ Failed to create file for ${participant.clientName}: ${e.message}"
+                    )
                     null
                 }
             }
@@ -270,7 +316,10 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         }
 
         // Log all parts
-        Log.d("PaymentLog", "ClientNames: ${clientNamesParts.size}, IDNumbers: ${idNumbersParts.size}, ContactNumbers: ${contactNumbersParts.size}, SignInDates: ${signInDatesParts.size}, Signatures: ${signatureFilesParts.size}")
+        Log.d(
+            "PaymentLog",
+            "ClientNames: ${clientNamesParts.size}, IDNumbers: ${idNumbersParts.size}, ContactNumbers: ${contactNumbersParts.size}, SignInDates: ${signInDatesParts.size}, Signatures: ${signatureFilesParts.size}"
+        )
 
         //  Call ViewModel API
         paymentViewModel.ratingApi(
@@ -354,6 +403,29 @@ class BookingDetailStep1Activity : AppCompatActivity() {
             }
         }
     */
+
+    private fun notificationCountObserver() {
+        notificationCountViewModel.progressIndicator.observe(this) {
+
+        }
+        notificationCountViewModel.notificationCountResponse.observe(this) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+            val data = response.peekContent().data
+            if (success == true) {
+                binding.notificationBadge.text = data.toString()
+            }
+
+        }
+        notificationCountViewModel.errorResponse.observe(this) {
+            ErrorUtil.handlerGeneralError(this@BookingDetailStep1Activity, it)
+        }
+    }
+
+    private fun notificationCountApi() {
+        notificationCountViewModel.notificationCountApi(this, progressDialog)
+
+    }
 
 
     private fun updateStepper() {

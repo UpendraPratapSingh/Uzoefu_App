@@ -114,7 +114,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
                 android:fontFamily="@font/roboto_medium"
-                android:text="20 Results"
+                android:text=""
                 android:textColor="@color/nuetral_bold_color"
                 android:textSize="18dp"
                 app:layout_constraintBottom_toBottomOf="parent"

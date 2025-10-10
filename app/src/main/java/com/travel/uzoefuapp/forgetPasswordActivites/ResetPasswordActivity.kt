@@ -52,11 +52,11 @@ class ResetPasswordActivity : AppCompatActivity() {
             isNewPasswordVisible = !isNewPasswordVisible
             if (isNewPasswordVisible) {
                 binding.oldPassword.transformationMethod = null
-                binding.emailIcon.setImageResource(R.drawable.lock)
+                binding.emailIcon.setImageResource(R.drawable.passwordhide)
             } else {
                 binding.oldPassword.transformationMethod =
                     PasswordTransformationMethod.getInstance()
-                binding.emailIcon.setImageResource(R.drawable.lock)
+                binding.emailIcon.setImageResource(R.drawable.passwordshow)
             }
             binding.oldPassword.setSelection(binding.oldPassword.text?.length ?: 0)
         }
@@ -65,11 +65,11 @@ class ResetPasswordActivity : AppCompatActivity() {
             isConfirmPasswordVisible = !isConfirmPasswordVisible
             if (isConfirmPasswordVisible) {
                 binding.confirmPassword.transformationMethod = null
-                binding.confirmIcon.setImageResource(R.drawable.lock)
+                binding.confirmIcon.setImageResource(R.drawable.passwordhide)
             } else {
                 binding.confirmPassword.transformationMethod =
                     PasswordTransformationMethod.getInstance()
-                binding.confirmIcon.setImageResource(R.drawable.lock)
+                binding.confirmIcon.setImageResource(R.drawable.passwordshow)
             }
             binding.confirmPassword.setSelection(binding.confirmPassword.text?.length ?: 0)
         }

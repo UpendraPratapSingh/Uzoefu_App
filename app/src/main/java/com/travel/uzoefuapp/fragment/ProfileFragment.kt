@@ -1,5 +1,6 @@
 package com.travel.uzoefuapp.fragment
 
+import CustomProgressDialog
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,16 +9,22 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.viewModels
 import com.google.android.material.tabs.TabLayoutMediator
 import com.travel.uzoefuapp.adapter.TabAdapter
 import com.travel.uzoefuapp.databinding.FragmentProfileBinding
 import com.travel.uzoefuapp.globalSettings.SettingsActivity
 import com.travel.uzoefuapp.notification.NotificationActivity
+import com.travel.uzoefuapp.notificationModel.NotificationCountViewModel
+import com.travel.uzoefuapp.utils.ErrorUtil
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class ProfileFragment(private var i: Int) : Fragment() {
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
+    private val notificationCountViewModel: NotificationCountViewModel by viewModels()
+    private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,6 +37,9 @@ class ProfileFragment(private var i: Int) : Fragment() {
             insets
         }
 
+        notificationCountApi()
+        notificationCountObserver()
+
         binding.menuIcon.setOnClickListener {
             val intent = Intent(requireContext(), SettingsActivity::class.java)
             startActivity(intent)
@@ -40,11 +50,14 @@ class ProfileFragment(private var i: Int) : Fragment() {
             startActivity(intent)
         }
 
-     /*   val adapter = TabAdapter(requireActivity())
-        binding.viewPager.adapter = adapter
-*/
+        /*   val adapter = TabAdapter(requireActivity())
+           binding.viewPager.adapter = adapter
+   */
         val adapter = TabAdapter(requireActivity())
         binding.viewPager.adapter = adapter
+
+        binding.viewPager.isUserInputEnabled = false
+
 
 // Set default tab based on i
         binding.viewPager.currentItem = when (i) {
@@ -64,6 +77,29 @@ class ProfileFragment(private var i: Int) : Fragment() {
         }.attach()
 
         return binding.root
+    }
+
+    private fun notificationCountObserver() {
+        notificationCountViewModel.progressIndicator.observe(viewLifecycleOwner) {
+
+        }
+        notificationCountViewModel.notificationCountResponse.observe(viewLifecycleOwner) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+            val data = response.peekContent().data
+            if (success == true) {
+                binding.notificationBadge.text = data.toString()
+            }
+
+        }
+        notificationCountViewModel.errorResponse.observe(viewLifecycleOwner) {
+            ErrorUtil.handlerGeneralError(requireContext(), it)
+        }
+    }
+
+    private fun notificationCountApi() {
+        notificationCountViewModel.notificationCountApi(requireActivity(), progressDialog)
+
     }
 
     override fun onDestroyView() {

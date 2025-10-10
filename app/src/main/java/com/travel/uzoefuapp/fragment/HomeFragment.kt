@@ -344,7 +344,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
                     binding.categoriesRecyclerView.visibility = View.VISIBLE
                     binding.categoriesRecyclerView.layoutManager =
                         GridLayoutManager(requireContext(), 1, GridLayoutManager.HORIZONTAL, false)
-                    val categoryAdapter = CategoryAdapter(requireContext(), data, this)
+                    val categoryAdapter = CategoryAdapter(requireContext(), data, this, categoryId)
                     binding.categoriesRecyclerView.adapter = categoryAdapter
                 }
             } else {
@@ -653,7 +653,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
                     rvCategories?.visibility = View.VISIBLE
                     rvCategories?.layoutManager =
                         GridLayoutManager(requireContext(), 3, GridLayoutManager.VERTICAL, false)
-                    val categoryAdapter = CategoryAdapter(requireContext(), data, this)
+                    val categoryAdapter = CategoryAdapter(requireContext(), data, this, categoryId)
                     rvCategories?.adapter = categoryAdapter
                 }
             } else {

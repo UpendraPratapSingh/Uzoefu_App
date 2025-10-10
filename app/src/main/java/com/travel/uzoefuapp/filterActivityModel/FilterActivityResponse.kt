@@ -18,6 +18,10 @@ class FilterActivityResponse : Serializable {
     @Expose
     var data: Data? = null
 
+    @SerializedName("activity_count")
+    @Expose
+    var activityCount: Int? = null
+
     inner class Data {
         @SerializedName("current_page")
         @Expose

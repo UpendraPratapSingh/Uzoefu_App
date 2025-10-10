@@ -1,7 +1,6 @@
 package com.travel.uzoefuapp.bookingDetailFragment
 
 import CustomProgressDialog
-import android.R
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
@@ -11,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.travel.uzoefuapp.activityTimeModel.ActivityTimeBody
@@ -132,7 +130,7 @@ class Step1Fragment() :
 
     private fun activityTimeObserver() {
         activityTimeViewModel.progressIndicator.observe(viewLifecycleOwner) {
-            // handle loader if needed
+
         }
 
         activityTimeViewModel.activityTimeResponse.observe(viewLifecycleOwner) { response ->
@@ -142,15 +140,17 @@ class Step1Fragment() :
 
             if (success == true && data != null) {
 
-                // ✅ Display with day name, but store only time
-                val timeSlots = listOf(
-                    "Mon: ${data.monFrom} - ${data.monTo}",
-                    "Tue: ${data.tueFrom} - ${data.tueTo}",
-                    "Wed: ${data.wedFrom} - ${data.wedTo}",
-                    "Thu: ${data.thuFrom} - ${data.thuTo}",
-                    "Fri: ${data.friFrom} - ${data.friTo}",
-                    "Sat: ${data.satFrom} - ${data.satTo}",
-                    "Sun: ${data.sunFrom} - ${data.sunTo}"
+                val timeSlots = mutableListOf("Select Time")
+                timeSlots.addAll(
+                    listOf(
+                        "Mon: ${data.monFrom} - ${data.monTo}",
+                        "Tue: ${data.tueFrom} - ${data.tueTo}",
+                        "Wed: ${data.wedFrom} - ${data.wedTo}",
+                        "Thu: ${data.thuFrom} - ${data.thuTo}",
+                        "Fri: ${data.friFrom} - ${data.friTo}",
+                        "Sat: ${data.satFrom} - ${data.satTo}",
+                        "Sun: ${data.sunFrom} - ${data.sunTo}"
+                    )
                 )
 
                 val adapter = ArrayAdapter(
@@ -168,11 +168,11 @@ class Step1Fragment() :
                             position: Int,
                             id: Long
                         ) {
+                            if (position == 0) return
+
                             val selectedFullText = timeSlots[position]
-                            // ✅ Extract only time range part after colon
                             val selectedTime = selectedFullText.substringAfter(":").trim()
 
-                            // ✅ Save only "09:00 - 10:00" in SharedPreferences
                             val sharedPref = requireContext()
                                 .getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
                             sharedPref.edit()
@@ -183,7 +183,11 @@ class Step1Fragment() :
                         override fun onNothingSelected(parent: AdapterView<*>?) {}
                     }
             } else {
-                Toast.makeText(requireContext(), message ?: "Something went wrong", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    message ?: "Something went wrong",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -302,7 +306,6 @@ class Step1Fragment() :
                 val monthFormatted = String.format("%02d", selectedMonth + 1)
                 val dayFormatted = String.format("%02d", selectedDay)
 
-                // yyyy-MM-dd format
                 selectedDate = "$selectedYear-$monthFormatted-$dayFormatted"
 
                 binding.tvDate.text = selectedDate

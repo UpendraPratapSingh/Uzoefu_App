@@ -47,6 +47,8 @@ class BookingProductActivity : AppCompatActivity() {
     private val addWishlistViewModel: AddWishlistViewModel by viewModels()
     private var categoryId: Int = -1
     private var activeHour = ""
+    private var location = ""
+    private var telePhone = ""
 
     private val slideRunnable = object : Runnable {
         override fun run() {
@@ -120,14 +122,14 @@ class BookingProductActivity : AppCompatActivity() {
 
         val actions = listOf(
             Action(R.drawable.ic_call, "Call"),
-            Action(R.drawable.ic_shared, "Map"),
-            Action(R.drawable.ic_shared, "Share")
+            Action(R.drawable.mapicon, "Map"),
+            Action(R.drawable.share, "Share")
         )
 
         val actionAdapter = ActionAdapter(actions) { action ->
             when (action.label) {
                 "Call" -> {
-                    val phone = +27634854147
+                    val phone = telePhone
                     val intent = Intent(Intent.ACTION_DIAL).apply {
                         data = Uri.parse("tel:$phone")
                     }
@@ -135,7 +137,7 @@ class BookingProductActivity : AppCompatActivity() {
                 }
 
                 "Map" -> {
-                    val location = "5467 Gymnema  St Waterberg Fields estate Kosmosdal, Centurion"
+                    val location = location
                     val intent = Intent(Intent.ACTION_VIEW).apply {
                         data = Uri.parse("geo:0,0?q=$location")
                     }
@@ -148,7 +150,7 @@ class BookingProductActivity : AppCompatActivity() {
                 }
 
                 "Share" -> {
-                    val shareText = "Visit the Taj Mahal!"
+                    val shareText = "Your text here"
                     val intent = Intent(Intent.ACTION_SEND).apply {
                         type = "text/plain"
                         putExtra(Intent.EXTRA_TEXT, shareText)
@@ -204,7 +206,6 @@ class BookingProductActivity : AppCompatActivity() {
         }
     }
 
-
     private fun getDetailObserver() {
         detailPageViewModel.progressIndicator.observe(this) {
 
@@ -215,17 +216,18 @@ class BookingProductActivity : AppCompatActivity() {
             val data1 = response.peekContent().data?.activity
             val data2 = response.peekContent().data?.activity?.category
             val data3 = response.peekContent().data?.price
-            //val activityId = data3?.activityId
             val address = data1?.branch
             val isWish = response.peekContent().data?.iswish
             activeHour = response.peekContent().data?.todayHours.toString()
             val activityId = data1?.id
 
+            location = response.peekContent().data?.activity?.branch?.address.toString()
+
+            telePhone = response.peekContent().data?.activity?.branch?.teliphoneNumber.toString()
+
             if (success == true) {
                 binding.tvTitle.text = data1?.activityName.toString()
                 binding.tvCategory.text = data2?.name.toString()
-                //   binding.tvPrice.text = "R ${data3?.groupPrice.toString()}"
-                //  binding.tvPrice.text = "R ${"%.2f".format(data3?.groupPrice ?: 0.0)}"
                 binding.tvPrice.text = "R ${data3?.groupPrice ?: 0}"
 
                 val images = response.peekContent().data?.images ?: emptyList()
@@ -235,17 +237,6 @@ class BookingProductActivity : AppCompatActivity() {
                 }
                 binding.productRecyclerView.adapter = thumbnailAdapter
 
-                /*     binding.button2.setOnClickListener {
-                         val intent = Intent(this@BookingProductActivity, BookingDetailStep1Activity::class.java)
-                         intent.putExtra("price", data3?.groupPrice.toString())
-                         intent.putExtra("childrenPrice", data3?.childrenBase.toString())
-                         intent.putExtra("activityId", data1?.id.toString())
-                         intent.putExtra("productName", data1?.activityName.toString())
-                         intent.putExtra("address", address?.address.toString())
-                         intent.putExtra("town", address?.town.toString())
-                         startActivity(intent)
-
-                     }*/
 
                 binding.button2.setOnClickListener {
                     val price = data3?.groupPrice ?: 0.0

@@ -38,6 +38,7 @@ import com.travel.uzoefuapp.deleteWishlistModel.DeleteWishlistBody
 import com.travel.uzoefuapp.deleteWishlistModel.DeleteWishlistViewModel
 import com.travel.uzoefuapp.globalSettings.SettingsActivity
 import com.travel.uzoefuapp.notification.NotificationActivity
+import com.travel.uzoefuapp.notificationModel.NotificationCountViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -58,6 +59,7 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
     private val addTripViewModel: AddTripViewModel by viewModels()
     private val getTripViewModel: GetTripViewModel by viewModels()
     private var getList: List<GetTripResponse.Datum> = ArrayList()
+    private val notificationCountViewModel: NotificationCountViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,7 +78,8 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
         deleteWishListObserver()
         addTripObserver()
         getTripListObserver()
-
+        notificationCountApi()
+        notificationCountObserver()
         binding.deleteIcon.setOnClickListener {
             deleteWishListApi()
         }
@@ -210,6 +213,29 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
 
     private fun getWishListApi() {
         getWishlistViewModel.getWishlistApi(progressDialog, requireActivity())
+
+    }
+
+    private fun notificationCountObserver() {
+        notificationCountViewModel.progressIndicator.observe(viewLifecycleOwner) {
+
+        }
+        notificationCountViewModel.notificationCountResponse.observe(viewLifecycleOwner) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+            val data = response.peekContent().data
+            if (success == true) {
+                binding.notificationBadge.text = data.toString()
+            }
+
+        }
+        notificationCountViewModel.errorResponse.observe(viewLifecycleOwner) {
+            ErrorUtil.handlerGeneralError(requireContext(), it)
+        }
+    }
+
+    private fun notificationCountApi() {
+        notificationCountViewModel.notificationCountApi(requireActivity(), progressDialog)
 
     }
 

@@ -41,6 +41,8 @@ import com.travel.uzoefuapp.loginModel.LoginBody
 import com.travel.uzoefuapp.loginModel.LoginResponse
 import com.travel.uzoefuapp.logoutModel.LogoutResponse
 import com.travel.uzoefuapp.notificationModel.NotificationCountResponse
+import com.travel.uzoefuapp.notificationModel.NotificationDeleteBody
+import com.travel.uzoefuapp.notificationModel.NotificationDeleteResponse
 import com.travel.uzoefuapp.notificationModel.NotificationListResponse
 import com.travel.uzoefuapp.notificationModel.NotificationSeenBody
 import com.travel.uzoefuapp.notificationModel.NotificationSeenResponse
@@ -221,6 +223,10 @@ class CommonRepository @Inject constructor(private val services: ApiServices) {
 
     fun ratingReview(): Observable<RatingReviewResponse>{
         return services.ratingReview(Uzoefu.encryptedPrefs.bearerToken)
+    }
+
+    fun notificationDelete(body: NotificationDeleteBody): Observable<NotificationDeleteResponse>{
+        return services.notificationDelete(Uzoefu.encryptedPrefs.bearerToken , body)
     }
 
     suspend fun makePayment(

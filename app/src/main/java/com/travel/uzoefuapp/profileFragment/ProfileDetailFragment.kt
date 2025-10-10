@@ -3,6 +3,7 @@ package com.travel.uzoefuapp.profileFragment
 import CustomProgressDialog
 import android.app.DatePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -37,6 +38,7 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
     private val binding get() = _binding!!
     var data: List<CategoryResponse.Datum> = ArrayList()
     var categoriesId = ""
+    var categoryId = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -98,7 +100,7 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
                     binding.categoriesRecyclerView.visibility = View.VISIBLE
                     binding.categoriesRecyclerView.layoutManager =
                         GridLayoutManager(requireContext(), 1, GridLayoutManager.HORIZONTAL, false)
-                    val categoryAdapter = CategoryAdapter(requireContext(), data, this)
+                    val categoryAdapter = CategoryAdapter(requireContext(), data, this, categoryId)
                     binding.categoriesRecyclerView.adapter = categoryAdapter
                 }
             } else {
@@ -246,8 +248,8 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
         }
         getProfileViewModel.mCategoryResponse.observe(viewLifecycleOwner) { response ->
             val success = response.peekContent().success
-            val message = response.peekContent().message
             val data = response.peekContent().data
+            val categoriesList = data?.category
 
             if (success == true) {
                 binding.firstName.setText(data?.name.toString())
@@ -258,6 +260,14 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
                 binding.mobileNumber.setText(data?.mobile.toString())
                 binding.cityName.setText(data?.city.toString())
                 binding.spinnerDistanceRange.setText(data?.distance.toString())
+
+                categoryId = categoriesList?.firstOrNull()?.categoryId?.toString() ?: ""
+
+                Log.e("CategoryId", "getProfileObserverAAAAAAA: $categoryId", )
+
+                getCategoryApi()
+
+
             }
         }
         getProfileViewModel.errorResponse.observe(viewLifecycleOwner) {

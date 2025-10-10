@@ -3,7 +3,10 @@ package com.travel.uzoefuapp.dashboard
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -22,6 +25,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class DashboardActivity : AppCompatActivity(), OverviewFragment.OnTabSwitchListener{
     private lateinit var binding: ActivityDashboardBinding
+    private var doubleBackToExitPressedOnce = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityDashboardBinding.inflate(layoutInflater)
@@ -29,7 +34,6 @@ class DashboardActivity : AppCompatActivity(), OverviewFragment.OnTabSwitchListe
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
 
-            // Apply only left, right, and bottom padding
             v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
 
             insets
@@ -173,7 +177,18 @@ class DashboardActivity : AppCompatActivity(), OverviewFragment.OnTabSwitchListe
         replaceFragment(ProfileFragment(0), true)
     }
 
-    private fun replaceFragment(fragment: Fragment, addToBackStack: Boolean) {
+ /*   private fun replaceFragment(fragment: Fragment, addToBackStack: Boolean) {
+        val fragmentManager = supportFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.replace(R.id.userFrameLayout, fragment)
+        if (addToBackStack) {
+            fragmentTransaction.addToBackStack(null)
+        }
+        fragmentTransaction.commit()
+    }*/
+
+
+    private fun replaceFragment(fragment: Fragment, addToBackStack: Boolean = false) {
         val fragmentManager = supportFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         fragmentTransaction.replace(R.id.userFrameLayout, fragment)
@@ -182,6 +197,7 @@ class DashboardActivity : AppCompatActivity(), OverviewFragment.OnTabSwitchListe
         }
         fragmentTransaction.commit()
     }
+
 
     override fun switchToPage(position: Int) {
         //binding.viewPager.currentItem = position

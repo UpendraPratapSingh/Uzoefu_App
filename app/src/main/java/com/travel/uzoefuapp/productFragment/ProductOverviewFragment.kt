@@ -62,7 +62,7 @@ class ProductOverviewFragment : Fragment() {
                 binding.tvPhone.text = "Tel:+${data3?.teliphoneNumber.toString()}"
                 binding.tvCell.text = "Cel:+${data3?.contactNumber.toString()}"
                 binding.tvTime.text = data4.toString()
-                val ratingValue = 1.5f  // static rating
+                val ratingValue = 3.0f  // static rating
                 binding.ratingBar.rating = ratingValue
                 binding.tvRating.text = ratingValue.toString()
             }

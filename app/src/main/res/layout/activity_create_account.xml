@@ -38,7 +38,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:layout_marginBottom="10dp">
 
                 <TextView
                     android:id="@+id/titleText"
@@ -126,17 +127,33 @@
                     android:textColor="@color/nuetral_bold_color"
                     android:textSize="18sp" />
 
-                <EditText
-                    android:id="@+id/passwordEdit"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     android:background="@drawable/edittext_background"
-                    android:drawableEnd="@drawable/lock"
-                    android:drawablePadding="6dp"
-                    android:fontFamily="@font/roboto_regular"
-                    android:hint="Secure Password"
-                    android:inputType="textPassword"
-                    android:padding="6dp" />
+                    android:padding="6dp">
+
+                    <EditText
+                        android:id="@+id/passwordEdit"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/roboto_regular"
+                        android:hint="Secure Password"
+                        android:inputType="textPassword"
+                        android:background="@null"
+                        android:padding="6dp" />
+
+                    <ImageView
+                        android:id="@+id/passwordToggle"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="5dp"
+                        android:src="@drawable/passwordshow"
+                        android:layout_gravity="center_vertical"
+                        />
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/rule_length"

@@ -27,6 +27,7 @@
         app:layout_constraintTop_toBottomOf="@+id/view">
 
         <LinearLayout
+            android:id="@+id/aboutLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -48,6 +49,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/settingsLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -70,6 +72,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/helpLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -92,6 +95,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/feedbackLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -114,6 +118,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/legalLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -136,6 +141,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/shareLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
@@ -159,6 +165,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/signOutLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"

@@ -97,7 +97,15 @@ class OverviewFragment : Fragment() {
 
         binding.termAndCondition.setOnClickListener {
             val intent = Intent(requireContext(), TermAndConditionActivity::class.java)
+            intent.putExtra("page_type", "terms")
             startActivity(intent)
+        }
+
+        binding.privacyAndPolicy.setOnClickListener {
+            val intent = Intent(requireContext(), TermAndConditionActivity::class.java)
+            intent.putExtra("page_type", "privacy")
+            startActivity(intent)
+
         }
 
         binding.reviewLayout.setOnClickListener {
@@ -179,11 +187,13 @@ class OverviewFragment : Fragment() {
             val fileName = "${System.currentTimeMillis()}.jpg"
             val file = File(requireContext().cacheDir, fileName)
             file.createNewFile()
+
             val uri = FileProvider.getUriForFile(
                 requireContext(),
                 "${requireContext().packageName}.provider",
                 file
             )
+
             imageUri = uri
             cameraLauncher.launch(uri)
         } catch (e: Exception) {

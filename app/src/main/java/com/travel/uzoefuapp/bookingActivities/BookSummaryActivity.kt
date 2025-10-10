@@ -1,8 +1,12 @@
 package com.travel.uzoefuapp.bookingActivities
 
 import CustomProgressDialog
+import android.app.DownloadManager
+import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.view.View
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -23,6 +27,7 @@ class BookSummaryActivity : AppCompatActivity() {
     lateinit var binding: ActivityBookSummaryBinding
     private val bookingDetailViewModel: BookingDetailViewModel by viewModels()
     private val progressDialog by lazy { CustomProgressDialog(this) }
+    private var bookingId = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +39,7 @@ class BookSummaryActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
-        val bookingId = intent.getStringExtra("bookingId").toString()
-
+        bookingId = intent.getStringExtra("bookingId").toString()
 
         bookingDetailApi(bookingId)
         bookingDetailObserver()
@@ -51,6 +55,46 @@ class BookSummaryActivity : AppCompatActivity() {
             val intent = Intent(this@BookSummaryActivity, SettingsActivity::class.java)
             startActivity(intent)
         }
+        binding.downloadSignedIndemnity.setOnClickListener {
+            downloadInvoice()
+        }
+        binding.downloadReceipt.setOnClickListener {
+            downloadInvoice1()
+        }
+
+        binding.downloadInvoice.setOnClickListener {
+            downloadInvoice1()
+        }
+    }
+
+    private fun downloadInvoice() {
+        val url = "https://mobappssolutions.in/uzoefu/indeminity/form?id=$bookingId"
+        val fileName = "invoice.pdf"
+        val request = DownloadManager.Request(Uri.parse(url))
+            .setTitle("Downloading Invoice")
+            .setDescription("Downloading your invoice...")
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+            .setAllowedOverMetered(true)
+            .setAllowedOverRoaming(true)
+
+        val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        downloadManager.enqueue(request)
+    }
+
+    private fun downloadInvoice1() {
+        val url = "https://mobappssolutions.in/uzoefu/invoice/form?id=$bookingId"
+        val fileName = "invoice.pdf"
+        val request = DownloadManager.Request(Uri.parse(url))
+            .setTitle("Downloading Invoice")
+            .setDescription("Downloading your invoice...")
+            .setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            .setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName)
+            .setAllowedOverMetered(true)
+            .setAllowedOverRoaming(true)
+
+        val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+        downloadManager.enqueue(request)
     }
 
     private fun bookingDetailObserver() {
@@ -59,7 +103,6 @@ class BookSummaryActivity : AppCompatActivity() {
         }
         bookingDetailViewModel.mCategoryResponse.observe(this) { response ->
             val success = response.peekContent().success
-            val message = response.peekContent().message
             val data = response.peekContent().data?.bookingDetail
 
             if (success == true) {
