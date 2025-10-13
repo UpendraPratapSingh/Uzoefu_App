@@ -108,19 +108,20 @@ class BookSummaryActivity : AppCompatActivity() {
             if (success == true) {
                 binding.bookingSummaryLayout.visibility = View.VISIBLE
                 binding.activityName.text = data?.activityName
+                binding.userName.text = data?.contactName
                 binding.selectedDate.text = data?.bookingDate
                 binding.refrenceId.text = data?.paymentId
-                binding.contactName.text = data?.contactName
+                binding.contactName.text = data?.contactNumber
                 binding.email.text = data?.email
                 binding.addresss.text = data?.billingAddress
-                binding.adultAmount.text = data?.adultAmount
-                binding.kidsAmount.text = data?.kidsAmount
+                binding.adultAmount.text = "R${data?.adultAmount}"
+                binding.kidsAmount.text = "R${data?.kidsAmount}"
                 binding.adultQuantity.text = data?.adultQty.toString()
                 binding.kidsQuantity.text = data?.kidsQty.toString()
                 binding.adultDescription.text = data?.activityName
                 binding.kidsDescription.text = data?.activityName
-                binding.subTotal.text = data?.subtotal
-                binding.totalPrice.text = data?.total
+                binding.subTotal.text = "R${data?.subtotal}"
+                binding.totalPrice.text = "R${data?.total}"
 
             } else {
                 binding.bookingSummaryLayout.visibility = View.GONE

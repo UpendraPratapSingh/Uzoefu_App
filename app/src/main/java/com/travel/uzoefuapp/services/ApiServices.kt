@@ -13,6 +13,8 @@ import com.travel.uzoefuapp.addTripModel.AddTripBody
 import com.travel.uzoefuapp.addTripModel.AddTripResponse
 import com.travel.uzoefuapp.addTripModel.GetTripResponse
 import com.travel.uzoefuapp.application.Uzoefu
+import com.travel.uzoefuapp.bookingCancelModel.BookingCancelBody
+import com.travel.uzoefuapp.bookingCancelModel.BookingCancelResponse
 import com.travel.uzoefuapp.bookingCompleteModel.BookingCompleteBody
 import com.travel.uzoefuapp.bookingCompleteModel.BookingCompleteResponse
 import com.travel.uzoefuapp.bookingCompleteModel.BookingDetailBody
@@ -20,6 +22,8 @@ import com.travel.uzoefuapp.bookingCompleteModel.BookingDetailResponse
 import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistBody
 import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistResponse
 import com.travel.uzoefuapp.categoryModel.CategoryResponse
+import com.travel.uzoefuapp.changePasswordModel.ChangePasswordBody
+import com.travel.uzoefuapp.changePasswordModel.ChangePasswordResponse
 import com.travel.uzoefuapp.deleteWishlistModel.DeleteWishlistBody
 import com.travel.uzoefuapp.deleteWishlistModel.DeleteWishlistResponse
 import com.travel.uzoefuapp.detailModel.DetailPageBody
@@ -27,6 +31,8 @@ import com.travel.uzoefuapp.detailModel.DetailPageResponse
 import com.travel.uzoefuapp.discoverDestinationModel.DestinationDetailBody
 import com.travel.uzoefuapp.discoverDestinationModel.DestinationDetailResponse
 import com.travel.uzoefuapp.discoverDestinationModel.DiscoverDestinationResponse
+import com.travel.uzoefuapp.feedback.FeedbackBody
+import com.travel.uzoefuapp.feedback.FeedbackResponse
 import com.travel.uzoefuapp.filterActivityModel.FilterActivityBody
 import com.travel.uzoefuapp.filterActivityModel.FilterActivityResponse
 import com.travel.uzoefuapp.forgetPasswordModel.OtpVerificationBody
@@ -283,5 +289,23 @@ interface ApiServices {
         @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
         @Body body: NotificationDeleteBody
     ): Observable<NotificationDeleteResponse>
+
+    @POST("feedback")
+    fun feedback(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
+        @Body body: FeedbackBody
+    ): Observable<FeedbackResponse>
+
+    @POST("change/password")
+    fun changePassword(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
+        @Body body: ChangePasswordBody
+    ): Observable<ChangePasswordResponse>
+
+    @POST("booking/canceled")
+    fun bookingCanceled(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
+        @Body body: BookingCancelBody
+    ): Observable<BookingCancelResponse>
 
 }

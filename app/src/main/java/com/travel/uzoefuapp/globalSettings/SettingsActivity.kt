@@ -5,6 +5,9 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
@@ -15,7 +18,10 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.activities.FeedbackActivity
+import com.travel.uzoefuapp.activities.HelpCentreActivity
 import com.travel.uzoefuapp.activities.LoginActivity
+import com.travel.uzoefuapp.activities.SettingActivity
 import com.travel.uzoefuapp.activities.TermAndConditionActivity
 import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.databinding.ActivitySettingsBinding
@@ -44,11 +50,32 @@ class SettingsActivity : AppCompatActivity() {
 
         logoutObserver()
 
+        val webView = binding.webViewAboutUs
+        setupWebView(webView)
+        webView.loadUrl("https://mobappssolutions.in/uzoefu/aboutUs")
+
         binding.menuIcon.setOnClickListener { showSettingsBottomSheet() }
 
         showSettingsBottomSheet()
 
     }
+
+    private fun setupWebView(webView: WebView) {
+        val webSettings: WebSettings = webView.settings
+        webSettings.javaScriptEnabled = true
+        webSettings.domStorageEnabled = true
+        webSettings.loadWithOverviewMode = true
+        webSettings.useWideViewPort = true
+        webSettings.builtInZoomControls = true
+        webSettings.displayZoomControls = false
+        webSettings.defaultTextEncodingName = "utf-8"
+        webSettings.layoutAlgorithm = WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING
+
+        webView.webViewClient = WebViewClient()
+        webView.scrollBarStyle = WebView.SCROLLBARS_OUTSIDE_OVERLAY
+        webView.isHorizontalScrollBarEnabled = false
+    }
+
 
     @SuppressLint("MissingInflatedId")
     private fun showSettingsBottomSheet() {
@@ -66,33 +93,29 @@ class SettingsActivity : AppCompatActivity() {
 
 
         aboutLayout.setOnClickListener {
+            val webView = binding.webViewAboutUs
+            setupWebView(webView)
+            webView.loadUrl("https://mobappssolutions.in/uzoefu/aboutUs")
             bottomSheetDialog.dismiss()
         }
 
         settingsLayout.setOnClickListener {
-            Toast.makeText(this, "Settings clicked", Toast.LENGTH_SHORT).show()
-            bottomSheetDialog.dismiss()
+            val intent = Intent(this, SettingActivity::class.java)
+            startActivity(intent)
+            // bottomSheetDialog.dismiss()
         }
 
         helpLayout.setOnClickListener {
-            Toast.makeText(this, "Help clicked", Toast.LENGTH_SHORT).show()
-            bottomSheetDialog.dismiss()
+            val intent = Intent(this, HelpCentreActivity::class.java)
+            startActivity(intent)
+            // bottomSheetDialog.dismiss()
         }
 
         feedbackLayout.setOnClickListener {
-            val feedbackText = "Hi, I would like to share the following feedback:\n"
-            val feedbackIntent = Intent(Intent.ACTION_SEND).apply {
-                type = "text/plain" // allows any app that can send text
-                putExtra(Intent.EXTRA_SUBJECT, "App Feedback")
-                putExtra(Intent.EXTRA_TEXT, feedbackText)
-            }
-
-            // Start a chooser to let user pick the app
-            startActivity(Intent.createChooser(feedbackIntent, "Send Feedback via"))
-
-            bottomSheetDialog.dismiss()
+            val intent = Intent(this, FeedbackActivity::class.java)
+            startActivity(intent)
+            //  bottomSheetDialog.dismiss()
         }
-
 
         legalLayout.setOnClickListener {
             val intent = Intent(this, TermAndConditionActivity::class.java)

@@ -48,6 +48,10 @@ class DashboardActivity : AppCompatActivity(), OverviewFragment.OnTabSwitchListe
 
         selectedHome()
 
+        if (intent.getBooleanExtra("openProfileFragment", false)) {
+            openProfileFragment()
+        }
+
         binding.HomeFragmentUser.setOnClickListener { selectedHome() }
 
         binding.destinationFragmentUser.setOnClickListener { selectedDestination() }
@@ -149,7 +153,7 @@ class DashboardActivity : AppCompatActivity(), OverviewFragment.OnTabSwitchListe
         replaceFragment(WishlistFragment(), true)
     }
 
-    private fun selectedProfile() {
+    fun selectedProfile() {
         binding.profileIconUser.imageTintList =
             ColorStateList.valueOf(ContextCompat.getColor(this, R.color.dark_cyan))
         binding.homeIconUser.imageTintList =
@@ -197,6 +201,15 @@ class DashboardActivity : AppCompatActivity(), OverviewFragment.OnTabSwitchListe
         }
         fragmentTransaction.commit()
     }
+
+    fun openProfileFragment() {
+        val profileFragment = ProfileFragment(0)
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.userFrameLayout, profileFragment) // fragment_container = FrameLayout ya container id
+            .addToBackStack(null) // back press pe previous fragment dikhega
+            .commit()
+    }
+
 
 
     override fun switchToPage(position: Int) {

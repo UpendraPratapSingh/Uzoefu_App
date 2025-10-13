@@ -10,6 +10,7 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.adapter.BookingAdapter
+import com.travel.uzoefuapp.adapter.OnBookingActionListener
 import com.travel.uzoefuapp.bookingCompleteModel.BookingCompleteBody
 import com.travel.uzoefuapp.bookingCompleteModel.BookingCompleteResponse
 import com.travel.uzoefuapp.bookingCompleteModel.BookingCompleteViewModel
@@ -18,7 +19,7 @@ import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CancelledFragment : Fragment() {
+class CancelledFragment : Fragment(), OnBookingActionListener {
     private var _binding: FragmentCancelledBinding? = null
     private val binding get() = _binding!!
     private val bookingCompleteViewModel: BookingCompleteViewModel by viewModels()
@@ -63,7 +64,7 @@ class CancelledFragment : Fragment() {
                 binding.cancelBookingRecyclerView.apply {
                     layoutManager =
                         GridLayoutManager(requireContext(), 1, GridLayoutManager.VERTICAL, false)
-                    adapter = BookingAdapter(requireContext(), "Cancelled", bookingList)
+                    adapter = BookingAdapter(requireContext(), "Cancelled", bookingList, this@CancelledFragment)
                 }
             } else {
                 // Show empty state or message
@@ -81,6 +82,11 @@ class CancelledFragment : Fragment() {
             status = "cancelled"
         )
         bookingCompleteViewModel.bookingComplete(progressDialog, requireActivity(), body)
+    }
+
+    override fun onCancelBooking(bookingId: String) {
+
+
     }
 
 }

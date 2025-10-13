@@ -1,5 +1,6 @@
 package com.travel.uzoefuapp.adapter
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -19,7 +21,8 @@ import com.travel.uzoefuapp.companyActivities.BookingProductActivity
 class BookingAdapter(
     private val context: Context,
     private val status: String,
-    private val bookingList: List<BookingCompleteResponse.Datum>
+    private val bookingList: List<BookingCompleteResponse.Datum>,
+    private val listener: OnBookingActionListener
 ) : RecyclerView.Adapter<BookingAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -42,17 +45,15 @@ class BookingAdapter(
 
         when (status) {
             "Active" -> {
-                // show active design
                 holder.status.text = "Active"
+                holder.txtRebook.text = "Cancel"
             }
 
             "Past" -> {
-                // show past design
                 holder.status.text = "Completed"
             }
 
             "Cancelled" -> {
-                // show cancelled design
                 holder.status.text = "Cancelled"
                 holder.status.setTextColor(ContextCompat.getColor(context, R.color.red))
                 holder.layout.setBackgroundColor(ContextCompat.getColor(context, R.color.light_red))
@@ -65,11 +66,33 @@ class BookingAdapter(
             context.startActivity(intent)
         }
 
-        holder.txtRebook.setOnClickListener {
+     /*   holder.txtRebook.setOnClickListener {
             val intent = Intent(context, BookingProductActivity::class.java)
             intent.putExtra("categoryId", list.activityId)
             // intent.putExtra("activeHours", list.todayHours.toString())
             context.startActivity(intent)
+        }*/
+
+        holder.txtRebook.setOnClickListener {
+            if (status == "Active") {
+                // Show confirmation popup before cancel
+                AlertDialog.Builder(context)
+                    .setTitle("Cancel Booking")
+                    .setMessage("Are you sure you want to cancel this booking?")
+                    .setPositiveButton("Yes") { dialog, _ ->
+                        dialog.dismiss()
+                        listener.onCancelBooking(list.id.toString())
+                        Toast.makeText(context, "Booking cancelled successfully", Toast.LENGTH_SHORT).show()
+                    }
+                    .setNegativeButton("No") { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .show()
+            } else {
+                val intent = Intent(context, BookingProductActivity::class.java)
+                intent.putExtra("categoryId", list.activityId)
+                context.startActivity(intent)
+            }
         }
     }
 
