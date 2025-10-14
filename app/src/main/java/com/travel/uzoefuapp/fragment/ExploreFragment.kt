@@ -183,4 +183,9 @@ class ExploreFragment : Fragment(), OnWishlistClickListener {
         branchWishlistViewModel.addBranchWishlistApi(requireActivity(), progressDialog, body)
 
     }
+
+    override fun onResume() {
+        super.onResume()
+        notificationCountApi()
+    }
 }

@@ -3,6 +3,7 @@ package com.travel.uzoefuapp.notification
 import CustomProgressDialog
 import android.app.Dialog
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.widget.LinearLayout
@@ -70,6 +71,9 @@ class NotificationActivity : AppCompatActivity(), NotificationOnClickListener,
             val message = response.peekContent().message
 
             if (success == true) {
+                (binding.notificationRecyclerView.adapter as? NotificationAdapter)?.updateList(
+                    emptyList()
+                )
                 notificationListApi()
             }
 
@@ -140,7 +144,6 @@ class NotificationActivity : AppCompatActivity(), NotificationOnClickListener,
             if (success == true) {
                 notificationListApi()
 
-
             }
         }
         notificationSeenViewModel.errorResponse.observe(this) {
@@ -148,6 +151,10 @@ class NotificationActivity : AppCompatActivity(), NotificationOnClickListener,
         }
     }
 
+    private fun notificationListApi() {
+        notificationListViewModel.notificationListApi(this, progressDialog)
+
+    }
     private fun notificationListObserver() {
         notificationListViewModel.progressIndicator.observe(this) {
 
@@ -156,11 +163,13 @@ class NotificationActivity : AppCompatActivity(), NotificationOnClickListener,
             val response = event.peekContent()
             val success = response.success
             val message = response.message
+            notifications = response.data!!
 
-
+            Log.e("TAGASA", "notificationListObserver: $success...out..notifications ${notifications.size}")
             if (success == true) {
-                val notifications = response.data ?: emptyList()
+                Log.e("TAGASA", "notificationListObserver: $success..in..notifications ${notifications.size}")
                 if (notifications.isEmpty()) {
+                    Log.e("TAG", "notificationListObserver: ")
                     binding.clearAllData.visibility = View.GONE
                     binding.notificationRecyclerView.visibility = View.GONE
                     binding.tvNoData.visibility = View.VISIBLE
@@ -170,8 +179,7 @@ class NotificationActivity : AppCompatActivity(), NotificationOnClickListener,
                     binding.notificationRecyclerView.visibility = View.VISIBLE
                     binding.clearAllData.visibility = View.VISIBLE
                     binding.notificationRecyclerView.layoutManager = GridLayoutManager(this, 1)
-                    binding.notificationRecyclerView.adapter =
-                        NotificationAdapter(this, notifications, this, this)
+                    binding.notificationRecyclerView.adapter = NotificationAdapter(this, notifications, this, this)
 
                 }
             } else {
@@ -181,14 +189,12 @@ class NotificationActivity : AppCompatActivity(), NotificationOnClickListener,
 
         }
         notificationListViewModel.errorResponse.observe(this) {
+            Log.e("TAGASA", "notificationListObserver. olk..notifications ${notifications.size}")
             ErrorUtil.handlerGeneralError(this@NotificationActivity, it)
         }
     }
 
-    private fun notificationListApi() {
-        notificationListViewModel.notificationListApi(this, progressDialog)
 
-    }
 
     override fun onNotificationClick(notificationId: String) {
 

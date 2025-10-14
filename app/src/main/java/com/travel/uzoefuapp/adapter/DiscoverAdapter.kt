@@ -1,6 +1,7 @@
 package com.travel.uzoefuapp.adapter
 
 import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,12 +12,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.travel.uzoefuapp.BuildConfig
 import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.activities.SelectDestinationActivity
 import com.travel.uzoefuapp.discoverDestinationModel.DiscoverDestinationResponse
 
 
 class DiscoverAdapter(
     val context: Context,
-    val destinationList: List<DiscoverDestinationResponse.Datum>,
+    private val destinationList: List<DiscoverDestinationResponse.Datum>,
     private val wishlistClickListener: OnWishlistClickListener,
 
     ) : RecyclerView.Adapter<DiscoverAdapter.ViewHolder>() {
@@ -41,6 +43,16 @@ class DiscoverAdapter(
             if (discoverList.iswish == true) R.drawable.wishlist_color
             else R.drawable.ic_wish
         )
+
+        holder.itemView.setOnClickListener {
+            val intent = Intent(context, SelectDestinationActivity::class.java)
+            intent.putExtra(
+                "categoryName",
+                "${discoverList.branchName} (${discoverList.activityCount})"
+            )
+            intent.putExtra("branchId", discoverList.branchId.toString())
+            context.startActivity(intent)
+        }
 
         holder.favIcon.setOnClickListener { view ->
             view.animate()

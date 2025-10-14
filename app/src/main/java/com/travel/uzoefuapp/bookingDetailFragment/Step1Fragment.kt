@@ -3,23 +3,32 @@ package com.travel.uzoefuapp.bookingDetailFragment
 import CustomProgressDialog
 import android.app.DatePickerDialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import android.widget.LinearLayout
+import android.widget.PopupWindow
+import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activityTimeModel.ActivityTimeBody
 import com.travel.uzoefuapp.activityTimeModel.ActivityTimeViewModel
+import com.travel.uzoefuapp.adapter.TimeSlotAdapter
 import com.travel.uzoefuapp.databinding.FragmentStep1Binding
 import com.travel.uzoefuapp.priceCalculationModel.PriceCalculationBody
 import com.travel.uzoefuapp.priceCalculationModel.PriceCalculationViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 @AndroidEntryPoint
 class Step1Fragment() :
@@ -93,7 +102,10 @@ class Step1Fragment() :
         priceCalculateObserver()
         priceCalculateApi()
         activityTimeApi()
-        activityTimeObserver()
+
+        binding.selectTime.setOnClickListener {
+            showTimeSlotPopup(it, binding.tvSelectedTime, selectedDate)
+        }
 
         binding.btnPlusAdult.setOnClickListener {
             adultCount++
@@ -128,66 +140,64 @@ class Step1Fragment() :
         return binding.root
     }
 
-    private fun activityTimeObserver() {
-        activityTimeViewModel.progressIndicator.observe(viewLifecycleOwner) {
-
+    private fun showTimeSlotPopup(
+        anchorView: View,
+        tvSelectedTime: TextView,
+        selectedDate: String
+    ) {
+        if (selectedDate.isEmpty()) {
+            Toast.makeText(requireContext(), "Please select a date first", Toast.LENGTH_SHORT)
+                .show()
+            return
         }
+
+        val dayName = getDayNameFromDate(selectedDate)
 
         activityTimeViewModel.activityTimeResponse.observe(viewLifecycleOwner) { response ->
             val success = response.peekContent().success
-            val message = response.peekContent().message
             val data = response.peekContent().data
 
-            if (success == true && data != null) {
+            if (success == true && !data.isNullOrEmpty()) {
+                val dayData = data.find { it.day.equals(dayName, ignoreCase = true) }
+                val timeSlots = dayData?.availableTimes ?: emptyList()
 
-                val timeSlots = mutableListOf("Select Time")
-                timeSlots.addAll(
-                    listOf(
-                        "Mon: ${data.monFrom} - ${data.monTo}",
-                        "Tue: ${data.tueFrom} - ${data.tueTo}",
-                        "Wed: ${data.wedFrom} - ${data.wedTo}",
-                        "Thu: ${data.thuFrom} - ${data.thuTo}",
-                        "Fri: ${data.friFrom} - ${data.friTo}",
-                        "Sat: ${data.satFrom} - ${data.satTo}",
-                        "Sun: ${data.sunFrom} - ${data.sunTo}"
-                    )
-                )
+                if (timeSlots.isEmpty()) {
+                    Toast.makeText(
+                        requireContext(),
+                        "No time slots available for $dayName",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return@observe
+                }
 
-                val adapter = ArrayAdapter(
-                    requireContext(),
-                    android.R.layout.simple_spinner_dropdown_item,
-                    timeSlots
-                )
-                binding.spinnerSelectTime.adapter = adapter
+                val popupView = LayoutInflater.from(requireContext())
+                    .inflate(R.layout.popup_time_slots, null)
 
-                binding.spinnerSelectTime.onItemSelectedListener =
-                    object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(
-                            parent: AdapterView<*>?,
-                            view: View?,
-                            position: Int,
-                            id: Long
-                        ) {
-                            if (position == 0) return
+                val popupWindow = PopupWindow(
+                    popupView,
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    true
+                ).apply {
+                    setBackgroundDrawable(ColorDrawable(Color.WHITE))
+                    isOutsideTouchable = true
+                    isFocusable = true
+                }
 
-                            val selectedFullText = timeSlots[position]
-                            val selectedTime = selectedFullText.substringAfter(":").trim()
+                val rvTimeSlotsPopup = popupView.findViewById<RecyclerView>(R.id.rvTimeSlotsPopup)
+                val adapter = TimeSlotAdapter(timeSlots) { selectedTime ->
+                    tvSelectedTime.text = selectedTime
+                    val sharedPref = requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
+                    sharedPref.edit().putString("selected_time", selectedTime).apply()
+                    popupWindow.dismiss()
+                }
 
-                            val sharedPref = requireContext()
-                                .getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
-                            sharedPref.edit()
-                                .putString("selected_time", selectedTime)
-                                .apply()
-                        }
+                rvTimeSlotsPopup.layoutManager = GridLayoutManager(requireContext(), 4)
+                rvTimeSlotsPopup.adapter = adapter
 
-                        override fun onNothingSelected(parent: AdapterView<*>?) {}
-                    }
+                popupWindow.showAsDropDown(anchorView, 0, 0)
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    message ?: "Something went wrong",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(requireContext(), "No time slots found", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -195,6 +205,82 @@ class Step1Fragment() :
             ErrorUtil.handlerGeneralError(requireActivity(), it)
         }
     }
+
+    private fun getDayNameFromDate(dateString: String): String {
+        val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val date = sdf.parse(dateString)
+        val calendar = Calendar.getInstance()
+        calendar.time = date!!
+        return when (calendar.get(Calendar.DAY_OF_WEEK)) {
+            Calendar.SUNDAY -> "Sun"
+            Calendar.MONDAY -> "Mon"
+            Calendar.TUESDAY -> "Tue"
+            Calendar.WEDNESDAY -> "Wed"
+            Calendar.THURSDAY -> "Thu"
+            Calendar.FRIDAY -> "Fri"
+            Calendar.SATURDAY -> "Sat"
+            else -> ""
+        }
+    }
+
+    /*
+        private fun showTimeSlotPopup(anchorView: View, tvSelectedTime: TextView) {
+            activityTimeViewModel.activityTimeResponse.observe(viewLifecycleOwner) { response ->
+                val success = response.peekContent().success
+                val data = response.peekContent().data
+
+                if (success == true && !data.isNullOrEmpty()) {
+                    val allTimeSlots = data.flatMap { it.availableTimes ?: emptyList() }.distinct()
+
+                    if (allTimeSlots.isEmpty()) {
+                        Toast.makeText(requireContext(), "No time slots available", Toast.LENGTH_SHORT)
+                            .show()
+                        return@observe
+                    }
+
+                    val popupView = LayoutInflater.from(requireContext())
+                        .inflate(R.layout.popup_time_slots, null)
+
+                    val popupWindow = PopupWindow(
+                        popupView,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        true
+                    ).apply {
+                        setBackgroundDrawable(ColorDrawable(Color.WHITE))
+                        isOutsideTouchable = true
+                        isFocusable = true
+                    }
+
+                    val rvTimeSlotsPopup = popupView.findViewById<RecyclerView>(R.id.rvTimeSlotsPopup)
+                    val adapter = TimeSlotAdapter(allTimeSlots) { selectedTime ->
+                        // Set selected time to TextView
+                        tvSelectedTime.text = selectedTime
+
+                        // Save selected time in SharedPreferences
+                        val sharedPref =
+                            requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
+                        sharedPref.edit().putString("selected_time", selectedTime).apply()
+
+                        popupWindow.dismiss()
+                    }
+
+                    rvTimeSlotsPopup.layoutManager = GridLayoutManager(requireContext(), 4)
+                    rvTimeSlotsPopup.adapter = adapter
+
+                    popupWindow.showAsDropDown(anchorView, 0, 0)
+
+                } else {
+                    Toast.makeText(requireContext(), "No time slots found", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            activityTimeViewModel.errorResponse.observe(viewLifecycleOwner) {
+                ErrorUtil.handlerGeneralError(requireActivity(), it)
+            }
+        }
+    */
+
 
     private fun activityTimeApi() {
         val body = ActivityTimeBody(

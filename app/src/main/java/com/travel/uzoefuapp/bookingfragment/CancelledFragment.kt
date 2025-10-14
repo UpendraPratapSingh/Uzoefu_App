@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.adapter.BookingAdapter
 import com.travel.uzoefuapp.adapter.OnBookingActionListener
 import com.travel.uzoefuapp.bookingCompleteModel.BookingCompleteBody
@@ -64,7 +63,12 @@ class CancelledFragment : Fragment(), OnBookingActionListener {
                 binding.cancelBookingRecyclerView.apply {
                     layoutManager =
                         GridLayoutManager(requireContext(), 1, GridLayoutManager.VERTICAL, false)
-                    adapter = BookingAdapter(requireContext(), "Cancelled", bookingList, this@CancelledFragment)
+                    adapter = BookingAdapter(
+                        requireContext(),
+                        "Cancelled",
+                        bookingList,
+                        this@CancelledFragment
+                    )
                 }
             } else {
                 // Show empty state or message
@@ -86,7 +90,11 @@ class CancelledFragment : Fragment(), OnBookingActionListener {
 
     override fun onCancelBooking(bookingId: String) {
 
+    }
 
+    override fun onResume() {
+        super.onResume()
+        getBookingListApi()
     }
 
 }

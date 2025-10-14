@@ -17,7 +17,7 @@ import com.travel.uzoefuapp.notificationModel.NotificationListResponse
 
 class NotificationAdapter(
     private val context: Context,
-    private val notificationList: List<NotificationListResponse.Datum>,
+    private var notificationList: List<NotificationListResponse.Datum>,
     private val notificationClickListener: NotificationOnClickListener,
     private val deleteListener: NotificationDeleteListener
 
@@ -50,6 +50,11 @@ class NotificationAdapter(
 
             notificationClickListener.onNotificationClick(notiIdss)
         }
+
+    }
+    fun updateList(newList: List<NotificationListResponse.Datum>) {
+        notificationList = newList
+        notifyDataSetChanged()
     }
 
     private fun showPopUpNotification(heading: String?, message: String?, id: String?) {

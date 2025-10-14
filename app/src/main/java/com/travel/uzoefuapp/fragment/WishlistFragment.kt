@@ -50,7 +50,6 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
     private var isEditMode = false
     private var wishListId = ""
     private lateinit var recyclerView: RecyclerView
-
     private val selectedWishlistIds = mutableListOf<String>()
     var data: List<GetWishlistResponse.Datum> = ArrayList()
     private val getWishlistViewModel: GetWishlistViewModel by viewModels()
@@ -236,7 +235,6 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
 
     private fun notificationCountApi() {
         notificationCountViewModel.notificationCountApi(requireActivity(), progressDialog)
-
     }
 
     private fun openBottomSheetTrip() {
@@ -264,7 +262,6 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
             val etTripDestination = view.findViewById<EditText>(R.id.etTripDestination)
             val btnSaveTrip = view.findViewById<Button>(R.id.btnSaveTrip)
 
-
             closeBtn.setOnClickListener { bottomSheetDialog.dismiss() }
 
             btnSaveTrip.setOnClickListener {
@@ -272,14 +269,9 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
                 val destination = etTripDestination.text.toString().trim()
 
                 if (title.isEmpty() || destination.isEmpty()) {
-                    Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT)
-                        .show()
+                    Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Trip Created: $title → $destination",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    Toast.makeText(requireContext(), "Trip Created: $title → $destination", Toast.LENGTH_SHORT).show()
                     addTripApi(title, destination)
 
                     bottomSheetDialog.dismiss()
@@ -320,19 +312,18 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
     }*/
 
     override fun onWishlistClicked(selectedIds: List<String>, position: Int) {
-        // Step 1: Naye selected IDs list me rakh lo (adapter se mil rahi hai)
         val newSelectedIds = selectedIds.map { it.toString() }
 
-        // Step 2: Purani list me se un IDs ko hata do jo ab selected nahi hain
         selectedWishlistIds.retainAll(newSelectedIds)
 
-        // Step 3: Nayi IDs add kar do jo abhi tak list me nahi hain
         selectedWishlistIds.addAll(
             newSelectedIds.filter { !selectedWishlistIds.contains(it) }
         )
-
         Log.d("SelectedIDs", selectedWishlistIds.toString())
     }
 
-
+    override fun onResume() {
+        super.onResume()
+        notificationCountApi()
+    }
 }

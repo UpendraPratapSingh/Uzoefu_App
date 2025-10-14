@@ -82,4 +82,9 @@ class PastFragment : Fragment(), OnBookingActionListener {
 
 
     }
+
+    override fun onResume() {
+        super.onResume()
+        getBookingListApi()
+    }
 }

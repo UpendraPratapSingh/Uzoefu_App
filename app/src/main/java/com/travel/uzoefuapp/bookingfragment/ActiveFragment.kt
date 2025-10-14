@@ -1,6 +1,7 @@
 package com.travel.uzoefuapp.bookingfragment
 
 import CustomProgressDialog
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -44,6 +45,7 @@ class ActiveFragment : Fragment(), OnBookingActionListener {
         return binding.root
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun cancelBookingObserver() {
         bookingCancelViewModel.progressIndicator.observe(viewLifecycleOwner) {
 
@@ -54,6 +56,11 @@ class ActiveFragment : Fragment(), OnBookingActionListener {
 
             if (success == true) {
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                getBookingListApi()
+
+                if (bookingList.isEmpty()) {
+                    (binding.bookingRecyclerView.adapter as? BookingAdapter)?.notifyDataSetChanged()
+                }
             }
 
         }
@@ -63,31 +70,26 @@ class ActiveFragment : Fragment(), OnBookingActionListener {
     }
 
     private fun getBookingListObserver() {
-        bookingCompleteViewModel.progressIndicator.observe(viewLifecycleOwner) { isLoading ->
-            // Show or hide progress loader here
-            if (isLoading == true) {
-                // e.g., binding.progressBar.visibility = View.VISIBLE
-            } else {
-                // e.g., binding.progressBar.visibility = View.GONE
-            }
+        bookingCompleteViewModel.progressIndicator.observe(viewLifecycleOwner) {
         }
 
         bookingCompleteViewModel.mCategoryResponse.observe(viewLifecycleOwner) { event ->
             val response = event.peekContent()
             val success = response.success
             val message = response.message
-            val data = response.data
+            bookingList = response.data ?: emptyList()
 
-            if (success == true && !data.isNullOrEmpty()) {
-                bookingList = data
-                binding.bookingRecyclerView.apply {
-                    layoutManager =
-                        GridLayoutManager(requireContext(), 1, GridLayoutManager.VERTICAL, false)
-                    adapter = BookingAdapter(requireContext(), "Active", bookingList, this@ActiveFragment)
-                }
+            binding.bookingRecyclerView.apply {
+                layoutManager =
+                    GridLayoutManager(requireContext(), 1, GridLayoutManager.VERTICAL, false)
+                adapter =
+                    BookingAdapter(requireContext(), "Active", bookingList, this@ActiveFragment)
+            }
+
+            if (bookingList.isEmpty()) {
+                 binding.tvEmpty.visibility = View.VISIBLE
             } else {
-                // Show empty state or message
-                // Toast.makeText(requireContext(), message ?: "Something went wrong", Toast.LENGTH_SHORT).show()
+                 binding.tvEmpty.visibility = View.GONE
             }
         }
 
@@ -115,4 +117,11 @@ class ActiveFragment : Fragment(), OnBookingActionListener {
         bookingCancelViewModel.bookingCancelApi(requireActivity(), progressDialog, body)
 
     }
+
+
+    override fun onResume() {
+        super.onResume()
+        getBookingListApi()
+    }
+
 }

@@ -73,7 +73,6 @@ class BookingDetailStep1Activity : AppCompatActivity() {
             insets
         }
 
-        // Get values from intent
         price = intent.getStringExtra("price").toString()
         childrenPrice = intent.getStringExtra("childrenPrice").toString()
         activityId = intent.getStringExtra("activityId").toString()
@@ -115,14 +114,7 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         }
 
         openFragment(
-            Step1Fragment.newInstance(
-                price,
-                childrenPrice,
-                activityId,
-                address,
-                town,
-                productName
-            )
+            Step1Fragment.newInstance(price, childrenPrice, activityId, address, town, productName)
         )
         updateStepper()
 
@@ -146,28 +138,78 @@ class BookingDetailStep1Activity : AppCompatActivity() {
                 }
         */
 
-        nextBtn.setOnClickListener {
-            when {
-                currentStep < 4 -> {
-                    // Step 1, 2, 3
-                    currentStep++
-                    when (currentStep) {
-                        2 -> openFragment(Step2Fragment())
-                        3 -> openFragment(Step3Fragment(activityId))
-                        4 -> openFragment(Step4Fragment.newInstance(activityId, productName))
+        /*
+                nextBtn.setOnClickListener {
+                    when {
+                        currentStep < 4 -> {
+                            // Step 1, 2, 3
+                            currentStep++
+                            when (currentStep) {
+                                2 -> {
+                                    if (validateStep1Fields()) {
+                                        currentStep = 2
+                                        openFragment(Step2Fragment())
+                                        updateStepper()
+                                    }
+                                }
+                                3 -> openFragment(Step3Fragment(activityId))
+                                4 -> openFragment(Step4Fragment.newInstance(activityId, productName))
 
+                            }
+                            updateStepper()
+                        }
+
+                        currentStep == 4 -> {
+                            // ✅ Step4 pe Pay Now button click -> API call
+                            callPaymentApi()
+                            paymentObserver()
+                        }
+
+                        currentStep == 5 -> {
+                            // ✅ Step5 confirmation pe Finish -> Dashboard
+                            val intent =
+                                Intent(this@BookingDetailStep1Activity, DashboardActivity::class.java)
+                            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            startActivity(intent)
+                            finish()
+                        }
                     }
-                    updateStepper()
+                }
+        */
+
+
+        nextBtn.setOnClickListener {
+            when (currentStep) {
+                1 -> {
+                    if (validateStep1Fields()) {
+                        currentStep = 2
+                        openFragment(Step2Fragment())
+                        updateStepper()
+                    }
                 }
 
-                currentStep == 4 -> {
-                    // ✅ Step4 pe Pay Now button click -> API call
+                2 -> {
+                    if (validateStep2Fields()) {
+                        currentStep = 3
+                        openFragment(Step3Fragment(activityId))
+                        updateStepper()
+                    }
+                }
+
+                3 -> {
+                    if (validateStep3Fields()) {
+                        currentStep = 4
+                        openFragment(Step4Fragment.newInstance(activityId, productName))
+                        updateStepper()
+                    }
+                }
+
+                4 -> {
                     callPaymentApi()
                     paymentObserver()
                 }
 
-                currentStep == 5 -> {
-                    // ✅ Step5 confirmation pe Finish -> Dashboard
+                5 -> {
                     val intent =
                         Intent(this@BookingDetailStep1Activity, DashboardActivity::class.java)
                     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -176,6 +218,103 @@ class BookingDetailStep1Activity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun validateStep3Fields(): Boolean {
+        val participants = getParticipantsFromPrefs()
+
+        if (participants.isEmpty()) {
+            Toast.makeText(this, "Add at least one participant", Toast.LENGTH_SHORT).show()
+            return false
+        }
+        participants.forEachIndexed { index, participant ->
+            if (participant.clientName.isEmpty() ||
+                participant.idNumber.isEmpty() ||
+                participant.contactNumber.isEmpty() ||
+                participant.dateSigned.isEmpty() ||
+                participant.signatureBase64.isEmpty()
+            ) {
+                Toast.makeText(
+                    this,
+                    "Please fill all fields and add signature for participant ${index + 1}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun validateStep2Fields(): Boolean {
+        val sharedPrefProfile = getSharedPreferences("profile_pref", Context.MODE_PRIVATE)
+        val firstName = sharedPrefProfile.getString("first_name", "") ?: ""
+        val lastName = sharedPrefProfile.getString("last_name", "") ?: ""
+        val username = sharedPrefProfile.getString("username", "") ?: ""
+        val mobile = sharedPrefProfile.getString("mobile", "") ?: ""
+        val billingAddress = sharedPrefProfile.getString("billing_address", "") ?: ""
+
+        return when {
+            firstName.isEmpty() -> {
+                Toast.makeText(this, "Please enter first name", Toast.LENGTH_SHORT).show()
+                false
+            }
+
+            lastName.isEmpty() -> {
+                Toast.makeText(this, "Please enter last name", Toast.LENGTH_SHORT).show()
+                false
+            }
+
+            username.isEmpty() -> {
+                Toast.makeText(this, "Please enter username", Toast.LENGTH_SHORT).show()
+                false
+            }
+
+            mobile.isEmpty() -> {
+                Toast.makeText(this, "Please enter mobile number", Toast.LENGTH_SHORT).show()
+                false
+            }
+
+            mobile.length < 10 -> {
+                Toast.makeText(this, "Enter valid mobile number", Toast.LENGTH_SHORT).show()
+                false
+            }
+
+            billingAddress.isEmpty() -> {
+                Toast.makeText(this, "Please enter billing address", Toast.LENGTH_SHORT).show()
+                false
+            }
+
+            else -> true
+        }
+    }
+
+
+    private fun validateStep1Fields(): Boolean {
+        // Get selected date from booking_pref
+        val bookingPref = getSharedPreferences("booking_pref", Context.MODE_PRIVATE)
+        val selectedDate = bookingPref.getString("date", "") ?: ""
+
+        // Get selected time from ActivityPrefs
+        val activityPref = getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
+        val selectedTime = activityPref.getString("selected_time", "") ?: ""
+
+        if (selectedDate.isEmpty()) {
+            Toast.makeText(this, "Please select a date", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        if (selectedTime.isNullOrEmpty()) {
+            Toast.makeText(this, "Please select a time", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        val adultCount = bookingPref.getInt("adultcount", 0)
+        if (adultCount < 1) {
+            Toast.makeText(this, "Please add at least one adult", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        return true
     }
 
     private fun callPaymentApi() {
@@ -249,7 +388,6 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         val signInDatesParts = participants.map { participant ->
             MultipartBody.Part.createFormData("signindate[]", participant.dateSigned)
         }
-
 
         fun base64ToFile(base64String: String, fileName: String): File {
             val cleanBase64 = base64String.substringAfter(",")
