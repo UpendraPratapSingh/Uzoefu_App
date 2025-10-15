@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -26,6 +27,7 @@ import com.travel.uzoefuapp.activities.TermAndConditionActivity
 import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.databinding.ActivitySettingsBinding
 import com.travel.uzoefuapp.logoutModel.LogoutViewModel
+import com.travel.uzoefuapp.notificationModel.NotificationCountViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -35,6 +37,8 @@ class SettingsActivity : AppCompatActivity() {
     lateinit var binding: ActivitySettingsBinding
     private val progressDialog by lazy { CustomProgressDialog(this) }
     private val logoutViewModel: LogoutViewModel by viewModels()
+    private val notificationCountViewModel: NotificationCountViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -49,6 +53,8 @@ class SettingsActivity : AppCompatActivity() {
         binding.btnBack.setOnClickListener { finish() }
 
         logoutObserver()
+        notificationCountApi()
+        notificationCountObserver()
 
         val webView = binding.webViewAboutUs
         setupWebView(webView)
@@ -74,6 +80,38 @@ class SettingsActivity : AppCompatActivity() {
         webView.webViewClient = WebViewClient()
         webView.scrollBarStyle = WebView.SCROLLBARS_OUTSIDE_OVERLAY
         webView.isHorizontalScrollBarEnabled = false
+    }
+
+
+    private fun notificationCountObserver() {
+        notificationCountViewModel.progressIndicator.observe(this) {
+
+        }
+        notificationCountViewModel.notificationCountResponse.observe(this) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+            val data = response.peekContent().data
+            if (success == true) {
+                val count = data ?: 0
+
+                if (count == 0) {
+                    binding.notificationBadge.visibility = View.GONE
+                } else {
+                    binding.notificationBadge.visibility = View.VISIBLE
+                    binding.notificationBadge.text = count.toString()
+                }
+
+            }
+
+        }
+        notificationCountViewModel.errorResponse.observe(this) {
+            ErrorUtil.handlerGeneralError(this, it)
+        }
+    }
+
+    private fun notificationCountApi() {
+        notificationCountViewModel.notificationCountApi(this, progressDialog)
+
     }
 
 

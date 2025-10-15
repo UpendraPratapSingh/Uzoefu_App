@@ -50,9 +50,9 @@ class ReviewAdapter(
         val userId = Uzoefu.encryptedPrefs.userId
         val reviewUserId = review.user?.userId.orEmpty()
 
-        holder.btnEditReview.visibility =
+      /*  holder.btnEditReview.visibility =
             if (reviewUserId == userId) View.VISIBLE else View.GONE
-
+*/
         holder.tvUserName.text = review.user?.name.toString()
         holder.ratingBar.rating = review.rating!!.toFloat()
         holder.tvReviewText.text = review.description.toString()

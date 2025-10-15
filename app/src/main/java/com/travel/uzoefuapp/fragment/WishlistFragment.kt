@@ -224,7 +224,15 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
             val message = response.peekContent().message
             val data = response.peekContent().data
             if (success == true) {
-                binding.notificationBadge.text = data.toString()
+                val count = data ?: 0
+
+                if (count == 0) {
+                    binding.notificationBadge.visibility = View.GONE
+                } else {
+                    binding.notificationBadge.visibility = View.VISIBLE
+                    binding.notificationBadge.text = count.toString()
+                }
+
             }
 
         }

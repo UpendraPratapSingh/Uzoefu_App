@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
+import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -40,6 +41,13 @@ class WishlistAdapter(
         holder.title.text = wishlistData.name
         holder.itemPrice.text = "R ${wishlistData.price.toString()}"
         holder.rateText.text = "(${wishlistData.ratingCount.toString()})"
+        // Set the rating bar
+        val rating = wishlistData.rating?.toFloat() ?: 0f
+        holder.ratingBar.rating = rating
+
+// Set progress/number (assuming you have a TextView)
+      //  holder.tvRatingProgress.text = rating.toInt().toString()
+
 
         val imagePath = "https://mobappssolutions.in/uzoefu/public/images/activity_images/"
 
@@ -47,7 +55,7 @@ class WishlistAdapter(
         holder.itemView.setOnClickListener {
             if (!isEditMode) {
                 val intent = Intent(context, BookingProductActivity::class.java)
-                intent.putExtra("categoryId", wishlistData.activityId?.toIntOrNull() ?: -1)
+                intent.putExtra("categoryId", wishlistData.activityId ?: -1)
                 context.startActivity(intent)
             } else {
                 holder.deleteIcon.isChecked = !holder.deleteIcon.isChecked
@@ -73,7 +81,6 @@ class WishlistAdapter(
             onclickDeleteWishListListener.onWishlistClicked(selectedIds, position)
         }
     }
-
 
     /*
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -143,5 +150,6 @@ class WishlistAdapter(
         val deleteIcon: CheckBox = itemView.findViewById(R.id.deleteIcon)
         val itemPrice: TextView = itemView.findViewById(R.id.itemPrice)
         val rateText: TextView = itemView.findViewById(R.id.rateText)
+        val ratingBar: RatingBar = itemView.findViewById(R.id.ratingBar)
     }
 }

@@ -15,6 +15,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
@@ -72,11 +73,17 @@ class BookingProductActivity : AppCompatActivity() {
             insets
         }
 
-        this.window.apply {
-            decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 
+        window.apply {
+            // Make content appear behind status bar
+            decorView.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+
+            // Make status bar transparent
             statusBarColor = Color.TRANSPARENT
+
+            WindowInsetsControllerCompat(this, decorView).isAppearanceLightStatusBars = false
         }
 
         binding.btnBack.setOnClickListener { finish() }
@@ -95,18 +102,8 @@ class BookingProductActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        /*  binding.tvCategory.setOnClickListener {
-              val intent = Intent(this@BookingProductActivity, CompanyLandingActivity::class.java)
-              startActivity(intent)
-          }*/
-
         viewPager = findViewById(R.id.viewPager)
         indicator = findViewById(R.id.dotsIndicator)
-
-        /*  val images = listOf(R.drawable.balloonslide, R.drawable.balloonslide, R.drawable.balloonslide)
-
-          viewPager.adapter = SliderAdapter(images)
-          indicator.setViewPager(viewPager)*/
 
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
@@ -226,6 +223,7 @@ class BookingProductActivity : AppCompatActivity() {
             telePhone = response.peekContent().data?.activity?.branch?.teliphoneNumber.toString()
 
             if (success == true) {
+                binding.main.visibility = View.VISIBLE
                 binding.tvTitle.text = data1?.activityName.toString()
                 binding.tvCategory.text = data2?.name.toString()
                 binding.tvPrice.text = "R ${data3?.groupPrice ?: 0}"
@@ -236,7 +234,6 @@ class BookingProductActivity : AppCompatActivity() {
 
                 }
                 binding.productRecyclerView.adapter = thumbnailAdapter
-
 
                 binding.button2.setOnClickListener {
                     val price = data3?.groupPrice ?: 0.0
@@ -266,7 +263,6 @@ class BookingProductActivity : AppCompatActivity() {
                 indicator.setViewPager(viewPager)
 
 
-
                 binding.iconFav.setImageResource(
                     if (isWish == true) R.drawable.wishlist_color
                     else R.drawable.ic_wish
@@ -288,6 +284,9 @@ class BookingProductActivity : AppCompatActivity() {
 
                     activityId?.let { addToWishlistApi(it) }
                 }
+            } else {
+                binding.main.visibility = View.GONE
+
             }
         }
         detailPageViewModel.errorResponse.observe(this) {
@@ -299,7 +298,6 @@ class BookingProductActivity : AppCompatActivity() {
         val body = AddWishlistBody(activity_id = id.toString())
         addWishlistViewModel.addToWishListApi(progressDialog, this, body)
     }
-
 
     private fun getDetailApi(categoryId: Int) {
         val body = DetailPageBody(

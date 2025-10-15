@@ -247,6 +247,10 @@ class CommonRepository @Inject constructor(private val services: ApiServices) {
         return services.bookingCanceled(Uzoefu.encryptedPrefs.bearerToken, body)
     }
 
+    fun branchWishlist(): Observable<BranchWishlistResponse>{
+        return services.branchWishlist(Uzoefu.encryptedPrefs.bearerToken)
+    }
+
 
     suspend fun makePayment(
         activityId: String,

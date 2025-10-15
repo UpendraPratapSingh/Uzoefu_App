@@ -29,7 +29,7 @@ class GetWishlistResponse : Serializable {
 
         @SerializedName("activity_id")
         @Expose
-        var activityId: String? = null
+        var activityId: Int? = null
 
         @SerializedName("name")
         @Expose
@@ -46,5 +46,9 @@ class GetWishlistResponse : Serializable {
         @SerializedName("rating_count")
         @Expose
         var ratingCount: Int? = null
+
+        @SerializedName("rating")
+        @Expose
+        var rating: String? = null
     }
 }

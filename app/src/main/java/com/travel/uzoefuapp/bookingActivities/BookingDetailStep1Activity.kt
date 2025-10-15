@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Base64
 import android.util.Log
@@ -18,6 +19,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -71,6 +73,20 @@ class BookingDetailStep1Activity : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        window.apply {
+            // Make layout fullscreen (behind status bar)
+            decorView.systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    )
+
+            // Transparent background
+            statusBarColor = Color.TRANSPARENT
+
+            // Force white icons/text in status bar
+            WindowInsetsControllerCompat(this, decorView).isAppearanceLightStatusBars = false
         }
 
         price = intent.getStringExtra("price").toString()
@@ -206,7 +222,6 @@ class BookingDetailStep1Activity : AppCompatActivity() {
 
                 4 -> {
                     callPaymentApi()
-                    paymentObserver()
                 }
 
                 5 -> {
@@ -289,6 +304,39 @@ class BookingDetailStep1Activity : AppCompatActivity() {
     }
 
 
+    /*
+        private fun validateStep1Fields(): Boolean {
+            // Get selected date from booking_pref
+            val bookingPref = getSharedPreferences("booking_pref", Context.MODE_PRIVATE)
+            val selectedDate = bookingPref.getString("date", "") ?: ""
+
+            // Get selected time from ActivityPrefs
+            val activityPref = getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
+            val selectedTime = activityPref.getString("selected_time", "") ?: ""
+
+
+            Log.e("SelectTime", "validateStep1Fields: $selectedTime", )
+
+            if (selectedDate.isEmpty()) {
+                Toast.makeText(this, "Please select a date", Toast.LENGTH_SHORT).show()
+                return false
+            }
+
+            if (selectedTime.isNullOrEmpty() || selectedTime == "Select Time") {
+                Toast.makeText(this, "Please select a time", Toast.LENGTH_SHORT).show()
+                return false
+            }
+
+            val adultCount = bookingPref.getInt("adultcount", 0)
+            if (adultCount < 1) {
+                Toast.makeText(this, "Please add at least one adult", Toast.LENGTH_SHORT).show()
+                return false
+            }
+
+            return true
+        }
+    */
+
     private fun validateStep1Fields(): Boolean {
         // Get selected date from booking_pref
         val bookingPref = getSharedPreferences("booking_pref", Context.MODE_PRIVATE)
@@ -298,12 +346,14 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         val activityPref = getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
         val selectedTime = activityPref.getString("selected_time", "") ?: ""
 
+        Log.e("SelectTime", "validateStep1Fields: $selectedTime")
+
         if (selectedDate.isEmpty()) {
             Toast.makeText(this, "Please select a date", Toast.LENGTH_SHORT).show()
             return false
         }
 
-        if (selectedTime.isNullOrEmpty()) {
+        if (selectedTime.isEmpty() || selectedTime == "Select Time") {
             Toast.makeText(this, "Please select a time", Toast.LENGTH_SHORT).show()
             return false
         }
@@ -317,9 +367,10 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         return true
     }
 
+
     private fun callPaymentApi() {
         // 1️⃣ Toast for testing
-        Toast.makeText(this, "Payment Done Successfully", Toast.LENGTH_SHORT).show()
+        //  Toast.makeText(this, "Payment Done Successfully", Toast.LENGTH_SHORT).show()
 
         currentStep = 5
         openFragment(Step5Fragment.newInstance(activityId, productName))
@@ -491,6 +542,13 @@ class BookingDetailStep1Activity : AppCompatActivity() {
             val message = response.peekContent().message
             if (success == true) {
                 Toast.makeText(this, message ?: "Booking successful", Toast.LENGTH_SHORT).show()
+
+                // ✅ Clear previously saved selected_time when API is successful
+                val sharedPrefTime = getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
+                sharedPrefTime.edit().remove("selected_time").apply()
+
+
+
                 currentStep = 5
                 openFragment(Step5Fragment.newInstance(activityId, productName))
                 updateStepper()
@@ -551,12 +609,20 @@ class BookingDetailStep1Activity : AppCompatActivity() {
             val message = response.peekContent().message
             val data = response.peekContent().data
             if (success == true) {
-                binding.notificationBadge.text = data.toString()
+                val count = data ?: 0
+
+                if (count == 0) {
+                    binding.notificationBadge.visibility = View.GONE
+                } else {
+                    binding.notificationBadge.visibility = View.VISIBLE
+                    binding.notificationBadge.text = count.toString()
+                }
+
             }
 
         }
         notificationCountViewModel.errorResponse.observe(this) {
-            ErrorUtil.handlerGeneralError(this@BookingDetailStep1Activity, it)
+            ErrorUtil.handlerGeneralError(this, it)
         }
     }
 

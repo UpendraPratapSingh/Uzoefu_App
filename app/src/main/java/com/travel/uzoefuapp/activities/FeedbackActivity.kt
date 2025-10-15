@@ -1,7 +1,6 @@
 package com.travel.uzoefuapp.activities
 
 import CustomProgressDialog
-import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -52,17 +51,24 @@ class FeedbackActivity : AppCompatActivity() {
 
     private fun feedbackObserver() {
         feedbackViewModel.progressIndicator.observe(this) {
-
         }
+
         feedbackViewModel.feedbackResponse.observe(this) { response ->
             val success = response.peekContent().success
             val message = response.peekContent().message
 
             if (success == true) {
-                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-            }
+                Toast.makeText(this, message ?: "Feedback submitted successfully", Toast.LENGTH_SHORT).show()
 
+                // ✅ Clear all input fields after success
+                binding.etName.text?.clear()
+                binding.etEmail.text?.clear()
+                binding.etMessage.text?.clear()
+            } else {
+                Toast.makeText(this, message ?: "Something went wrong", Toast.LENGTH_SHORT).show()
+            }
         }
+
         feedbackViewModel.errorResponse.observe(this) {
             ErrorUtil.handlerGeneralError(this@FeedbackActivity, it)
         }

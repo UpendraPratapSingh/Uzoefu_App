@@ -3,10 +3,7 @@ package com.travel.uzoefuapp.dashboard
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
@@ -23,7 +20,7 @@ import com.travel.uzoefuapp.profileFragment.OverviewFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DashboardActivity : AppCompatActivity(), OverviewFragment.OnTabSwitchListener{
+class DashboardActivity : AppCompatActivity(), OverviewFragment.OnTabSwitchListener {
     private lateinit var binding: ActivityDashboardBinding
     private var doubleBackToExitPressedOnce = false
 
@@ -72,26 +69,18 @@ class DashboardActivity : AppCompatActivity(), OverviewFragment.OnTabSwitchListe
             ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
 
         binding.destinationTxtUSer.setTextColor(
-            ContextCompat.getColor(
-                this,
-                R.color.nuetral_bold_color
-            )
+            ContextCompat.getColor(this, R.color.nuetral_bold_color)
         )
         binding.homeTextUser.setTextColor(ContextCompat.getColor(this, R.color.black))
         binding.pastOrderTextUser.setTextColor(
-            ContextCompat.getColor(
-                this,
-                R.color.nuetral_bold_color
-            )
+            ContextCompat.getColor(this, R.color.nuetral_bold_color)
         )
         binding.profileTextViewUser.setTextColor(
-            ContextCompat.getColor(
-                this,
-                R.color.nuetral_bold_color
-            )
+            ContextCompat.getColor(this, R.color.nuetral_bold_color)
         )
 
         replaceFragment(HomeFragment(), true)
+
     }
 
     fun selectedDestination() {
@@ -123,7 +112,6 @@ class DashboardActivity : AppCompatActivity(), OverviewFragment.OnTabSwitchListe
     }
 
     fun selectWishlistTab() {
-        // Set Wishlist icon active
         binding.pastOrderIconUsers.imageTintList =
             ColorStateList.valueOf(ContextCompat.getColor(this, R.color.dark_cyan))
         binding.homeIconUser.imageTintList =
@@ -133,7 +121,6 @@ class DashboardActivity : AppCompatActivity(), OverviewFragment.OnTabSwitchListe
         binding.profileIconUser.imageTintList =
             ColorStateList.valueOf(ContextCompat.getColor(this, R.color.nuetral_bold_color))
 
-        // Set text colors
         binding.pastOrderTextUser.setTextColor(ContextCompat.getColor(this, R.color.black))
         binding.homeTextUser.setTextColor(ContextCompat.getColor(this, R.color.nuetral_bold_color))
         binding.destinationTxtUSer.setTextColor(
@@ -181,15 +168,15 @@ class DashboardActivity : AppCompatActivity(), OverviewFragment.OnTabSwitchListe
         replaceFragment(ProfileFragment(0), true)
     }
 
- /*   private fun replaceFragment(fragment: Fragment, addToBackStack: Boolean) {
-        val fragmentManager = supportFragmentManager
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.userFrameLayout, fragment)
-        if (addToBackStack) {
-            fragmentTransaction.addToBackStack(null)
-        }
-        fragmentTransaction.commit()
-    }*/
+    /*   private fun replaceFragment(fragment: Fragment, addToBackStack: Boolean) {
+           val fragmentManager = supportFragmentManager
+           val fragmentTransaction = fragmentManager.beginTransaction()
+           fragmentTransaction.replace(R.id.userFrameLayout, fragment)
+           if (addToBackStack) {
+               fragmentTransaction.addToBackStack(null)
+           }
+           fragmentTransaction.commit()
+       }*/
 
 
     private fun replaceFragment(fragment: Fragment, addToBackStack: Boolean = false) {
@@ -205,21 +192,23 @@ class DashboardActivity : AppCompatActivity(), OverviewFragment.OnTabSwitchListe
     fun openProfileFragment() {
         val profileFragment = ProfileFragment(0)
         supportFragmentManager.beginTransaction()
-            .replace(R.id.userFrameLayout, profileFragment) // fragment_container = FrameLayout ya container id
+            .replace(
+                R.id.userFrameLayout,
+                profileFragment
+            ) // fragment_container = FrameLayout ya container id
             .addToBackStack(null) // back press pe previous fragment dikhega
             .commit()
     }
 
 
-
     override fun switchToPage(position: Int) {
         //binding.viewPager.currentItem = position
-        Log.e("GetPo", "switchToPageAAAAAA: $position", )
+        Log.e("GetPo", "switchToPageAAAAAA: $position")
         replaceFragment(ProfileFragment(2), true)
     }
 
     override fun switchToProfile(position: Int) {
-        Log.e("GetPo", "switchToPageAAAAAA: $position", )
+        Log.e("GetPo", "switchToPageAAAAAA: $position")
         replaceFragment(ProfileFragment(1), true)
     }
 }

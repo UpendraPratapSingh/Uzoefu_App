@@ -2,12 +2,17 @@ package com.travel.uzoefuapp.productFragment
 
 import CustomProgressDialog
 import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.databinding.FragmentProductOverviewBinding
 import com.travel.uzoefuapp.detailModel.DetailPageBody
 import com.travel.uzoefuapp.detailModel.DetailPageViewModel
@@ -33,7 +38,7 @@ class ProductOverviewFragment : Fragment() {
         categoryId = arguments?.getInt("categoryId")
         activeHour = arguments?.getString("activeHour").toString()
 
-        Log.e("TAG", "onCreateView: $activeHour", )
+        Log.e("TAG", "onCreateView: $activeHour")
 
         categoryId?.let { getDetailApi(it) }
         getDetailObserver()
@@ -49,9 +54,10 @@ class ProductOverviewFragment : Fragment() {
             val success = response.peekContent().success
             val message = response.peekContent().message
             val data1 = response.peekContent().data?.description
-            val data2 = response.peekContent().data?.ActivityRating()
+            val data2 = response.peekContent().data?.activityRating
             val data3 = response.peekContent().data?.activity?.branch
             val data4 = response.peekContent().data?.todayHours
+            val ratingCount = response.peekContent().data?.ratingCount
             //val description = data1?.highlights.toString().removeSurrounding("[", "]")
             //val description1 = data1?.highlights?.joinToString(separator = "\n") ?: ""
 
@@ -62,9 +68,30 @@ class ProductOverviewFragment : Fragment() {
                 binding.tvPhone.text = "Tel:+${data3?.teliphoneNumber.toString()}"
                 binding.tvCell.text = "Cel:+${data3?.contactNumber.toString()}"
                 binding.tvTime.text = data4.toString()
-                val ratingValue = 3.0f  // static rating
-                binding.ratingBar.rating = ratingValue
-                binding.tvRating.text = ratingValue.toString()
+                val ratings = data2?.mapNotNull { it.rating?.toFloat() } ?: emptyList()
+                val averageRating = if (ratings.isNotEmpty()) ratings.average().toFloat() else 0f
+
+                binding.ratingBar.rating = averageRating
+                // binding.tvRating.text = String.format("%.1f (%d)", averageRating, ratingCount)
+                val ratingText = String.format("%.1f (%d)", averageRating, ratingCount)
+                val spannable = SpannableString(ratingText)
+
+                val startIndex = ratingText.indexOf("(")
+                val endIndex = ratingText.indexOf(")") + 1
+
+                spannable.setSpan(
+                    ForegroundColorSpan(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.green_color
+                        )
+                    ),
+                    startIndex,
+                    endIndex,
+                    Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
+                )
+
+                binding.tvRating.text = spannable
             }
         }
         detailPageViewModel.errorResponse.observe(viewLifecycleOwner) {

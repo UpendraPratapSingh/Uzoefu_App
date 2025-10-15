@@ -47,10 +47,20 @@ class BookingAdapter(
             "Active" -> {
                 holder.status.text = "Active"
                 holder.txtRebook.text = "Cancel"
+                holder.itemView.setOnClickListener {
+                    val intent = Intent(context, BookSummaryActivity::class.java)
+                    intent.putExtra("bookingId", list.id.toString())
+                    context.startActivity(intent)
+                }
             }
 
             "Past" -> {
                 holder.status.text = "Completed"
+                holder.itemView.setOnClickListener {
+                    val intent = Intent(context, BookSummaryActivity::class.java)
+                    intent.putExtra("bookingId", list.id.toString())
+                    context.startActivity(intent)
+                }
             }
 
             "Cancelled" -> {
@@ -60,18 +70,13 @@ class BookingAdapter(
             }
         }
 
-        holder.itemView.setOnClickListener {
-            val intent = Intent(context, BookSummaryActivity::class.java)
-            intent.putExtra("bookingId", list.id.toString())
-            context.startActivity(intent)
-        }
 
-     /*   holder.txtRebook.setOnClickListener {
-            val intent = Intent(context, BookingProductActivity::class.java)
-            intent.putExtra("categoryId", list.activityId)
-            // intent.putExtra("activeHours", list.todayHours.toString())
-            context.startActivity(intent)
-        }*/
+        /*   holder.txtRebook.setOnClickListener {
+               val intent = Intent(context, BookingProductActivity::class.java)
+               intent.putExtra("categoryId", list.activityId)
+               // intent.putExtra("activeHours", list.todayHours.toString())
+               context.startActivity(intent)
+           }*/
 
         holder.txtRebook.setOnClickListener {
             if (status == "Active") {
@@ -82,7 +87,11 @@ class BookingAdapter(
                     .setPositiveButton("Yes") { dialog, _ ->
                         dialog.dismiss()
                         listener.onCancelBooking(list.id.toString())
-                        Toast.makeText(context, "Booking cancelled successfully", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            context,
+                            "Booking cancelled successfully",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
                     .setNegativeButton("No") { dialog, _ ->
                         dialog.dismiss()

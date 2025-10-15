@@ -64,6 +64,7 @@
                 android:layout_gravity="top|end"
                 android:background="@drawable/badge_background"
                 android:gravity="center"
+                android:visibility="gone"
                 android:text="0"
                 android:textColor="@android:color/white"
                 android:textSize="12sp" />

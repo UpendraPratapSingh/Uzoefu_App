@@ -84,6 +84,10 @@ class DetailPageResponse : Serializable {
         @Expose
         var activityRating: List<ActivityRating>? = null
 
+        @SerializedName("rating_count")
+        @Expose
+        var ratingCount: Int? = null
+
         @SerializedName("iswish")
         @Expose
         var iswish: Boolean? = null

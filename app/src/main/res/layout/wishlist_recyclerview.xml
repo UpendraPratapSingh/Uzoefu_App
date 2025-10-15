@@ -76,17 +76,18 @@
                 style="?android:attr/ratingBarStyleSmall"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/darker_gray"
                 android:isIndicator="true"
-                android:numStars="3"
+                android:numStars="5"
+                android:progressTint="@android:color/holo_orange_light"
                 android:rating="3"
                 android:scaleX="0.7"
                 android:scaleY="0.7"
-                android:stepSize="1"
-                android:progressTint="@android:color/holo_orange_light"
                 android:secondaryProgressTint="@android:color/darker_gray"
-                android:backgroundTint="@android:color/darker_gray"
+                android:stepSize="1"
                 app:layout_constraintStart_toStartOf="@id/itemTitle"
                 app:layout_constraintTop_toBottomOf="@id/itemTitle" />
+
 
             <TextView
                 android:id="@+id/rateText"

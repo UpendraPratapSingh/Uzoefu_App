@@ -22,7 +22,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.viewModels
-import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activities.LoginActivity
@@ -31,7 +30,6 @@ import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.bookingActivities.BookListActivity
 import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.FragmentOverviewBinding
-import com.travel.uzoefuapp.fragment.ProfileFragment
 import com.travel.uzoefuapp.getProfileModel.GetProfileViewModel
 import com.travel.uzoefuapp.imageUpdateModel.ImageUpdateViewModel
 import com.travel.uzoefuapp.logoutModel.LogoutViewModel
@@ -58,7 +56,6 @@ class OverviewFragment : Fragment() {
     private val binding get() = _binding!!
     private val overviewViewModel: OverviewViewModel by viewModels()
     private var tabSwitchListener: OnTabSwitchListener? = null
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -141,7 +138,6 @@ class OverviewFragment : Fragment() {
                 binding.tvBookings.text = data?.bookingcount.toString()
                 binding.tvReviews.text = data?.reviewcount.toString()
             }
-
         }
         overviewViewModel.errorResponse.observe(viewLifecycleOwner) {
             ErrorUtil.handlerGeneralError(requireContext(), it)
@@ -199,8 +195,7 @@ class OverviewFragment : Fragment() {
         } catch (e: Exception) {
             e.printStackTrace()
             Toast.makeText(
-                requireContext(),
-                "Failed to open camera: ${e.message}",
+                requireContext(), "Failed to open camera: ${e.message}",
                 Toast.LENGTH_SHORT
             ).show()
         }

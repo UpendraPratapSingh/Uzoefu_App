@@ -6,7 +6,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.AdapterView
@@ -24,6 +23,7 @@ import androidx.appcompat.widget.AppCompatSpinner
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -45,6 +45,8 @@ import com.travel.uzoefuapp.categoryModel.CategoryViewModel
 import com.travel.uzoefuapp.databinding.ActivitySelectDestinationBinding
 import com.travel.uzoefuapp.discoverDestinationModel.DestinationDetailResponse
 import com.travel.uzoefuapp.discoverDestinationModel.DestinationDetailViewModel
+import com.travel.uzoefuapp.globalSettings.SettingsActivity
+import com.travel.uzoefuapp.notification.NotificationActivity
 import com.travel.uzoefuapp.notificationModel.NotificationCountViewModel
 import com.travel.uzoefuapp.provinceModel.ProvinceViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
@@ -81,10 +83,33 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCat
             insets
         }
 
+        window.apply {
+            // Make layout fullscreen (behind status bar)
+            decorView.systemUiVisibility = (
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    )
+
+            // Transparent background
+            statusBarColor = Color.TRANSPARENT
+
+            // ✅ Force white icons/text in status bar
+            WindowInsetsControllerCompat(this, decorView).isAppearanceLightStatusBars = false
+        }
+
+        binding.notificationLayout.setOnClickListener {
+            val intent = Intent(this, NotificationActivity::class.java)
+            startActivity(intent)
+        }
+
+        binding.menuIcon.setOnClickListener {
+            val intent = Intent(this, SettingsActivity::class.java)
+            startActivity(intent)
+        }
+
+
         val categoryId = intent.getStringExtra("categoryId") ?: ""
         val branchId = intent.getStringExtra("branchId") ?: ""
-
-        Log.e("TAG", "onCreate: $branchId")
 
         //observer
         getActivityApi(categoryId, branchId)
@@ -244,12 +269,20 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCat
             val message = response.peekContent().message
             val data = response.peekContent().data
             if (success == true) {
-                binding.notificationBadge.text = data.toString()
+                val count = data ?: 0
+
+                if (count == 0) {
+                    binding.notificationBadge.visibility = View.GONE
+                } else {
+                    binding.notificationBadge.visibility = View.VISIBLE
+                    binding.notificationBadge.text = count.toString()
+                }
+
             }
 
         }
         notificationCountViewModel.errorResponse.observe(this) {
-            ErrorUtil.handlerGeneralError(this@SelectDestinationActivity, it)
+            ErrorUtil.handlerGeneralError(this, it)
         }
     }
 

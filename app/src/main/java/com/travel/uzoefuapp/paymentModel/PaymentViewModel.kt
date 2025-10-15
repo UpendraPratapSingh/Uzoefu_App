@@ -71,7 +71,7 @@ class PaymentViewModel @Inject constructor(
 
                 progressIndicator.value = false
                 if (response.isSuccessful && response.body() != null) {
-                    paymentResponse.value
+                    paymentResponse.value = Event(response.body()!!)  // ✅ FIXED
                 } else {
                     errorResponse.value = Throwable(response.message())
                 }

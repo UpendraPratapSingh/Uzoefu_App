@@ -185,12 +185,29 @@ class Step1Fragment() :
                 }
 
                 val rvTimeSlotsPopup = popupView.findViewById<RecyclerView>(R.id.rvTimeSlotsPopup)
-                val adapter = TimeSlotAdapter(timeSlots) { selectedTime ->
+                /*val adapter = TimeSlotAdapter(timeSlots) { selectedTime ->
                     tvSelectedTime.text = selectedTime
                     val sharedPref = requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
                     sharedPref.edit().putString("selected_time", selectedTime).apply()
                     popupWindow.dismiss()
+                }*/
+
+                val sharedPref = requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
+
+// Agar TextView me "Select Time" hai, toh previous saved data remove karo
+                if (tvSelectedTime.text.toString() == "Select Time") {
+                    sharedPref.edit().remove("selected_time").apply()
                 }
+
+// Fir Adapter set karo
+                val adapter = TimeSlotAdapter(timeSlots) { selectedTime ->
+                    tvSelectedTime.text = selectedTime
+                    sharedPref.edit().putString("selected_time", selectedTime).apply()
+                    popupWindow.dismiss()
+                }
+
+              //  rvTimeSlotsPopup.adapter = adapter
+
 
                 rvTimeSlotsPopup.layoutManager = GridLayoutManager(requireContext(), 4)
                 rvTimeSlotsPopup.adapter = adapter

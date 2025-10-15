@@ -60,12 +60,13 @@
 
             <TextView
                 android:id="@+id/notificationBadge"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="top|end"
                 android:background="@drawable/badge_background"
                 android:gravity="center"
                 android:text="0"
+                android:visibility="gone"
                 android:textColor="@android:color/white"
                 android:textSize="12sp" />
         </FrameLayout>

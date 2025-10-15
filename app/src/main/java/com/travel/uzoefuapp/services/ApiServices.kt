@@ -308,4 +308,9 @@ interface ApiServices {
         @Body body: BookingCancelBody
     ): Observable<BookingCancelResponse>
 
+    @POST("wishlist/data")
+    fun branchWishlist(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
+    ): Observable<BranchWishlistResponse>
+
 }

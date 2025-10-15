@@ -19,6 +19,7 @@ import com.travel.uzoefuapp.bookingCompleteModel.BookingDetailViewModel
 import com.travel.uzoefuapp.databinding.ActivityBookSummaryBinding
 import com.travel.uzoefuapp.globalSettings.SettingsActivity
 import com.travel.uzoefuapp.notification.NotificationActivity
+import com.travel.uzoefuapp.notificationModel.NotificationCountViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -26,6 +27,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class BookSummaryActivity : AppCompatActivity() {
     lateinit var binding: ActivityBookSummaryBinding
     private val bookingDetailViewModel: BookingDetailViewModel by viewModels()
+    private val notificationCountViewModel: NotificationCountViewModel by viewModels()
     private val progressDialog by lazy { CustomProgressDialog(this) }
     private var bookingId = ""
 
@@ -39,10 +41,13 @@ class BookSummaryActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
+
         bookingId = intent.getStringExtra("bookingId").toString()
 
         bookingDetailApi(bookingId)
         bookingDetailObserver()
+        notificationCountApi()
+        notificationCountObserver()
 
         binding.imageView2.setOnClickListener { finish() }
 
@@ -55,16 +60,43 @@ class BookSummaryActivity : AppCompatActivity() {
             val intent = Intent(this@BookSummaryActivity, SettingsActivity::class.java)
             startActivity(intent)
         }
-        binding.downloadSignedIndemnity.setOnClickListener {
-            downloadInvoice()
-        }
-        binding.downloadReceipt.setOnClickListener {
-            downloadInvoice1()
-        }
 
-        binding.downloadInvoice.setOnClickListener {
-            downloadInvoice1()
+        binding.downloadSignedIndemnity.setOnClickListener { downloadInvoice() }
+
+        binding.downloadReceipt.setOnClickListener { downloadInvoice1() }
+
+        binding.downloadInvoice.setOnClickListener { downloadInvoice1() }
+
+    }
+    private fun notificationCountObserver() {
+        notificationCountViewModel.progressIndicator.observe(this) {
+
         }
+        notificationCountViewModel.notificationCountResponse.observe(this) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+            val data = response.peekContent().data
+            if (success == true) {
+                val count = data ?: 0
+
+                if (count == 0) {
+                    binding.notificationBadge.visibility = View.GONE
+                } else {
+                    binding.notificationBadge.visibility = View.VISIBLE
+                    binding.notificationBadge.text = count.toString()
+                }
+
+            }
+
+        }
+        notificationCountViewModel.errorResponse.observe(this) {
+            ErrorUtil.handlerGeneralError(this, it)
+        }
+    }
+
+    private fun notificationCountApi() {
+        notificationCountViewModel.notificationCountApi(this, progressDialog)
+
     }
 
     private fun downloadInvoice() {

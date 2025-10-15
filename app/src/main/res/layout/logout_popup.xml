@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:text="Are you sure you want to logout?"
         android:textSize="16sp"
+        android:layout_gravity="center"
         android:textColor="@android:color/black"
         android:paddingBottom="15dp" />
 

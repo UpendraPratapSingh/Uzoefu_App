@@ -75,7 +75,7 @@ class OtpVerificationActivity : AppCompatActivity() {
     }
 
     private fun forgotPasswordApi(otp: String) {
-        val body = OtpVerificationBody(otp = otp)
+        val body = OtpVerificationBody(otp = otp, userId = userId)
         otpVerificationViewModel.OtpVerificationApi(progressDialog, this, body)
     }
 
@@ -90,7 +90,6 @@ class OtpVerificationActivity : AppCompatActivity() {
                 Toast.makeText(this, "Enter full 6-digit OTP", Toast.LENGTH_SHORT).show()
                 false
             }
-
             else -> true
         }
     }
