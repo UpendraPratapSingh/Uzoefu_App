@@ -61,9 +61,11 @@ class Step2Fragment : Fragment() {
                 )
             }
         }
+
         getProfileViewModel.errorResponse.observe(viewLifecycleOwner) {
             ErrorUtil.handlerGeneralError(requireContext(), it)
         }
+
     }
 
     private fun getProfileApi() {

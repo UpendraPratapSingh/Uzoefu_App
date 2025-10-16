@@ -57,6 +57,7 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
         binding.dateOfBirth.setOnClickListener { showDatePicker() }
 
         return binding.root
+
     }
 
     private fun showDatePicker() {
@@ -104,7 +105,11 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
                     binding.categoriesRecyclerView.adapter = categoryAdapter
                 }
             } else {
-                Toast.makeText(requireContext(),message ?: "Failed to load categories",Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    message ?: "Failed to load categories",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
         categoryViewModel.errorResponse.observe(viewLifecycleOwner) { error ->
@@ -263,10 +268,9 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
 
                 categoryId = categoriesList?.firstOrNull()?.categoryId?.toString() ?: ""
 
-                Log.e("CategoryId", "getProfileObserverAAAAAAA: $categoryId", )
+                Log.e("CategoryId", "getProfileObserverAAAAAAA: $categoryId")
 
                 getCategoryApi()
-
 
             }
         }
@@ -307,5 +311,4 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
         categoriesId = categoryId
 
     }
-
 }

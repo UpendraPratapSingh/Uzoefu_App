@@ -28,14 +28,19 @@ android {
                 "proguard-rules.pro"
             )
         }
+
         debug {
             isDebuggable = true
             isMinifyEnabled = false
             isShrinkResources = false
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
             buildConfigField("boolean", "IS_DEBUG", "true")
-            buildConfigField("String", "API_KEY", "\"https://mobappssolutions.in/uzoefu/api/\"")
-            buildConfigField("String", "IMAGE_KEY", "\"https://mobappssolutions.in/uzoefu/public/images/activity_images/\"")
+            buildConfigField("String", "API_KEY", "\"https://mobappswebsolutions.com/uzoefu/api/\"")
+            buildConfigField(
+                "String",
+                "IMAGE_KEY",
+                "\"https://mobappswebsolutions.com/uzoefu/public/images/activity_images/\""
+            )
 
         }
     }

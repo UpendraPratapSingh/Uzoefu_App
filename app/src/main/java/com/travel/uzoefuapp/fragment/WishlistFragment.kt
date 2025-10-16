@@ -79,8 +79,21 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
         getTripListObserver()
         notificationCountApi()
         notificationCountObserver()
+
+        /*  binding.deleteIcon.setOnClickListener {
+              deleteWishListApi()
+          }*/
+
         binding.deleteIcon.setOnClickListener {
-            deleteWishListApi()
+            if (selectedWishlistIds.isNotEmpty()) {
+                deleteWishListApi()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Please select an item to delete",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
         binding.menuIcon.setOnClickListener {
@@ -175,7 +188,6 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
         deleteWishlistViewModel.errorResponse.observe(viewLifecycleOwner) {
             ErrorUtil.handlerGeneralError(requireContext(), it)
         }
-
     }
 
     private fun getWishListObserver() {
@@ -279,7 +291,7 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
                 if (title.isEmpty() || destination.isEmpty()) {
                     Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(requireContext(), "Trip Created: $title → $destination", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Trip Created: $title → $destination",Toast.LENGTH_SHORT).show()
                     addTripApi(title, destination)
 
                     bottomSheetDialog.dismiss()
@@ -308,16 +320,16 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
         _binding = null
     }
 
-/*    // Agar adapter se poori selectedIds list mil rahi ho (ex: multiple selection)
-    override fun onWishlistClicked(selectedIds: List<String>, position: Int) {
-        // Pehle purani IDs clear nahi karenge, sirf naye add karenge jo already list me nahi hain
-        selectedWishlistIds.addAll(
-            selectedIds.map { it.toString() }
-                .filter { !selectedWishlistIds.contains(it) } // duplicates avoid
-        )
+    /*    // Agar adapter se poori selectedIds list mil rahi ho (ex: multiple selection)
+        override fun onWishlistClicked(selectedIds: List<String>, position: Int) {
+            // Pehle purani IDs clear nahi karenge, sirf naye add karenge jo already list me nahi hain
+            selectedWishlistIds.addAll(
+                selectedIds.map { it.toString() }
+                    .filter { !selectedWishlistIds.contains(it) } // duplicates avoid
+            )
 
-        Log.d("SelectedIDs", selectedWishlistIds.toString())
-    }*/
+            Log.d("SelectedIDs", selectedWishlistIds.toString())
+        }*/
 
     override fun onWishlistClicked(selectedIds: List<String>, position: Int) {
         val newSelectedIds = selectedIds.map { it.toString() }

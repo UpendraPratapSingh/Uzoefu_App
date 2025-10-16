@@ -94,6 +94,8 @@ class CategoryAdapter(
             holder.itemView.setBackgroundResource(R.drawable.category_selected_background)
             holder.categoryText.setTextColor(ContextCompat.getColor(context, R.color.dark_cyan))
             holder.categoryIcon.setColorFilter(ContextCompat.getColor(context, R.color.dark_cyan))
+            listener.onCategoryClick(category.id.toString(), category.name ?: "")
+
         } else {
             holder.itemView.setBackgroundResource(R.drawable.category_background)
             holder.categoryText.setTextColor(ContextCompat.getColor(context, R.color.gray))

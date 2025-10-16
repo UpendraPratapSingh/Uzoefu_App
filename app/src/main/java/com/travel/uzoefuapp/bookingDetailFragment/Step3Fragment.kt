@@ -132,8 +132,7 @@ class Step3Fragment(val activityId: String) : Fragment() {
 
         val datePickerDialog =
             DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
-                val formattedDate =
-                    String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay)
+                val formattedDate = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay)
                 editText.setText(formattedDate)
             }, year, month, day)
 
@@ -217,7 +216,6 @@ class Step3Fragment(val activityId: String) : Fragment() {
             return file
         }*/
 
-
     private fun saveParticipantsToPrefs() {
         val sharedPref = requireContext().getSharedPreferences("participants_pref", 0)
         val gson = Gson()
@@ -228,6 +226,30 @@ class Step3Fragment(val activityId: String) : Fragment() {
             apply()
         }
     }
+
+
+    fun saveCurrentParticipantIfNotEmpty() {
+        val clientName = binding.etClientName.text.toString()
+        val idNumber = binding.etIdNumber.text.toString()
+        val contactNumber = binding.etContactNumber.text.toString()
+        val dateSigned = binding.etDateSigned.text.toString()
+        val signatureBitmap = binding.signaturePad.signatureBitmap
+
+        if (clientName.isNotBlank() || idNumber.isNotBlank() || contactNumber.isNotBlank() || dateSigned.isNotBlank()) {
+            val signatureBase64 = bitmapToBase64(signatureBitmap)
+            val participant = Participant(clientName, idNumber, contactNumber, dateSigned, signatureBase64)
+            participants.add(participant)
+            saveParticipantsToPrefs()
+
+            // Optional: clear inputs after saving
+            binding.etClientName.text?.clear()
+            binding.etIdNumber.text?.clear()
+            binding.etContactNumber.text?.clear()
+            binding.etDateSigned.text?.clear()
+            binding.signaturePad.clear()
+        }
+    }
+
 
     private fun getParticipantsFromPrefs(): MutableList<Participant> {
         val sharedPref = requireContext().getSharedPreferences("participants_pref", 0)
@@ -271,7 +293,6 @@ class Step3Fragment(val activityId: String) : Fragment() {
 
         return Bitmap.createScaledBitmap(bitmap, finalWidth, finalHeight, true)
     }
-
 
     private fun base64ToBitmap(base64: String): Bitmap {
         val bytes = Base64.decode(base64, Base64.DEFAULT)

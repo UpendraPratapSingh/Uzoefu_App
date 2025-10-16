@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="150dp"
+    android:layout_marginBottom="180dp"
     tools:context=".bookingDetailFragment.Step3Fragment">
 
     <ScrollView
@@ -81,7 +81,7 @@
                 android:id="@+id/addParticipantLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@+id/signingCons">
 
                 <!-- Add Participant -->
@@ -173,7 +173,7 @@
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etDateSigned"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="55dp"
                         android:clickable="true"
                         android:drawableEnd="@android:drawable/ic_menu_today"
                         android:focusable="false"

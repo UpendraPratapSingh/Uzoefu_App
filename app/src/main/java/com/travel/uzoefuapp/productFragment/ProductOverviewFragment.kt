@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -33,17 +32,15 @@ class ProductOverviewFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         _binding = FragmentProductOverviewBinding.inflate(inflater, container, false)
         categoryId = arguments?.getInt("categoryId")
         activeHour = arguments?.getString("activeHour").toString()
-
-        Log.e("TAG", "onCreateView: $activeHour")
 
         categoryId?.let { getDetailApi(it) }
         getDetailObserver()
 
         return binding.root
+
     }
 
     private fun getDetailObserver() {
@@ -58,13 +55,12 @@ class ProductOverviewFragment : Fragment() {
             val data3 = response.peekContent().data?.activity?.branch
             val data4 = response.peekContent().data?.todayHours
             val ratingCount = response.peekContent().data?.ratingCount
-            //val description = data1?.highlights.toString().removeSurrounding("[", "]")
-            //val description1 = data1?.highlights?.joinToString(separator = "\n") ?: ""
 
             if (success == true) {
                 binding.tvDescription.text = data1?.description ?: ""
                 binding.highlights.text = data1?.highlights?.joinToString("\n") { "• $it" } ?: ""
-                binding.tvLocation.text = "${data3?.address.toString()} , ${data3?.town.toString()}"
+                binding.tvLocation.text =
+                    "${data3?.branchName.toString()} , ${data3?.address.toString()}"
                 binding.tvPhone.text = "Tel:+${data3?.teliphoneNumber.toString()}"
                 binding.tvCell.text = "Cel:+${data3?.contactNumber.toString()}"
                 binding.tvTime.text = data4.toString()
@@ -72,7 +68,6 @@ class ProductOverviewFragment : Fragment() {
                 val averageRating = if (ratings.isNotEmpty()) ratings.average().toFloat() else 0f
 
                 binding.ratingBar.rating = averageRating
-                // binding.tvRating.text = String.format("%.1f (%d)", averageRating, ratingCount)
                 val ratingText = String.format("%.1f (%d)", averageRating, ratingCount)
                 val spannable = SpannableString(ratingText)
 
@@ -100,11 +95,8 @@ class ProductOverviewFragment : Fragment() {
     }
 
     private fun getDetailApi(categoryId: Int) {
-        val body = DetailPageBody(
-            activity_id = categoryId.toString()
-        )
+        val body = DetailPageBody(activity_id = categoryId.toString())
         detailPageViewModel.getDetailPageApi(progressDialog, requireActivity(), body)
 
     }
-
 }
