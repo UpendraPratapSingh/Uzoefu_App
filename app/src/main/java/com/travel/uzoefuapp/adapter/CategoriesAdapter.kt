@@ -46,7 +46,7 @@ class CategoriesAdapter(
         private val count = itemView.findViewById<TextView>(R.id.placeCount)
 
         fun bind(category: CategoryResponse.Datum) {
-            val baseImagePath = "https://mobappssolutions.in/uzoefu/public/icons/"
+            val baseImagePath = "https://uzoefu.co.za/public/icons/"
 
             Glide.with(itemView.context)
                 .load(baseImagePath + category.icon)

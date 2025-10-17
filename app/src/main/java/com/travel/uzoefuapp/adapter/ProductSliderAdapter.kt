@@ -30,7 +30,7 @@ class ProductSliderAdapter(
 
     override fun onBindViewHolder(holder: ThumbViewHolder, position: Int) {
         val totalImages = images.size
-        val image_path = "https://mobappssolutions.in/uzoefu/public/images/activity_images/"
+        val image_path = "https://uzoefu.co.za/public/images/activity_images/"
 
         if (position < 4) {
             Glide.with(holder.thumbImage.context)

@@ -94,7 +94,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
     private val branchWishlistViewModel: BranchWishlistViewModel by viewModels()
     private var searchJob: Job? = null
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -136,7 +135,9 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             val intent = Intent(requireContext(), ExploreCategoriesActivity::class.java)
             startActivity(intent)
         }
+
         return binding.root
+
     }
 
     private fun branchAddToWishListObserver() {
@@ -151,10 +152,63 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             }
         }
+
         branchWishlistViewModel.errorResponse.observe(viewLifecycleOwner) {
             ErrorUtil.handlerGeneralError(requireContext(), it)
         }
     }
+
+    /*
+        private fun provinceListObserver() {
+            provinceViewModel.progressIndicator.observe(viewLifecycleOwner) {}
+
+            provinceViewModel.getTripResponse.observe(viewLifecycleOwner) { event ->
+                val response = event.peekContent()
+                val success = response.success
+                val provinces = response.data ?: emptyList()
+
+                if (success == true) {
+                    val provinceNames = mutableListOf("Select Province")
+                    provinceNames.addAll(provinces.mapNotNull { it.name })
+
+                    val provinceAdapter = ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_spinner_dropdown_item,
+                        provinceNames
+                    )
+
+                    spinnerCity.adapter = provinceAdapter
+
+                    spinnerCity.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                        override fun onItemSelected(
+                            parent: AdapterView<*>?,
+                            view: View?,
+                            position: Int,
+                            id: Long
+                        ) {
+                            if (position > 0) {
+                                // Get selected province ID
+                                selectedProvinceId = provinces[position - 1].id.toString()
+
+                                // 🔹 Fetch cities for this province
+
+                            } else {
+                                selectedProvinceId = ""
+                            }
+                        }
+
+                        override fun onNothingSelected(parent: AdapterView<*>?) {
+                            selectedProvinceId = ""
+                        }
+                    }
+                }
+            }
+
+            provinceViewModel.errorResponse.observe(viewLifecycleOwner) {
+                ErrorUtil.handlerGeneralError(requireContext(), it)
+            }
+        }
+    */
 
     private fun provinceListObserver() {
         provinceViewModel.progressIndicator.observe(viewLifecycleOwner) {}
@@ -168,12 +222,39 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
                 val provinceNames = mutableListOf("Select Province")
                 provinceNames.addAll(provinces.mapNotNull { it.name })
 
-                val provinceAdapter = ArrayAdapter(
+                val provinceAdapter = object : ArrayAdapter<String>(
                     requireContext(),
                     android.R.layout.simple_spinner_dropdown_item,
                     provinceNames
-                )
+                ) {
+                    override fun getDropDownView(
+                        position: Int,
+                        convertView: View?,
+                        parent: ViewGroup
+                    ): View {
+                        val view = super.getDropDownView(position, convertView, parent)
+                        // Hide "Select Province" in dropdown list
+                        if (position == 0) {
+                            view.visibility = View.GONE
+                            view.layoutParams = ViewGroup.LayoutParams(0, 0)
+                        } else {
+                            view.visibility = View.VISIBLE
+                            view.layoutParams = ViewGroup.LayoutParams(
+                                ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT
+                            )
+                        }
+                        return view
+                    }
+
+                    override fun isEnabled(position: Int): Boolean {
+                        // Disable click for first item
+                        return position != 0
+                    }
+                }
+
                 spinnerCity.adapter = provinceAdapter
+                spinnerCity.setSelection(0) // Show "Select Province" as default
 
                 spinnerCity.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                     override fun onItemSelected(
@@ -183,11 +264,9 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
                         id: Long
                     ) {
                         if (position > 0) {
-                            // Get selected province ID
+                            // ✅ Get selected province ID
                             selectedProvinceId = provinces[position - 1].id.toString()
-
-                            // 🔹 Fetch cities for this province
-
+                            // 🔹 Fetch cities for this province here if needed
                         } else {
                             selectedProvinceId = ""
                         }
@@ -212,7 +291,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         }
         discoverDestinationViewModel.mCategoryResponse.observe(viewLifecycleOwner) { response ->
             val success = response.peekContent().success
-            val message = response.peekContent().message
             discoverList = response.peekContent().data ?: emptyList()
 
             if (success == true) {
@@ -251,6 +329,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
                 Toast.makeText(requireActivity(), message, Toast.LENGTH_SHORT).show()
             }
         }
+
         addWishlistViewModel.errorResponse.observe(viewLifecycleOwner) {
             ErrorUtil.handlerGeneralError(requireContext(), it)
         }
@@ -395,7 +474,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
 
         btnClose.setOnClickListener { bottomSheetDialog.dismiss() }
 
-        // Keep keyboard always open
         etSearch.requestFocus()
         etSearch.post {
             val imm =
@@ -403,7 +481,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             imm.showSoftInput(etSearch, InputMethodManager.SHOW_IMPLICIT)
         }
 
-        // API search with debounce
         etSearch.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -411,8 +488,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
                 searchJob?.cancel()
 
                 searchJob = lifecycleScope.launch {
-                    delay(400) // debounce
-
+                    delay(400)
 
                     val body = SearchActivityBody(activityName = query)
                     searchActivityViewModel.searchActivityApi(requireActivity(), body)
@@ -422,7 +498,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        // Observe API response
         searchActivityViewModel.searchActivityResponse.observe(viewLifecycleOwner) { event ->
             val response = event.peekContent()
             val success = response.status
@@ -433,7 +508,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
 
         bottomSheetDialog.show()
     }
-
 
     @SuppressLint("MissingInflatedId")
     private fun showFilterPopup() {

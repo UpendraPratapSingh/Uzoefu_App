@@ -81,7 +81,7 @@ class CategoryAdapter(
         val category = categories[position]
         holder.categoryText.text = category.name
 
-        val baseImagePath = "https://mobappssolutions.in/uzoefu/public/icons/"
+        val baseImagePath = "https://uzoefu.co.za/public/icons/"
         Glide.with(context)
             .load(baseImagePath + category.icon)
             .placeholder(R.drawable.wellness)

@@ -30,7 +30,7 @@ class SelectedDestinationAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val list = activityList[position]
 
-        val imagePath = "https://mobappssolutions.in/uzoefu/public/images/activity_images/"
+        val imagePath = "https://uzoefu.co.za/public/images/activity_images/"
 
         holder.titleText.text = list.name
         holder.timing.text = list.todayHours

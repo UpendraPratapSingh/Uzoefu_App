@@ -49,7 +49,7 @@ class WishlistAdapter(
       //  holder.tvRatingProgress.text = rating.toInt().toString()
 
 
-        val imagePath = "https://mobappssolutions.in/uzoefu/public/images/activity_images/"
+        val imagePath = "https://uzoefu.co.za/public/images/activity_images/"
 
         // Click on item to open details OR toggle checkbox if in edit mode
         holder.itemView.setOnClickListener {

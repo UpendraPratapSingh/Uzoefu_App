@@ -372,9 +372,9 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         // 1️⃣ Toast for testing
         //  Toast.makeText(this, "Payment Done Successfully", Toast.LENGTH_SHORT).show()
 
-        currentStep = 5
+ /*       currentStep = 5
         openFragment(Step5Fragment.newInstance(activityId, productName))
-        updateStepper()
+        updateStepper()*/
 
         // 2️⃣ Booking info from SharedPreferences
         val sharedPref = getSharedPreferences("booking_pref", Context.MODE_PRIVATE)
@@ -391,8 +391,6 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         val kidsPrice = sharedPref.getInt("kidsprice", 0)
         val subtotal = sharedPref.getInt("subtotal", 0)
         val total = sharedPref.getInt("total", 0)
-
-
 
         Log.d("PaymentLog", "SharedPrefs -> Date: $date, Adults: $adultCount, Kids: $kidsCount")
         Log.d(
@@ -452,62 +450,44 @@ class BookingDetailStep1Activity : AppCompatActivity() {
                 resized.compress(Bitmap.CompressFormat.JPEG, 60, fos)
             }
 
-            Log.d(
-                "SignatureFile",
-                "File path: ${file.absolutePath}, Size: ${file.length() / 1024} KB"
-            )
+            Log.d("SignatureFile","File path: ${file.absolutePath}, Size: ${file.length() / 1024} KB")
             return file
         }
-
 
         val signatureFilesParts = participants.mapIndexedNotNull { index, participant ->
             participant.signatureBase64.takeIf { it.isNotBlank() }?.let { base64 ->
                 try {
-                    // Build actual file name based on participant name or index
                     val safeName = participant.clientName
-                        ?.replace("\\s+".toRegex(), "_")  // Replace spaces with underscores
-                        ?.replace("[^A-Za-z0-9_]".toRegex(), "")  // Remove invalid characters
+                        ?.replace("\\s+".toRegex(), "_")
+                        ?.replace("[^A-Za-z0-9_]".toRegex(), "")
                         ?: "participant_$index"
 
                     val fileName = "${safeName}_signature_${System.currentTimeMillis()}.png"
 
-                    // Convert base64 to file with actual name
                     val file = base64ToFile(base64, fileName)
 
                     if (file.exists() && file.length() > 0) {
                         val requestFile = file.asRequestBody("image/png".toMediaTypeOrNull())
-                        Log.d(
-                            "SignatureFile",
-                            "✅ Created file: ${file.name}, Size: ${file.length() / 1024} KB, Path: ${file.absolutePath}"
-                        )
+                        Log.d("SignatureFile","✅ Created file: ${file.name}, Size: ${file.length() / 1024} KB, Path: ${file.absolutePath}")
                         MultipartBody.Part.createFormData("signature[]", file.name, requestFile)
                     } else {
-                        Log.e(
-                            "SignatureError",
-                            "⚠️ File not created or empty for participant: ${participant.clientName}"
-                        )
+                        Log.e("SignatureError","⚠️ File not created or empty for participant: ${participant.clientName}")
                         null
                     }
                 } catch (e: Exception) {
-                    Log.e(
-                        "SignatureError",
-                        "❌ Failed to create file for ${participant.clientName}: ${e.message}"
+                    Log.e("SignatureError","❌ Failed to create file for ${participant.clientName}: ${e.message}"
                     )
                     null
                 }
             }
         }
-
-        // ✅ Ensure at least one signature
         if (signatureFilesParts.isEmpty()) {
             Toast.makeText(this, "Please add at least one signature", Toast.LENGTH_SHORT).show()
             return
         }
 
         // Log all parts
-        Log.d(
-            "PaymentLog",
-            "ClientNames: ${clientNamesParts.size}, IDNumbers: ${idNumbersParts.size}, ContactNumbers: ${contactNumbersParts.size}, SignInDates: ${signInDatesParts.size}, Signatures: ${signatureFilesParts.size}"
+        Log.d("PaymentLog", "ClientNames: ${clientNamesParts.size}, IDNumbers: ${idNumbersParts.size}, ContactNumbers: ${contactNumbersParts.size}, SignInDates: ${signInDatesParts.size}, Signatures: ${signatureFilesParts.size}"
         )
 
         //  Call ViewModel API

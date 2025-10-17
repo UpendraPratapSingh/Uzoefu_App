@@ -24,7 +24,7 @@ class SliderAdapter(private val images: List<DetailPageResponse.Data.Image>) :
 
     override fun onBindViewHolder(holder: SliderVH, position: Int) {
         val imagePath =
-            "https://mobappssolutions.in/uzoefu/public/images/activity_images/" + images[position].image
+            "https://uzoefu.co.za/public/images/activity_images/" + images[position].image
 
         Glide.with(holder.itemView.context)
             .load(imagePath)

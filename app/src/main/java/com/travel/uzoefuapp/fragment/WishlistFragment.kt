@@ -80,19 +80,11 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
         notificationCountApi()
         notificationCountObserver()
 
-        /*  binding.deleteIcon.setOnClickListener {
-              deleteWishListApi()
-          }*/
-
         binding.deleteIcon.setOnClickListener {
             if (selectedWishlistIds.isNotEmpty()) {
                 deleteWishListApi()
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    "Please select an item to delete",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(requireContext(),"Please select an item to delete", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -156,7 +148,6 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
                 getWishListApi()
             }
-
         }
         addTripViewModel.errorResponse.observe(viewLifecycleOwner) {
             ErrorUtil.handlerGeneralError(requireContext(), it)
@@ -244,9 +235,7 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
                     binding.notificationBadge.visibility = View.VISIBLE
                     binding.notificationBadge.text = count.toString()
                 }
-
             }
-
         }
         notificationCountViewModel.errorResponse.observe(viewLifecycleOwner) {
             ErrorUtil.handlerGeneralError(requireContext(), it)
@@ -289,9 +278,14 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
                 val destination = etTripDestination.text.toString().trim()
 
                 if (title.isEmpty() || destination.isEmpty()) {
-                    Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT)
+                        .show()
                 } else {
-                    Toast.makeText(requireContext(), "Trip Created: $title → $destination",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        requireContext(),
+                        "Trip Created: $title → $destination",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     addTripApi(title, destination)
 
                     bottomSheetDialog.dismiss()
@@ -307,10 +301,7 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
     }
 
     private fun addTripApi(title: String, destination: String) {
-        val body = AddTripBody(
-            title = title,
-            destination = destination
-        )
+        val body = AddTripBody(title = title, destination = destination)
         addTripViewModel.addTripApi(progressDialog, requireActivity(), body)
 
     }

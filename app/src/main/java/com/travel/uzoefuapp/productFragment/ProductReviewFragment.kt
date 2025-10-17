@@ -50,7 +50,6 @@ class ProductReviewFragment : Fragment() {
     var data: MutableList<DetailPageResponse.Data.ActivityRating> = ArrayList()
     private var selectedReview: DetailPageResponse.Data.ActivityRating? = null
 
-
     @SuppressLint("NotifyDataSetChanged")
     private val pickImagesLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -78,11 +77,6 @@ class ProductReviewFragment : Fragment() {
         _binding = FragmentProductReviewBinding.inflate(inflater, container, false)
         categoryId = arguments?.getInt("categoryId")
 
-        /* binding.writeReviewBtn.setOnClickListener {
-             showReviewBottomSheet(requireContext(), selectedReview)
-         }*/
-
-        // SharedPreferences
         val sharedPref = requireContext().getSharedPreferences("review_pref", Context.MODE_PRIVATE)
         val hasReviewed = selectedReview?.let { review ->
             sharedPref.getBoolean("hasReviewed_${review.id}", false)
@@ -112,14 +106,12 @@ class ProductReviewFragment : Fragment() {
             if (success == true) {
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
 
-                // ✅ Save flag in SharedPreferences
                 val sharedPref = context?.getSharedPreferences("review_pref", Context.MODE_PRIVATE)
                 with(sharedPref!!.edit()) {
                     putBoolean("hasReviewed_${selectedReview?.id}", true)
                     apply()
                 }
 
-                // ✅ Hide button after posting
                 binding.writeReviewBtn.visibility = View.GONE
 
 
@@ -193,7 +185,6 @@ class ProductReviewFragment : Fragment() {
         bottomSheetDialog.setContentView(view)
         bottomSheetDialog.show()
     }
-
 
     private fun doRatingApi(rating: Float, experience: String) {
         val files = getFilesFromUris(photos)

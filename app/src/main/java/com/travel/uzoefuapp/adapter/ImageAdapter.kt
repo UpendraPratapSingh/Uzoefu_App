@@ -23,7 +23,7 @@ class ImageAdapter(private val images: List<String>) :
 
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         val imageUrl =
-            "https://mobappssolutions.in/uzoefu/public/images/rating_images/" + images[position]
+            "https://uzoefu.co.za/public/images/rating_images/" + images[position]
         Glide.with(holder.itemView.context)
             .load(imageUrl)
             .placeholder(R.drawable.product)

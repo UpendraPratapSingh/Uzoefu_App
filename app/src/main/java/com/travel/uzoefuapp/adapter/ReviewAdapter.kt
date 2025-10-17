@@ -1,6 +1,5 @@
 package com.travel.uzoefuapp.adapter
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,14 +14,6 @@ import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.detailModel.DetailPageResponse
 import de.hdodenhof.circleimageview.CircleImageView
 
-data class Review(
-    val userName: String,
-    val timeAgo: String,
-    val rating: Float,
-    val reviewText: String,
-    val userImage: Int,
-    val images: List<Int>
-)
 
 class ReviewAdapter(
     private val reviews: List<DetailPageResponse.Data.ActivityRating>,
@@ -50,14 +41,12 @@ class ReviewAdapter(
         val userId = Uzoefu.encryptedPrefs.userId
         val reviewUserId = review.user?.userId.orEmpty()
 
-      /*  holder.btnEditReview.visibility =
-            if (reviewUserId == userId) View.VISIBLE else View.GONE
-*/
         holder.tvUserName.text = review.user?.name.toString()
         holder.ratingBar.rating = review.rating!!.toFloat()
         holder.tvReviewText.text = review.description.toString()
+        holder.tvTimeAgo.text = review.times.toString()
 
-        val imagePath = "https://mobappssolutions.in/uzoefu/public/uploads/users/"
+        val imagePath = "https://uzoefu.co.za/public/uploads/users/"
         review.user?.image?.let { img ->
             Glide.with(holder.itemView.context)
                 .load(imagePath + img)
@@ -75,7 +64,6 @@ class ReviewAdapter(
             holder.recyclerReviewImages.adapter = ReviewImageAdapter(review.images ?: emptyList())
         }
 
-        // 🔹 Edit click listener
         holder.btnEditReview.setOnClickListener {
             onEditClick.invoke(review)
         }

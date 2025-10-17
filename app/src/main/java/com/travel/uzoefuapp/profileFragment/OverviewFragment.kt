@@ -106,7 +106,6 @@ class OverviewFragment : Fragment() {
         }
 
         binding.reviewLayout.setOnClickListener {
-            Log.e("reviewLayoutAA", "22")
             tabSwitchListener?.switchToPage(2)
         }
 
@@ -276,7 +275,7 @@ class OverviewFragment : Fragment() {
                 binding.tvName.text = "${data?.name.toString()} ${data?.lastname.toString()}"
                 binding.tvUsername.text = data?.username.toString()
 
-                val imagePath = "https://mobappssolutions.in/uzoefu/public/uploads/users/"
+                val imagePath = "https://uzoefu.co.za/public/uploads/users/"
                 val profileImageUrl = if (!data?.profilePhotoPath.isNullOrEmpty()) {
                     "$imagePath/${data?.profilePhotoPath}"
                 } else {

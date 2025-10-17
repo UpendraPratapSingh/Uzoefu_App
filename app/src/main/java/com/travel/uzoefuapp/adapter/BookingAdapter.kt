@@ -33,7 +33,7 @@ class BookingAdapter(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val list = bookingList[position]
-        val imgBase = "https://mobappssolutions.in/uzoefu/public/images/activity_images/"
+        val imgBase = "https://uzoefu.co.za/public/images/activity_images/"
         holder.txtTitle.text = list.activityName
         holder.txtDate.text = list.date
         holder.txtPrice.text = "R ${list.total.toString()}"

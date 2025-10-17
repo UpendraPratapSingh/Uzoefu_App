@@ -100,7 +100,7 @@ class BookSummaryActivity : AppCompatActivity() {
     }
 
     private fun downloadInvoice() {
-        val url = "https://mobappssolutions.in/uzoefu/indeminity/form?id=$bookingId"
+        val url = "https://uzoefu.co.za/indeminity/form?id=$bookingId"
         val fileName = "invoice.pdf"
         val request = DownloadManager.Request(Uri.parse(url))
             .setTitle("Downloading Invoice")
@@ -115,7 +115,7 @@ class BookSummaryActivity : AppCompatActivity() {
     }
 
     private fun downloadInvoice1() {
-        val url = "https://mobappssolutions.in/uzoefu/invoice/form?id=$bookingId"
+        val url = "https://uzoefu.co.za/invoice/form?id=$bookingId"
         val fileName = "invoice.pdf"
         val request = DownloadManager.Request(Uri.parse(url))
             .setTitle("Downloading Invoice")

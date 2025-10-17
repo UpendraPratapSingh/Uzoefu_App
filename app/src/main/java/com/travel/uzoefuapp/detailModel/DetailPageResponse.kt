@@ -165,6 +165,10 @@ class DetailPageResponse : Serializable {
             @Expose
             var images: List<String>? = null
 
+            @SerializedName("times")
+            @Expose
+            var times: String? = null
+
             @SerializedName("user")
             @Expose
             var user: User? = null
