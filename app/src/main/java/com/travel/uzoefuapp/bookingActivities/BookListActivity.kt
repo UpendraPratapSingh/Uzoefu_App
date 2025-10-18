@@ -21,6 +21,7 @@ import com.travel.uzoefuapp.notificationModel.NotificationCountViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
 
+
 @AndroidEntryPoint
 class BookListActivity : AppCompatActivity() {
     lateinit var binding: ActivityBookListBinding
@@ -39,10 +40,8 @@ class BookListActivity : AppCompatActivity() {
         }
 
         window.apply {
-            decorView.systemUiVisibility = (
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    )
+            decorView.systemUiVisibility =
+                (View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN)
 
             statusBarColor = Color.TRANSPARENT
 
@@ -83,7 +82,6 @@ class BookListActivity : AppCompatActivity() {
         }
         notificationCountViewModel.notificationCountResponse.observe(this) { response ->
             val success = response.peekContent().success
-            val message = response.peekContent().message
             val data = response.peekContent().data
             if (success == true) {
                 val count = data ?: 0
@@ -94,9 +92,7 @@ class BookListActivity : AppCompatActivity() {
                     binding.notificationBadge.visibility = View.VISIBLE
                     binding.notificationBadge.text = count.toString()
                 }
-
             }
-
         }
         notificationCountViewModel.errorResponse.observe(this) {
             ErrorUtil.handlerGeneralError(this, it)
@@ -105,7 +101,5 @@ class BookListActivity : AppCompatActivity() {
 
     private fun notificationCountApi() {
         notificationCountViewModel.notificationCountApi(this, progressDialog)
-
     }
-
 }
