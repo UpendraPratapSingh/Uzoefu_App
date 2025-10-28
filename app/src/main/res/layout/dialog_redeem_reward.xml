@@ -4,14 +4,25 @@
     android:layout_height="wrap_content"
     android:background="@drawable/redeem_popup_bg"
     android:orientation="vertical"
-    android:padding="20dp">
+    android:padding="5dp"
+    android:paddingStart="20dp"
+    android:paddingEnd="20dp"
+    android:paddingBottom="10dp">
+
+    <ImageView
+        android:id="@+id/closeIcon"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="5dp"
+        android:src="@drawable/ic_close" />
 
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Redeem Reward"
-        android:textColor="@color/black"
+        android:textColor="@color/nuetral_bold_color"
         android:textSize="18sp"
         android:textStyle="bold" />
 
@@ -89,7 +100,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Current Balance"
-                android:textColor="@color/black"
+                android:textColor="@color/nuetral_bold_color"
                 android:textSize="14dp" />
 
             <TextView
@@ -98,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:text="450 pts"
-                android:textColor="@color/black"
+                android:textColor="@color/nuetral_bold_color"
                 android:textSize="14dp"
                 android:textStyle="bold" />
         </LinearLayout>
@@ -116,7 +127,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:text="Confirmation Code"
-                android:textColor="@color/black"
+                android:textColor="@color/nuetral_bold_color"
                 android:textSize="16dp" />
 
             <TextView
@@ -171,28 +182,34 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <Button
+        <TextView
             android:id="@+id/btnCancel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/btn_cancel_bg"
+            android:gravity="center"
+            android:padding="14dp"
             android:text="Cancel"
-            android:textAllCaps="false"/>
+            android:textColor="@color/dark_cyan"
+            android:textAllCaps="false" />
 
         <Space
             android:layout_width="12dp"
             android:layout_height="0dp" />
 
-        <Button
+        <TextView
             android:id="@+id/btnConfirm"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@drawable/button_rounded"
-            android:backgroundTint="@color/green_color"
+            android:backgroundTint="@color/dark_cyan"
+            android:gravity="center"
+            android:padding="14dp"
             android:text="Confirm"
             android:textAllCaps="false"
+
             android:textColor="@android:color/white" />
     </LinearLayout>
 </LinearLayout>

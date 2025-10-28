@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -73,14 +72,11 @@ class BookingProductActivity : AppCompatActivity() {
             insets
         }
 
-
         window.apply {
-            // Make content appear behind status bar
             decorView.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                         View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 
-            // Make status bar transparent
             statusBarColor = Color.TRANSPARENT
 
             WindowInsetsControllerCompat(this, decorView).isAppearanceLightStatusBars = false
@@ -89,9 +85,6 @@ class BookingProductActivity : AppCompatActivity() {
         binding.btnBack.setOnClickListener { finish() }
 
         categoryId = intent.getIntExtra("categoryId", -1)
-        //activeHour = intent.getStringExtra("activeHours").toString()
-
-        Log.e("TAG", "onCreate: $activeHour")
 
         getDetailApi(categoryId)
         getDetailObserver()
@@ -147,12 +140,18 @@ class BookingProductActivity : AppCompatActivity() {
                 }
 
                 "Share" -> {
-                    val shareText = "Your text here"
-                    val intent = Intent(Intent.ACTION_SEND).apply {
-                        type = "text/plain"
-                        putExtra(Intent.EXTRA_TEXT, shareText)
-                    }
-                    startActivity(Intent.createChooser(intent, "Share via"))
+                    val shareIntent = Intent(Intent.ACTION_SEND)
+                    shareIntent.type = "text/plain"
+
+                    val appLink = "https://play.google.com/store/apps/details?id=${packageName}"
+
+                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Check out this app!")
+                    shareIntent.putExtra(
+                        Intent.EXTRA_TEXT,
+                        "Hey! I found this awesome app. Download it here:\n$appLink"
+                    )
+
+                    startActivity(Intent.createChooser(shareIntent, "Share app via"))
                 }
             }
         }
@@ -230,14 +229,12 @@ class BookingProductActivity : AppCompatActivity() {
 
                 val images = response.peekContent().data?.images ?: emptyList()
 
-                val thumbnailAdapter = ProductSliderAdapter(images) { position ->
+                val thumbnailAdapter = ProductSliderAdapter(images) { _ -> }
 
-                }
                 binding.productRecyclerView.adapter = thumbnailAdapter
 
                 binding.button2.setOnClickListener {
                     val price = data3?.groupPrice ?: 0.0
-
                     if (price == 0.0) {
                         Toast.makeText(
                             this,
@@ -258,10 +255,8 @@ class BookingProductActivity : AppCompatActivity() {
                         startActivity(intent)
                     }
                 }
-
                 viewPager.adapter = SliderAdapter(images)
                 indicator.setViewPager(viewPager)
-
 
                 binding.iconFav.setImageResource(
                     if (isWish == true) R.drawable.wishlist_color
@@ -286,7 +281,6 @@ class BookingProductActivity : AppCompatActivity() {
                 }
             } else {
                 binding.main.visibility = View.GONE
-
             }
         }
         detailPageViewModel.errorResponse.observe(this) {

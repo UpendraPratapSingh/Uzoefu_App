@@ -8,7 +8,7 @@ import java.io.Serializable
 class ChangePasswordResponse: Serializable{
     @SerializedName("status")
     @Expose
-    var status: String? = null
+    var status: Boolean? = null
 
     @SerializedName("message")
     @Expose

@@ -90,7 +90,7 @@ class ChangePasswordActivity : AppCompatActivity() {
             val success = response.peekContent().status
             val message = response.peekContent().message
 
-            if (success == "success") {
+            if (success == true) {
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
                 val intent = Intent(this@ChangePasswordActivity, SettingActivity::class.java)
                 startActivity(intent)

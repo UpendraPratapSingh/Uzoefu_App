@@ -58,7 +58,7 @@ class SettingsActivity : AppCompatActivity() {
 
         val webView = binding.webViewAboutUs
         setupWebView(webView)
-        webView.loadUrl("https://mobappssolutions.in/uzoefu/aboutUs")
+        webView.loadUrl("https://mobappswebsolutions.com/uzoefu/aboutUs")
 
         binding.menuIcon.setOnClickListener { showSettingsBottomSheet() }
 
@@ -66,8 +66,26 @@ class SettingsActivity : AppCompatActivity() {
 
     }
 
+    /*    @SuppressLint("SetJavaScriptEnabled")
+        private fun setupWebView(webView: WebView) {
+            val webSettings: WebSettings = webView.settings
+            webSettings.javaScriptEnabled = true
+            webSettings.domStorageEnabled = true
+            webSettings.loadWithOverviewMode = true
+            webSettings.useWideViewPort = true
+            webSettings.builtInZoomControls = true
+            webSettings.displayZoomControls = false
+            webSettings.defaultTextEncodingName = "utf-8"
+            webSettings.layoutAlgorithm = WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING
+
+            webView.webViewClient = WebViewClient()
+            webView.scrollBarStyle = WebView.SCROLLBARS_OUTSIDE_OVERLAY
+            webView.isHorizontalScrollBarEnabled = false
+        }*/
+
+    @SuppressLint("SetJavaScriptEnabled")
     private fun setupWebView(webView: WebView) {
-        val webSettings: WebSettings = webView.settings
+        val webSettings = webView.settings
         webSettings.javaScriptEnabled = true
         webSettings.domStorageEnabled = true
         webSettings.loadWithOverviewMode = true
@@ -77,11 +95,22 @@ class SettingsActivity : AppCompatActivity() {
         webSettings.defaultTextEncodingName = "utf-8"
         webSettings.layoutAlgorithm = WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING
 
-        webView.webViewClient = WebViewClient()
+        webView.webViewClient = object : WebViewClient() {
+            override fun onPageFinished(view: WebView?, url: String?) {
+                view?.loadUrl(
+                    "javascript:(function() { " +
+                            "var meta = document.createElement('meta'); " +
+                            "meta.setAttribute('name', 'viewport'); " +
+                            "meta.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no'); " +
+                            "document.getElementsByTagName('head')[0].appendChild(meta);" +
+                            "})()"
+                )
+            }
+        }
+
         webView.scrollBarStyle = WebView.SCROLLBARS_OUTSIDE_OVERLAY
         webView.isHorizontalScrollBarEnabled = false
     }
-
 
     private fun notificationCountObserver() {
         notificationCountViewModel.progressIndicator.observe(this) {
@@ -89,7 +118,6 @@ class SettingsActivity : AppCompatActivity() {
         }
         notificationCountViewModel.notificationCountResponse.observe(this) { response ->
             val success = response.peekContent().success
-            val message = response.peekContent().message
             val data = response.peekContent().data
             if (success == true) {
                 val count = data ?: 0
@@ -100,9 +128,7 @@ class SettingsActivity : AppCompatActivity() {
                     binding.notificationBadge.visibility = View.VISIBLE
                     binding.notificationBadge.text = count.toString()
                 }
-
             }
-
         }
         notificationCountViewModel.errorResponse.observe(this) {
             ErrorUtil.handlerGeneralError(this, it)
@@ -111,9 +137,7 @@ class SettingsActivity : AppCompatActivity() {
 
     private fun notificationCountApi() {
         notificationCountViewModel.notificationCountApi(this, progressDialog)
-
     }
-
 
     @SuppressLint("MissingInflatedId")
     private fun showSettingsBottomSheet() {
@@ -140,33 +164,28 @@ class SettingsActivity : AppCompatActivity() {
         settingsLayout.setOnClickListener {
             val intent = Intent(this, SettingActivity::class.java)
             startActivity(intent)
-            // bottomSheetDialog.dismiss()
         }
 
         helpLayout.setOnClickListener {
             val intent = Intent(this, HelpCentreActivity::class.java)
             startActivity(intent)
-            // bottomSheetDialog.dismiss()
         }
 
         feedbackLayout.setOnClickListener {
             val intent = Intent(this, FeedbackActivity::class.java)
             startActivity(intent)
-            //  bottomSheetDialog.dismiss()
         }
 
         legalLayout.setOnClickListener {
             val intent = Intent(this, TermAndConditionActivity::class.java)
             intent.putExtra("page_type", "terms")
             startActivity(intent)
-            // bottomSheetDialog.dismiss()
         }
 
         shareLayout.setOnClickListener {
             val shareIntent = Intent(Intent.ACTION_SEND)
             shareIntent.type = "text/plain"
 
-            // Replace with your app link or Google Play store link
             val appLink = "https://play.google.com/store/apps/details?id=${packageName}"
 
             shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Check out this app!")
@@ -179,16 +198,12 @@ class SettingsActivity : AppCompatActivity() {
 
             bottomSheetDialog.dismiss()
         }
-
-
         signOutLayout.setOnClickListener {
             openLogoutCustomPopup()
             bottomSheetDialog.dismiss()
         }
-
         bottomSheetDialog.show()
     }
-
 
     private fun logoutObserver() {
         logoutViewModel.progressIndicator.observe(this) {

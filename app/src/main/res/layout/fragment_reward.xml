@@ -7,328 +7,78 @@
     android:background="@color/white"
     tools:context=".profileFragment.RewardFragment">
 
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/headerLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"
-        android:padding="16dp">
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="6dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:text="My Rewards"
+            android:textColor="@color/nuetral_bold_color"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+        <!-- Segmented control -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/segmentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/segment_bg"
+            android:padding="2dp">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="My Rewards"
-                    android:textColor="@color/nuetral_bold_color"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/segmentLayout"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/segment_bg"
+            <TextView
+                android:id="@+id/tvRewards"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="@drawable/segment_selected_bg"
                 android:gravity="center"
-                android:orientation="horizontal"
-                android:padding="2dp">
+                android:text="Rewards"
+                android:textColor="@color/nuetral_bold_color"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tvHistory"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.5" />
 
-                <TextView
-                    android:id="@+id/tvRewards"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/segment_selected_bg"
-                    android:gravity="center"
-                    android:text="Rewards"
-                    android:textColor="@color/nuetral_bold_color"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tvHistory"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:text="History (2)"
+                android:textColor="@color/gray"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tvRewards"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_percent="0.5" />
 
-                <TextView
-                    android:id="@+id/tvHistory"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="History (2)"
-                    android:textColor="@color/gray"
-                    android:textSize="14sp"
-                    android:textStyle="bold" />
-            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#FFFFFF"
-                android:fillViewport="true">
+    <FrameLayout
+        android:id="@+id/userFrameLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/headerLayout" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="1dp">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/reward_rounded"
-                        android:elevation="2dp"
-                        android:padding="10dp">
-
-                        <ImageView
-                            android:id="@+id/imgTrophy"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:src="@drawable/ic_trophy"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:tint="#00A000" />
-
-                        <TextView
-                            android:id="@+id/tvAvailablePointsLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Available Points"
-                            android:textColor="#333333"
-                            android:textSize="14sp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent" />
-
-                        <TextView
-                            android:id="@+id/tvAvailablePoints"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:text="450"
-                            android:textColor="#009900"
-                            android:textSize="28sp"
-                            android:textStyle="bold"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tvAvailablePointsLabel" />
-
-                        <TextView
-                            android:id="@+id/tvMilestonePoints"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="4dp"
-                            android:text="50 pts"
-                            android:textColor="#777777"
-                            android:textSize="12sp"
-                            app:layout_constraintBottom_toTopOf="@+id/progressBar"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tvAvailablePoints" />
-
-                        <TextView
-                            android:id="@+id/tvProgressLabel"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:text="Progress to Next Milestone"
-                            android:textColor="#666666"
-                            android:textSize="12sp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tvAvailablePoints" />
-
-                        <ProgressBar
-                            android:id="@+id/progressBar"
-                            style="?android:attr/progressBarStyleHorizontal"
-                            android:layout_width="0dp"
-                            android:layout_height="8dp"
-                            android:layout_marginTop="10dp"
-                            android:backgroundTint="#E0E0E0"
-                            android:max="100"
-                            android:progress="90"
-                            android:progressDrawable="@drawable/green_progress_drawable"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tvProgressLabel" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    <TextView
-                        android:id="@+id/tvEarnPointsWith"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginBottom="8dp"
-                        android:text="Earn Points With"
-                        android:textColor="@color/nuetral_bold_color"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <GridLayout
-                        android:id="@+id/gridEarnPoints"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:alignmentMode="alignMargins"
-                        android:columnCount="2"
-                        android:columnOrderPreserved="false"
-                        android:rowCount="2"
-                        android:rowOrderPreserved="false"
-                        android:useDefaultMargins="true">
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="90dp"
-                            android:layout_rowWeight="1"
-                            android:layout_columnWeight="1"
-                            android:layout_gravity="fill"
-                            android:layout_marginEnd="8dp"
-                            android:layout_marginBottom="8dp"
-                            android:background="@drawable/sected_box"
-                            android:backgroundTint="#F7F8FA"
-                            android:backgroundTintMode="src_in"
-                            android:clipToOutline="true"
-                            android:elevation="1dp"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="8dp"
-                            android:radius="12dp"
-                            android:shape="rectangle">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/roboto_regular"
-                                android:text="Bookings"
-                                android:textColor="@color/nuetral_bold_color"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="3x points/R"
-                                android:textColor="#777777"
-                                android:textSize="13sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="90dp"
-                            android:layout_columnWeight="1"
-                            android:background="@drawable/sected_box"
-                            android:clipToOutline="true"
-                            android:elevation="1dp"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="8dp"
-                            android:radius="12dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/roboto_regular"
-                                android:text="Reviews"
-                                android:textColor="@color/nuetral_bold_color"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="1x points/R"
-                                android:textColor="#777777"
-                                android:textSize="13sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="90dp"
-                            android:layout_columnWeight="1"
-                            android:background="@drawable/sected_box"
-                            android:clipToOutline="true"
-                            android:elevation="1dp"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="8dp"
-                            android:radius="12dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/roboto_regular"
-                                android:text="Referrals"
-                                android:textColor="@color/nuetral_bold_color"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="3x points/R"
-                                android:textColor="#777777"
-                                android:textSize="13sp" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="90dp"
-                            android:layout_columnWeight="1"
-                            android:background="@drawable/sected_box"
-                            android:clipToOutline="true"
-                            android:elevation="1dp"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="8dp"
-                            android:radius="12dp">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:fontFamily="@font/roboto_regular"
-                                android:text="Sharing"
-                                android:textColor="@color/nuetral_bold_color"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="4dp"
-                                android:text="1x points/R"
-                                android:textColor="#777777"
-                                android:textSize="13sp" />
-                        </LinearLayout>
-                    </GridLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:layout_marginBottom="8dp"
-                        android:text="Available Rewards"
-                        android:textColor="@color/nuetral_bold_color"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-            </ScrollView>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerRewards"
-                android:layout_width="match_parent"
-                android:layout_height="500dp"
-                android:layout_marginTop="8dp" />
-
-        </LinearLayout>
-    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

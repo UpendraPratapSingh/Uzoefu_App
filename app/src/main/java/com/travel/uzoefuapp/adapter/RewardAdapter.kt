@@ -1,14 +1,14 @@
 package com.travel.uzoefuapp.adapter
 
-
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
@@ -16,25 +16,19 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.R
 
 
-data class Reward(
-    val title: String,
-    val description: String,
-    val pointsRequired: Int
-)
+data class Reward(val title: String, val description: String, val pointsRequired: Int)
 
 class RewardAdapter(
     private val rewards: List<Reward>,
     private val context: Context,
     function: () -> Unit
 ) : RecyclerView.Adapter<RewardAdapter.RewardViewHolder>() {
-
     inner class RewardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvTitle: TextView = itemView.findViewById(R.id.tvTitle)
         val tvDescription: TextView = itemView.findViewById(R.id.tvDescription)
         val tvPoints: TextView = itemView.findViewById(R.id.tvPoints)
         val btnRedeem: TextView = itemView.findViewById(R.id.btnRedeem)
     }
-
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RewardViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -63,16 +57,17 @@ class RewardAdapter(
         view.findViewById<TextView>(R.id.tvRewardDesc).text = reward.description
         view.findViewById<TextView>(R.id.tvRewardPoints).text = "${reward.pointsRequired} Points"
 
-        view.findViewById<Button>(R.id.btnCancel).setOnClickListener {
+        view.findViewById<TextView>(R.id.btnCancel).setOnClickListener {
             dialog.dismiss()
         }
-
-        view.findViewById<Button>(R.id.btnConfirm).setOnClickListener {
+        view.findViewById<ImageView>(R.id.closeIcon).setOnClickListener {
+            dialog.dismiss()
+        }
+        view.findViewById<TextView>(R.id.btnConfirm).setOnClickListener {
             Toast.makeText(context, "Reward Redeemed Successfully!", Toast.LENGTH_SHORT).show()
             showRewardRedeemedDialog("UZR124-300978-25", 50)
             dialog.dismiss()
         }
-
         dialog.show()
     }
 
@@ -84,21 +79,32 @@ class RewardAdapter(
 
         val tvCode = view.findViewById<TextView>(R.id.tvCode)
         val tvBalance = view.findViewById<TextView>(R.id.tvBalance)
-        val btnDone = view.findViewById<Button>(R.id.btnDone)
+        val btnDone = view.findViewById<TextView>(R.id.btnDone)
+        val closeBtn = view.findViewById<ImageView>(R.id.closeIcon)
+        val copyCode = view.findViewById<ImageView>(R.id.imgCopy)
 
         tvCode.text = code
         tvBalance.text = "$newBalance pts"
 
+        copyCode.setOnClickListener {
+            val codeText = tvCode.text.toString()
+            val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager
+            clipboard?.let {
+                val clip = ClipData.newPlainText("Confirmation Code", codeText)
+                it.setPrimaryClip(clip)
+                Toast.makeText(context, "Code copied!", Toast.LENGTH_SHORT).show()
+            }
+        }
         btnDone.setOnClickListener {
             bottomSheetDialog.dismiss()
         }
-
+        closeBtn.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
         bottomSheetDialog.show()
     }
 
     override fun getItemCount(): Int {
-        Log.d("Rewards", rewards.size.toString()) // should print 4
-
         return rewards.size
     }
 }

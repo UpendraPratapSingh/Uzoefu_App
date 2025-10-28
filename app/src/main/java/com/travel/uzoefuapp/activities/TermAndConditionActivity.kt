@@ -15,23 +15,21 @@ class TermAndConditionActivity : AppCompatActivity() {
         binding = ActivityTermAndConditionBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Back button click
         binding.imageView2.setOnClickListener { finish() }
 
         val webView = binding.webView
         setupWebView(webView)
 
-        // Determine which page to load
         val pageType = intent.getStringExtra("page_type") ?: "terms"
         when (pageType) {
             "privacy" -> {
                 binding.headerTitle.text = "Privacy Policy"
-                webView.loadUrl("https://mobappssolutions.in/uzoefu/privacy/policy")
+                webView.loadUrl("https://mobappswebsolutions.com/uzoefu/privacy/policy")
             }
 
             else -> {
                 binding.headerTitle.text = "Terms & Conditions"
-                webView.loadUrl("https://mobappssolutions.in/uzoefu/termcondition")
+                webView.loadUrl("https://mobappswebsolutions.com/uzoefu/termcondition")
             }
         }
     }
