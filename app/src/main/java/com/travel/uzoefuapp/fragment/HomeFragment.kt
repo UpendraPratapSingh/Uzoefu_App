@@ -105,6 +105,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             insets
         }
 
+        //call api and observer
         discoverDestinationApi()
         getActivityApi()
         getCategoryApi()
@@ -158,58 +159,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         }
     }
 
-    /*
-        private fun provinceListObserver() {
-            provinceViewModel.progressIndicator.observe(viewLifecycleOwner) {}
-
-            provinceViewModel.getTripResponse.observe(viewLifecycleOwner) { event ->
-                val response = event.peekContent()
-                val success = response.success
-                val provinces = response.data ?: emptyList()
-
-                if (success == true) {
-                    val provinceNames = mutableListOf("Select Province")
-                    provinceNames.addAll(provinces.mapNotNull { it.name })
-
-                    val provinceAdapter = ArrayAdapter(
-                        requireContext(),
-                        android.R.layout.simple_spinner_dropdown_item,
-                        provinceNames
-                    )
-
-                    spinnerCity.adapter = provinceAdapter
-
-                    spinnerCity.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                        override fun onItemSelected(
-                            parent: AdapterView<*>?,
-                            view: View?,
-                            position: Int,
-                            id: Long
-                        ) {
-                            if (position > 0) {
-                                // Get selected province ID
-                                selectedProvinceId = provinces[position - 1].id.toString()
-
-                                // 🔹 Fetch cities for this province
-
-                            } else {
-                                selectedProvinceId = ""
-                            }
-                        }
-
-                        override fun onNothingSelected(parent: AdapterView<*>?) {
-                            selectedProvinceId = ""
-                        }
-                    }
-                }
-            }
-
-            provinceViewModel.errorResponse.observe(viewLifecycleOwner) {
-                ErrorUtil.handlerGeneralError(requireContext(), it)
-            }
-        }
-    */
-
     private fun provinceListObserver() {
         provinceViewModel.progressIndicator.observe(viewLifecycleOwner) {}
 
@@ -233,7 +182,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
                         parent: ViewGroup
                     ): View {
                         val view = super.getDropDownView(position, convertView, parent)
-                        // Hide "Select Province" in dropdown list
                         if (position == 0) {
                             view.visibility = View.GONE
                             view.layoutParams = ViewGroup.LayoutParams(0, 0)
@@ -248,13 +196,12 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
                     }
 
                     override fun isEnabled(position: Int): Boolean {
-                        // Disable click for first item
                         return position != 0
                     }
                 }
 
                 spinnerCity.adapter = provinceAdapter
-                spinnerCity.setSelection(0) // Show "Select Province" as default
+                spinnerCity.setSelection(0)
 
                 spinnerCity.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
                     override fun onItemSelected(
@@ -264,9 +211,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
                         id: Long
                     ) {
                         if (position > 0) {
-                            // ✅ Get selected province ID
                             selectedProvinceId = provinces[position - 1].id.toString()
-                            // 🔹 Fetch cities for this province here if needed
                         } else {
                             selectedProvinceId = ""
                         }
@@ -283,7 +228,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             ErrorUtil.handlerGeneralError(requireContext(), it)
         }
     }
-
 
     private fun discoverDestinationObserver() {
         discoverDestinationViewModel.progressIndicator.observe(viewLifecycleOwner) {
@@ -407,7 +351,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
 
     private fun getCategoryObserver() {
         categoryViewModel.progressIndicator.observe(viewLifecycleOwner) {
-
         }
 
         categoryViewModel.mCategoryResponse.observe(viewLifecycleOwner) { event ->
@@ -641,25 +584,14 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             }
         }
 
-        /*
-                rvCategories.layoutManager = GridLayoutManager(requireContext(), 3)
-                rvCategories.adapter = CategoryAdapter(requireContext(), categoriesList)
-        */
         val priceRanges = listOf("0 - 150", "151 - 300", "301 - 500", "500+")
 
         val selectPriceAdapter =
             SelectPriceAdapter(requireContext(), priceRanges) { selectedPrices ->
-                // This lambda is called whenever selection changes
-                // Send selectedPrices to your API
                 selectedPrice = selectedPrices.toString()
             }
         rvSelectPrice.layoutManager = GridLayoutManager(requireContext(), 1)
         rvSelectPrice.adapter = selectPriceAdapter
-
-
-        /*
-                rvSelectPrice.adapter = SelectPriceAdapter(requireContext())
-        */
 
         backIcon.setOnClickListener { bottomSheetDialog.dismiss() }
         closePopup.setOnClickListener { bottomSheetDialog.dismiss() }
@@ -671,16 +603,12 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             // 2️⃣ Selected Radius
             val selectedRadiusValue = selectedRadius
 
-            // 3️⃣ Selected Prices (from SelectPriceAdapter singleton or callback)
-            //  val selectedPriceValue = SelectedFilters.selectedPrices.joinToString(",")
-
-            // 4️⃣ Selected Ratings (from rating checkboxes)
             val selectedRatingsValue = ratingCheckboxes
                 .filter { it.isChecked }
-                .mapIndexed { index, _ -> index + 1 }  // rating 1..5
+                .mapIndexed { index, _ -> index + 1 }
                 .joinToString(",")
 
-            // Send via Intent
+
             val intent = Intent(requireContext(), ExploreActivity::class.java)
             intent.putExtra("selectedCity", selectedProvinceId)
             intent.putExtra("selectedRadius", categoryId)
@@ -693,17 +621,8 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         }
 
         bottomSheetDialog.show()
+
     }
-
-    /*    private fun filterActivityApi() {
-            val body = FilterActivityBody(
-                provinceId = selectedProvinceId,
-                price = selectedPrice,
-                rating = ,
-                categoryId = categoryId
-            )
-
-        }*/
 
     private fun provinceListApi() {
         provinceViewModel.provinceListApi(progressDialog, requireActivity())
@@ -747,10 +666,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         categoryViewModel.getCategory(progressDialog, requireActivity())
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -785,17 +700,6 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             else R.drawable.ic_wish
         )
         addToWishlistApi(product.id)
-
-        /*       val viewHolderCat =
-                   binding.popularcontryRecyclerView.findViewHolderForAdapterPosition(position)
-                           as? ExperienceAdapter.ViewHolder
-
-               viewHolderCat?.favIcon?.setImageResource(
-                   if (product.isWish == true) R.drawable.wishlist_color
-                   else R.drawable.ic_wish
-               )
-               addToWishlistApi(product.id)*/
-
     }
 
     override fun onWishlistDestinationClicked(
@@ -840,6 +744,5 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             else R.drawable.ic_wish
         )
         addToWishlistApi(product.id)
-
     }
 }

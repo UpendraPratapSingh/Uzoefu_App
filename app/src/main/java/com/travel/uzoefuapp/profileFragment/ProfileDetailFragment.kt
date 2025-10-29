@@ -70,8 +70,9 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
             requireContext(),
             { _, selectedYear, selectedMonth, selectedDay ->
                 val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                calendar.set(selectedYear, selectedMonth, selectedDay)
-                val formattedDate = sdf.format(calendar.time)
+                val selectedDate = Calendar.getInstance()
+                selectedDate.set(selectedYear, selectedMonth, selectedDay)
+                val formattedDate = sdf.format(selectedDate.time)
 
                 binding.dateOfBirth.setText(formattedDate)
             },
@@ -79,6 +80,8 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
             month,
             day
         )
+
+        datePickerDialog.datePicker.maxDate = System.currentTimeMillis() - 1000
 
         datePickerDialog.show()
     }
@@ -105,13 +108,10 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
                     binding.categoriesRecyclerView.adapter = categoryAdapter
                 }
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    message ?: "Failed to load categories",
-                    Toast.LENGTH_SHORT
-                ).show()
+                Toast.makeText(requireContext(),message ?: "Failed to load categories", Toast.LENGTH_SHORT).show()
             }
         }
+
         categoryViewModel.errorResponse.observe(viewLifecycleOwner) { error ->
             ErrorUtil.handlerGeneralError(requireContext(), error)
         }

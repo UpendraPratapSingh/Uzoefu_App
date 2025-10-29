@@ -74,8 +74,7 @@ class BookingProductActivity : AppCompatActivity() {
 
         window.apply {
             decorView.systemUiVisibility =
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
 
             statusBarColor = Color.TRANSPARENT
 

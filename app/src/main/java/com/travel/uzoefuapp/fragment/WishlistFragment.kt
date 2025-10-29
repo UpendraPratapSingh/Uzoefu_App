@@ -64,7 +64,6 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         _binding = FragmentWishlistBinding.inflate(inflater, container, false)
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -112,7 +111,7 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
             binding.iconLayout.visibility = View.VISIBLE
         }
 
-        binding.copyIcon.setOnClickListener { openBottomSheetTrip() }
+        //  binding.copyIcon.setOnClickListener { openBottomSheetTrip() }
 
         return binding.root
     }

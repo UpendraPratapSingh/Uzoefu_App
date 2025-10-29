@@ -17,6 +17,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.viewModelScope
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activities.FeedbackActivity
@@ -27,6 +28,7 @@ import com.travel.uzoefuapp.activities.TermAndConditionActivity
 import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.databinding.ActivitySettingsBinding
 import com.travel.uzoefuapp.logoutModel.LogoutViewModel
+import com.travel.uzoefuapp.notification.NotificationActivity
 import com.travel.uzoefuapp.notificationModel.NotificationCountViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -52,6 +54,12 @@ class SettingsActivity : AppCompatActivity() {
 
         binding.btnBack.setOnClickListener { finish() }
 
+        binding.notificationLayout.setOnClickListener {
+            val intent = Intent(this, NotificationActivity::class.java)
+            startActivity(intent)
+        }
+
+        //call and observer
         logoutObserver()
         notificationCountApi()
         notificationCountObserver()
@@ -63,25 +71,7 @@ class SettingsActivity : AppCompatActivity() {
         binding.menuIcon.setOnClickListener { showSettingsBottomSheet() }
 
         showSettingsBottomSheet()
-
     }
-
-    /*    @SuppressLint("SetJavaScriptEnabled")
-        private fun setupWebView(webView: WebView) {
-            val webSettings: WebSettings = webView.settings
-            webSettings.javaScriptEnabled = true
-            webSettings.domStorageEnabled = true
-            webSettings.loadWithOverviewMode = true
-            webSettings.useWideViewPort = true
-            webSettings.builtInZoomControls = true
-            webSettings.displayZoomControls = false
-            webSettings.defaultTextEncodingName = "utf-8"
-            webSettings.layoutAlgorithm = WebSettings.LayoutAlgorithm.TEXT_AUTOSIZING
-
-            webView.webViewClient = WebViewClient()
-            webView.scrollBarStyle = WebView.SCROLLBARS_OUTSIDE_OVERLAY
-            webView.isHorizontalScrollBarEnabled = false
-        }*/
 
     @SuppressLint("SetJavaScriptEnabled")
     private fun setupWebView(webView: WebView) {
@@ -153,11 +143,10 @@ class SettingsActivity : AppCompatActivity() {
         val shareLayout = view.findViewById<LinearLayout>(R.id.shareLayout)
         val signOutLayout = view.findViewById<LinearLayout>(R.id.signOutLayout)
 
-
         aboutLayout.setOnClickListener {
             val webView = binding.webViewAboutUs
             setupWebView(webView)
-            webView.loadUrl("https://mobappssolutions.in/uzoefu/aboutUs")
+            webView.loadUrl("https://mobappswebsolutions.com/uzoefu/aboutUs")
             bottomSheetDialog.dismiss()
         }
 
@@ -197,7 +186,9 @@ class SettingsActivity : AppCompatActivity() {
             startActivity(Intent.createChooser(shareIntent, "Share app via"))
 
             bottomSheetDialog.dismiss()
+
         }
+
         signOutLayout.setOnClickListener {
             openLogoutCustomPopup()
             bottomSheetDialog.dismiss()

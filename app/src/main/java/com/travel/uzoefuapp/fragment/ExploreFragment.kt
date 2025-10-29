@@ -16,7 +16,6 @@ import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activityModl.ActivityResponse
 import com.travel.uzoefuapp.adapter.DestinationAdapter
 import com.travel.uzoefuapp.adapter.DestinationCategoryAdapter
-import com.travel.uzoefuapp.adapter.DiscoverAdapter
 import com.travel.uzoefuapp.adapter.OnWishlistClickListener
 import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistBody
 import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistViewModel
@@ -29,7 +28,6 @@ import com.travel.uzoefuapp.notificationModel.NotificationCountViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
 
-
 @AndroidEntryPoint
 class ExploreFragment : Fragment(), OnWishlistClickListener {
     private var _binding: FragmentExploreBinding? = null
@@ -41,7 +39,8 @@ class ExploreFragment : Fragment(), OnWishlistClickListener {
     private val notificationCountViewModel: NotificationCountViewModel by viewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentExploreBinding.inflate(inflater, container, false)
@@ -51,6 +50,7 @@ class ExploreFragment : Fragment(), OnWishlistClickListener {
             insets
         }
 
+        //call api and observer
         discoverDestinationApi()
         discoverDestinationObserver()
         branchAddToWishlistObserver()
@@ -71,7 +71,6 @@ class ExploreFragment : Fragment(), OnWishlistClickListener {
             val intent = Intent(requireContext(), SettingsActivity::class.java)
             startActivity(intent)
         }
-
         return binding.root
     }
 
@@ -86,7 +85,6 @@ class ExploreFragment : Fragment(), OnWishlistClickListener {
             if (success == true) {
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             }
-
         }
         branchWishlistViewModel.errorResponse.observe(viewLifecycleOwner) {
             ErrorUtil.handlerGeneralError(requireActivity(), it)
@@ -99,7 +97,6 @@ class ExploreFragment : Fragment(), OnWishlistClickListener {
         }
         discoverDestinationViewModel.mCategoryResponse.observe(viewLifecycleOwner) { response ->
             val success = response.peekContent().success
-            val message = response.peekContent().message
             discoverList = response.peekContent().data ?: emptyList()
 
             if (success == true) {
@@ -118,7 +115,6 @@ class ExploreFragment : Fragment(), OnWishlistClickListener {
                         GridLayoutManager(requireContext(), 2, GridLayoutManager.VERTICAL, false)
                     binding.categoriesRecycler.adapter =
                         DestinationCategoryAdapter(requireContext(), discoverList)
-
                 }
             }
         }
@@ -129,16 +125,13 @@ class ExploreFragment : Fragment(), OnWishlistClickListener {
 
     private fun discoverDestinationApi() {
         discoverDestinationViewModel.discoverDestinationApi(progressDialog, requireActivity())
-
     }
 
     private fun notificationCountObserver() {
         notificationCountViewModel.progressIndicator.observe(viewLifecycleOwner) {
-
         }
         notificationCountViewModel.notificationCountResponse.observe(viewLifecycleOwner) { response ->
             val success = response.peekContent().success
-            val message = response.peekContent().message
             val data = response.peekContent().data
             if (success == true) {
                 val count = data ?: 0
@@ -149,9 +142,7 @@ class ExploreFragment : Fragment(), OnWishlistClickListener {
                     binding.notificationBadge.visibility = View.VISIBLE
                     binding.notificationBadge.text = count.toString()
                 }
-
             }
-
         }
         notificationCountViewModel.errorResponse.observe(viewLifecycleOwner) {
             ErrorUtil.handlerGeneralError(requireContext(), it)
@@ -162,7 +153,6 @@ class ExploreFragment : Fragment(), OnWishlistClickListener {
         notificationCountViewModel.notificationCountApi(requireActivity(), progressDialog)
 
     }
-
 
     override fun onWishlistClicked(product: ActivityResponse.Datum, position: Int) {
 

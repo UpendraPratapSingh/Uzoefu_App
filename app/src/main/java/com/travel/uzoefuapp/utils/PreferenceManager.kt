@@ -14,7 +14,6 @@ class PreferenceManager(context: Context) {
           MasterKey.Builder(context, masterKeyAlias).setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
               .build()
 
-
       private val prefs = EncryptedSharedPreferences.create(
           context, "YourEncryptedPreferencesFileName",
           masterKey,
@@ -28,14 +27,14 @@ class PreferenceManager(context: Context) {
 
     /*    private var prefs = EncryptedSharedPreferences.create(
             context,
-            "myprefrence",
+            "YourEncryptedPreferencesFileName",
             masterKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )*/
 
     private val prefs = EncryptedSharedPreferences.create(
-        context, "myprefrences",
+        context, "YourEncryptedPreferences",
         masterKey,
         EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
@@ -53,7 +52,6 @@ class PreferenceManager(context: Context) {
         return mPrefs!!
     }
 
-    // region "Getters & Setters"
     var isFirstTime: Boolean
         get() = prefs.getBoolean(IS_FIRST_TIME, true)
         set(isFirstTime) {
@@ -81,132 +79,154 @@ class PreferenceManager(context: Context) {
             editor.putString(FLOOSS_TOKEN, token)
             editor.apply()
         }
+
     var floossTokenExpiry: Long
         get() = prefs.getLong(FLOOSS_TOKEN_EXP, 0)
         set(token) {
             editor.putLong(FLOOSS_TOKEN_EXP, token)
             editor.apply()
         }
+
     var floossTokenPayment: String
         get() = prefs.getString(FLOOSS_TOKENS, "") ?: ""
         set(token) {
             editor.putString(FLOOSS_TOKENS, token)
             editor.apply()
         }
+
     var languageIds: String
         get() = prefs.getString(languagesId, "") ?: ""
         set(languageId) {
             editor.putString(languagesId, languageId)
             editor.apply()
         }
+
     var bearerToken: String
         get() = prefs.getString(BEARER_USER_TOKEN, "") ?: ""
         set(userToken) {
             editor.putString(BEARER_USER_TOKEN, userToken)
             editor.apply()
         }
+
     var userId: String
         get() = prefs.getString(USER_ID, "") ?: ""
         set(userId) {
             editor.putString(USER_ID, userId)
             editor.apply()
         }
+
     var visaType: String
         get() = prefs.getString(hostTypes, "") ?: ""
         set(hostType) {
             editor.putString(hostTypes, hostType)
             editor.apply()
         }
+
     var hostingId: String
         get() = prefs.getString(hostTypeIds, "") ?: ""
         set(hostingId) {
             editor.putString(hostTypeIds, hostingId)
             editor.apply()
         }
+
     var currency: String
         get() = prefs.getString(currencyIds, "") ?: ""
         set(currency) {
             editor.putString(currencyIds, currency)
             editor.apply()
         }
+
     var statusDone: String
         get() = prefs.getString(status, "") ?: ""
         set(statusDone) {
             editor.putString(status, statusDone)
             editor.apply()
         }
+
     var countryId: String
         get() = prefs.getString(country, "") ?: ""
         set(countryId) {
             editor.putString(country, countryId)
             editor.apply()
         }
+
     var passengerId: String
         get() = prefs.getString(passengerIds, "") ?: ""
         set(passengerId) {
             editor.putString(passengerIds, passengerId)
             editor.apply()
         }
+
     var visaId: String
         get() = prefs.getString(state, "") ?: ""
         set(cityId) {
             editor.putString(state, cityId)
             editor.apply()
         }
+
     var FCMToken: String
         get() = prefs.getString(FCM_TOKEN, "") ?: ""
         set(userToken) {
             editor.putString(FCM_TOKEN, userToken)
             editor.apply()
         }
+
     var isNotification: Boolean
         get() = prefs.getBoolean(IS_NOTIFICATION, true)
         set(isNotification) {
             editor.putBoolean(IS_NOTIFICATION, isNotification)
             editor.apply()
         }
+
     var availableDateId: String
         get() = prefs.getString(availableDatesId, "") ?: ""
         set(dateId) {
             editor.putString(availableDatesId, dateId)
             editor.apply()
         }
+
     var selectedPaymentId: String
         get() = prefs.getString(selectPaymentId, "") ?: ""
         set(paymentId) {
             editor.putString(selectPaymentId, paymentId)
             editor.apply()
         }
+
     var selectedActivityId: String
         get() = prefs.getString(activityId, "") ?: ""
         set(activityId) {
             editor.putString(activityId, activityId)
             editor.apply()
         }
+
     var availableSeat: Int
         get() = prefs.getInt(passengersId.toString(), 0) ?: 0
         set(passengerId) {
             editor.putInt(passengersId.toString(), passengerId)
             editor.apply()
         }
+
     var isVerified: String
         get() = prefs.getString(isVerifieds, "") ?: ""
         set(isVerified) {
             editor.putString(isVerifieds, isVerified)
             editor.apply()
         }
+
     var title: String
         get() = prefs.getString(officialDocs, "") ?: ""
         set(officialDoc) {
             editor.putString(officialDocs, officialDoc)
             editor.apply()
         }
+
     var installmentPaymentPrice: String
         get() = prefs.getString(paymenytPrice, "") ?: ""
         set(paymenytPrice) {
             editor.putString(paymenytPrice, paymenytPrice)
             editor.apply()
         }
+
     var clickValue: String
         get() = prefs.getString(ClickValue, "") ?: ""
         set(ClickValues) {
@@ -215,7 +235,6 @@ class PreferenceManager(context: Context) {
         }
 
     companion object {
-        // region "Tags"
         private const val IS_FIRST_TIME = "isFirstTime"
         private const val languagesId = "languageId"
         private const val BEARER_TOKEN = "bearerToken"
