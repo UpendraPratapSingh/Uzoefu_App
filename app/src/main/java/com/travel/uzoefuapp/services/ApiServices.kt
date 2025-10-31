@@ -59,6 +59,9 @@ import com.travel.uzoefuapp.priceCalculationModel.PriceCalculationResponse
 import com.travel.uzoefuapp.provinceModel.ProvinceResponse
 import com.travel.uzoefuapp.ratingModel.RatingResponse
 import com.travel.uzoefuapp.ratingReviewModel.RatingReviewResponse
+import com.travel.uzoefuapp.redeemRewardModel.RewardRedeemResponse
+import com.travel.uzoefuapp.rewardHistoryModel.RewardHistoryResponse
+import com.travel.uzoefuapp.rewardModel.RewardResponse
 import com.travel.uzoefuapp.signUpModel.SignUpBody
 import com.travel.uzoefuapp.signUpModel.SignUpResponse
 import com.travel.uzoefuapp.updateProfileModel.UpdateProfileBody
@@ -312,5 +315,20 @@ interface ApiServices {
     fun branchWishlist(
         @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
     ): Observable<BranchWishlistResponse>
+
+    @POST("user_reward_points")
+    fun rewardPoint(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
+    ): Observable<RewardResponse>
+
+    @POST("user_reward_history")
+    fun rewardHistory(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
+    ): Observable<RewardHistoryResponse>
+
+    @POST("user_reward_list")
+    fun rewardList(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
+    ): Observable<RewardRedeemResponse>
 
 }

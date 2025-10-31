@@ -3,10 +3,14 @@
     <style name="Base.Theme.UzoefuApp" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your dark theme here. -->
         <item name="colorPrimary">@color/green_color</item>
+        <item name="colorPrimaryVariant">@color/green_color</item>
+        <item name="colorOnPrimary">@color/white</item>
+
         <item name="android:statusBarColor">@color/green_color</item>
 
-        <!-- Optional: Set light/dark icons -->
-        <item name="android:windowLightStatusBar">true</item> <!-- for dark icons -->
+        <item name="android:fitsSystemWindows">false</item>
+
+        <item name="android:windowLightStatusBar">true</item>
 
     </style>
 </resources>

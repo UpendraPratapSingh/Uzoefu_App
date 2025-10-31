@@ -338,15 +338,40 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCat
 
         val ratingCheckboxes = listOf(cbRating1, cbRating2, cbRating3, cbRating4, cbRating5)
 
-        cbAllRatings.setOnCheckedChangeListener { _, isChecked ->
-            ratingCheckboxes.forEach { it.isChecked = isChecked }
-        }
+        val selectedRatings = mutableSetOf<Int>()
 
-        ratingCheckboxes.forEach { cb ->
-            cb.setOnCheckedChangeListener { _, _ ->
-                cbAllRatings.isChecked = ratingCheckboxes.all { it.isChecked }
+        ratingCheckboxes.forEachIndexed { index, checkbox ->
+            checkbox.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    selectedRatings.add(index + 1)
+                } else {
+                    selectedRatings.remove(index + 1)
+                }
+
+                cbAllRatings.isChecked = selectedRatings.size == ratingCheckboxes.size
             }
         }
+
+        cbAllRatings.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                ratingCheckboxes.forEach { it.isChecked = true }
+                selectedRatings.clear()
+                selectedRatings.addAll(1..5)
+            } else {
+                ratingCheckboxes.forEach { it.isChecked = false }
+                selectedRatings.clear()
+            }
+        }
+
+        /*      cbAllRatings.setOnCheckedChangeListener { _, isChecked ->
+                  ratingCheckboxes.forEach { it.isChecked = isChecked }
+              }
+
+              ratingCheckboxes.forEach { cb ->
+                  cb.setOnCheckedChangeListener { _, _ ->
+                      cbAllRatings.isChecked = ratingCheckboxes.all { it.isChecked }
+                  }
+              }*/
 
         provinceListApi()
 
@@ -418,9 +443,11 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCat
         val priceRanges = listOf("0 - 150", "151 - 300", "301 - 500", "500+")
 
         val selectPriceAdapter = SelectPriceAdapter(this, priceRanges) { selectedPrices ->
-            // This lambda is called whenever selection changes
-            // Send selectedPrices to your API
-            selectedPrice = selectedPrices.toString()
+
+            //   selectedPrice = selectedPrices.toString()
+            selectedPrice =
+                selectedPrices.joinToString(",") { it.replace(" ", "").replace("-", "-") }
+
         }
 
         rvSelectPrice.layoutManager = GridLayoutManager(this, 1)
@@ -439,20 +466,28 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCat
         closePopup.setOnClickListener { bottomSheetDialog.dismiss() }
 
         btnApply.setOnClickListener {
-            // 1️⃣ Selected City
             val selectedCityValue = spinnerCity.selectedItem?.toString() ?: ""
 
-            // 2️⃣ Selected Radius
             val selectedRadiusValue = selectedRadius
 
             // 3️⃣ Selected Prices (from SelectPriceAdapter singleton or callback)
-            //  val selectedPriceValue = SelectedFilters.selectedPrices.joinToString(",")
+            val selectedRatingsValue = selectedRatings.joinToString(",")
 
-            // 4️⃣ Selected Ratings (from rating checkboxes)
-            val selectedRatingsValue = ratingCheckboxes
-                .filter { it.isChecked }
-                .mapIndexed { index, _ -> index + 1 }  // rating 1..5
-                .joinToString(",")
+            /*     // 4️⃣ Selected Ratings (from rating checkboxes)
+                 val selectedRatingsValue = ratingCheckboxes
+                     .filter { it.isChecked }
+                     .mapIndexed { index, _ -> index + 1 }
+                     .joinToString(",")
+     */
+
+            /*
+                        val selectedRatingsValue = ratingCheckboxes
+                            .mapIndexedNotNull { index, checkbox ->
+                                if (checkbox.isChecked) index + 1 else null
+                            }
+                            .maxOrNull()
+                            ?.toString() ?: ""
+            */
 
             val intent = Intent(this@SelectDestinationActivity, ExploreActivity::class.java)
             intent.putExtra("selectedCity", selectedProvinceId)
@@ -514,7 +549,6 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCat
         }
     }
 
-
     private fun getCategoryBottomSheetApi() {
         categoryViewModel.getCategory(progressDialog, this)
     }
@@ -522,7 +556,6 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCat
     private fun provinceListApi() {
         provinceViewModel.provinceListApi(progressDialog, this)
     }
-
 
     override fun onWishlistClick(product: ActivityResponse.Datum, position: Int) {
         product.isWish = !(product.isWish ?: false)
@@ -535,7 +568,6 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCat
             else R.drawable.ic_wish
         )
         addToWishlistApi(product.id)
-
 
     }
 
@@ -559,6 +591,13 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCat
     }
 
     override fun onCategoryClick(categoryId: String, categoryName: String) {
-
+        this.categoryId = categoryId
     }
+
+    override fun onResume() {
+        super.onResume()
+        categoryId = ""
+        selectedProvinceId = ""
+    }
+
 }

@@ -246,7 +246,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun logoutApi() {
-        logoutViewModel.userLogoutApi(this)
+        logoutViewModel.userLogoutApi(progressDialog,this)
     }
 
 }

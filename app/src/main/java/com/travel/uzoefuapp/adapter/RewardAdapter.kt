@@ -5,6 +5,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,13 +15,15 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.redeemRewardModel.RewardRedeemResponse
 
 
 data class Reward(val title: String, val description: String, val pointsRequired: Int)
 
 class RewardAdapter(
-    private val rewards: List<Reward>,
+    private val rewards: List<RewardRedeemResponse.Datum>,
     private val context: Context,
+    val currentBalance: String,
     function: () -> Unit
 ) : RecyclerView.Adapter<RewardAdapter.RewardViewHolder>() {
     inner class RewardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -38,24 +41,40 @@ class RewardAdapter(
 
     override fun onBindViewHolder(holder: RewardViewHolder, position: Int) {
         val reward = rewards[position]
-        holder.tvTitle.text = reward.title
+        holder.tvTitle.text = reward.name
         holder.tvDescription.text = reward.description
-        holder.tvPoints.text = "${reward.pointsRequired} pts"
+        holder.tvPoints.text = "${reward.points} pts"
         holder.btnRedeem.setOnClickListener {
             showRedeemDialog(holder.itemView.context, reward)
         }
     }
 
-    private fun showRedeemDialog(context: Context, reward: Reward) {
+    private fun showRedeemDialog(context: Context, reward: RewardRedeemResponse.Datum) {
         val dialog = BottomSheetDialog(context, R.style.BottomSheetDialogTheme)
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_redeem_reward, null)
 
         dialog.setContentView(view)
         dialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        view.findViewById<TextView>(R.id.tvRewardTitle).text = reward.title
+        view.findViewById<TextView>(R.id.tvRewardTitle).text = reward.name
         view.findViewById<TextView>(R.id.tvRewardDesc).text = reward.description
-        view.findViewById<TextView>(R.id.tvRewardPoints).text = "${reward.pointsRequired} Points"
+        view.findViewById<TextView>(R.id.tvRewardPoints).text = "${reward.points} Points"
+        view.findViewById<TextView>(R.id.tvRedeemPoints).text = "-${reward.points} pts"
+        view.findViewById<TextView>(R.id.tvCurrentBalance).text = "${currentBalance} pts"
+
+        val rewardPointsStr: String = reward.points.toString()
+        val currentBalanceStr: String = currentBalance
+
+        val rewardPoints = rewardPointsStr.toIntOrNull() ?: 0
+        val currentBalanceVal = currentBalanceStr.toIntOrNull() ?: 0
+
+        val newBalance = (currentBalanceVal - rewardPoints).coerceAtLeast(0)
+
+        Log.d("Balance", "New Balance: $newBalance")
+
+        view.findViewById<TextView>(R.id.tvNewBalance).text = newBalance.toString()
+
+        val code = reward.code
 
         view.findViewById<TextView>(R.id.btnCancel).setOnClickListener {
             dialog.dismiss()
@@ -65,7 +84,9 @@ class RewardAdapter(
         }
         view.findViewById<TextView>(R.id.btnConfirm).setOnClickListener {
             Toast.makeText(context, "Reward Redeemed Successfully!", Toast.LENGTH_SHORT).show()
-            showRewardRedeemedDialog("UZR124-300978-25", 50)
+            if (code != null) {
+                showRewardRedeemedDialog(code, 50)
+            }
             dialog.dismiss()
         }
         dialog.show()

@@ -25,6 +25,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="6dp"
         android:text="Category "
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textColor="@color/gray"
         android:textSize="14sp" />
 

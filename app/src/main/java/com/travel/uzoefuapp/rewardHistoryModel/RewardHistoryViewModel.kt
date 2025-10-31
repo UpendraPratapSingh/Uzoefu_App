@@ -1,4 +1,4 @@
-package com.travel.uzoefuapp.logoutModel
+package com.travel.uzoefuapp.rewardHistoryModel
 
 import CustomProgressDialog
 import android.app.Activity
@@ -9,52 +9,56 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.travel.uzoefuapp.repository.CommonRepository
+import com.travel.uzoefuapp.rewardModel.RewardResponse
 import com.travel.uzoefuapp.utils.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-@ExperimentalCoroutinesApi
-class LogoutViewModel @Inject constructor(
-    application: Application, private val repository: CommonRepository
-) : AndroidViewModel(application) {
+class RewardHistoryViewModel @Inject constructor(application: Application, private val repository: CommonRepository
+): AndroidViewModel(application){
     val progressIndicator = MutableLiveData<Boolean>()
     val errorResponse = MutableLiveData<Throwable>()
-    val mRegisterResponse = MutableLiveData<Event<LogoutResponse>>()
+    val rewardResponse = MutableLiveData<Event<RewardHistoryResponse>>()
 
-    fun userLogoutApi(progressDialog: CustomProgressDialog, activity: Activity) =
+    fun rewardHistoryListApi(
+        activity: Activity,
+        progressDialog: CustomProgressDialog,
+    ) =
         viewModelScope.launch {
-            userLogout(progressDialog, activity)
+            rewardHistoryList(activity, progressDialog)
         }
 
-    private suspend fun userLogout(
-        progressDialog: CustomProgressDialog,
+    private suspend fun rewardHistoryList(
         activity: Activity,
+        progressDialog: CustomProgressDialog,
     ) {
         progressDialog.start("")
         progressIndicator.value = true
-        repository.logoutApi()
+        repository.rewardHistory()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : DisposableObserver<LogoutResponse>() {
+            .subscribe(object : DisposableObserver<RewardHistoryResponse>() {
                 @RequiresApi(Build.VERSION_CODES.S)
-                override fun onNext(value: LogoutResponse) {
+                override fun onNext(value: RewardHistoryResponse) {
                     progressIndicator.value = false
-                    mRegisterResponse.value = Event(value)
+                    rewardResponse.value = Event(value)
+                    progressDialog.stop()
                 }
 
                 override fun onError(e: Throwable) {
                     progressIndicator.value = false
                     errorResponse.value = e
+                    progressDialog.stop()
                 }
 
                 override fun onComplete() {
                     progressIndicator.value = false
+                    progressDialog.stop()
                 }
             })
     }

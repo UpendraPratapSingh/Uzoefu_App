@@ -1,4 +1,4 @@
-package com.travel.uzoefuapp.logoutModel
+package com.travel.uzoefuapp.rewardModel
 
 import CustomProgressDialog
 import android.app.Activity
@@ -14,47 +14,51 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-@ExperimentalCoroutinesApi
-class LogoutViewModel @Inject constructor(
+class RewardViewModel @Inject constructor(
     application: Application, private val repository: CommonRepository
 ) : AndroidViewModel(application) {
     val progressIndicator = MutableLiveData<Boolean>()
     val errorResponse = MutableLiveData<Throwable>()
-    val mRegisterResponse = MutableLiveData<Event<LogoutResponse>>()
+    val rewardResponse = MutableLiveData<Event<RewardResponse>>()
 
-    fun userLogoutApi(progressDialog: CustomProgressDialog, activity: Activity) =
+    fun rewardListApi(
+        activity: Activity,
+        progressDialog: CustomProgressDialog,
+    ) =
         viewModelScope.launch {
-            userLogout(progressDialog, activity)
+            rewardList(activity, progressDialog)
         }
 
-    private suspend fun userLogout(
-        progressDialog: CustomProgressDialog,
+    private suspend fun rewardList(
         activity: Activity,
+        progressDialog: CustomProgressDialog,
     ) {
         progressDialog.start("")
         progressIndicator.value = true
-        repository.logoutApi()
+        repository.rewardData()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : DisposableObserver<LogoutResponse>() {
+            .subscribe(object : DisposableObserver<RewardResponse>() {
                 @RequiresApi(Build.VERSION_CODES.S)
-                override fun onNext(value: LogoutResponse) {
+                override fun onNext(value: RewardResponse) {
                     progressIndicator.value = false
-                    mRegisterResponse.value = Event(value)
+                    rewardResponse.value = Event(value)
+                    progressDialog.stop()
                 }
 
                 override fun onError(e: Throwable) {
                     progressIndicator.value = false
                     errorResponse.value = e
+                    progressDialog.stop()
                 }
 
                 override fun onComplete() {
                     progressIndicator.value = false
+                    progressDialog.stop()
                 }
             })
     }

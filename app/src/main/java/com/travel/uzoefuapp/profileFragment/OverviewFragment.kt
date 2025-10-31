@@ -8,7 +8,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -34,6 +33,7 @@ import com.travel.uzoefuapp.getProfileModel.GetProfileViewModel
 import com.travel.uzoefuapp.imageUpdateModel.ImageUpdateViewModel
 import com.travel.uzoefuapp.logoutModel.LogoutViewModel
 import com.travel.uzoefuapp.overviewModel.OverviewViewModel
+import com.travel.uzoefuapp.rewardModel.RewardViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -55,6 +55,7 @@ class OverviewFragment : Fragment() {
     private var imageUri: Uri? = null
     private val binding get() = _binding!!
     private val overviewViewModel: OverviewViewModel by viewModels()
+    private val rewardViewModel: RewardViewModel by viewModels()
     private var tabSwitchListener: OnTabSwitchListener? = null
 
     override fun onCreateView(
@@ -70,6 +71,8 @@ class OverviewFragment : Fragment() {
         getProfileObserver()
         logoutObserver()
         overviewObserver()
+        getRewardListApi()
+        getRewardObserver()
 
         binding.profileImage.setOnClickListener { showImageSourceDialog() }
 
@@ -123,6 +126,27 @@ class OverviewFragment : Fragment() {
 
         return binding.root
     }
+
+    private fun getRewardObserver() {
+        rewardViewModel.progressIndicator.observe(viewLifecycleOwner) {
+
+        }
+        rewardViewModel.rewardResponse.observe(viewLifecycleOwner) { response ->
+            val success = response.peekContent().success
+            val data = response.peekContent().rewardPoints
+            if (success == true) {
+                binding.tvRewardPoints.text = data
+            }
+        }
+        rewardViewModel.errorResponse.observe(viewLifecycleOwner) {
+            ErrorUtil.handlerGeneralError(requireContext(), it)
+        }
+    }
+
+    private fun getRewardListApi() {
+        rewardViewModel.rewardListApi(requireActivity(), progressDialog)
+    }
+
 
     private fun overviewObserver() {
         overviewViewModel.progressIndicator.observe(viewLifecycleOwner) {
@@ -351,7 +375,7 @@ class OverviewFragment : Fragment() {
     }
 
     private fun logoutApi() {
-        logoutViewModel.userLogoutApi(requireActivity())
+        logoutViewModel.userLogoutApi(progressDialog, requireActivity())
     }
 
     private fun openFragment(fragment: Fragment) {

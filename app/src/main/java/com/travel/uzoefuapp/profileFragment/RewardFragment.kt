@@ -10,8 +10,9 @@ import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.databinding.FragmentRewardBinding
 import com.travel.uzoefuapp.rewardFragment.HistoryFragment
 import com.travel.uzoefuapp.rewardFragment.RewardsFragment
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class RewardFragment : Fragment() {
     private var _binding: FragmentRewardBinding? = null
     private val binding get() = _binding!!

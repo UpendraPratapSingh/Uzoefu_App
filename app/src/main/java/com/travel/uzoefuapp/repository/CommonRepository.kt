@@ -59,6 +59,9 @@ import com.travel.uzoefuapp.priceCalculationModel.PriceCalculationResponse
 import com.travel.uzoefuapp.provinceModel.ProvinceResponse
 import com.travel.uzoefuapp.ratingModel.RatingResponse
 import com.travel.uzoefuapp.ratingReviewModel.RatingReviewResponse
+import com.travel.uzoefuapp.redeemRewardModel.RewardRedeemResponse
+import com.travel.uzoefuapp.rewardHistoryModel.RewardHistoryResponse
+import com.travel.uzoefuapp.rewardModel.RewardResponse
 import com.travel.uzoefuapp.services.ApiServices
 import com.travel.uzoefuapp.signUpModel.SignUpBody
 import com.travel.uzoefuapp.signUpModel.SignUpResponse
@@ -251,6 +254,17 @@ class CommonRepository @Inject constructor(private val services: ApiServices) {
         return services.branchWishlist(Uzoefu.encryptedPrefs.bearerToken)
     }
 
+    fun rewardData(): Observable<RewardResponse>{
+        return services.rewardPoint(Uzoefu.encryptedPrefs.bearerToken)
+    }
+
+    fun rewardHistory(): Observable<RewardHistoryResponse>{
+        return services.rewardHistory(Uzoefu.encryptedPrefs.bearerToken)
+    }
+
+    fun rewardListApi(): Observable<RewardRedeemResponse>{
+        return services.rewardList(Uzoefu.encryptedPrefs.bearerToken)
+    }
 
     suspend fun makePayment(
         activityId: String,

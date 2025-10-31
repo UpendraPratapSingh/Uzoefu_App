@@ -136,9 +136,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             val intent = Intent(requireContext(), ExploreCategoriesActivity::class.java)
             startActivity(intent)
         }
-
         return binding.root
-
     }
 
     private fun branchAddToWishListObserver() {
@@ -301,8 +299,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
                 }
             } else {
                 Toast.makeText(
-                    requireContext(),
-                    message ?: "Failed to load categories",
+                    requireContext(), message ?: "Failed to load categories",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -333,8 +330,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
                 }
             } else {
                 Toast.makeText(
-                    requireContext(),
-                    message ?: "Failed to load categories",
+                    requireContext(), message ?: "Failed to load categories",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -371,8 +367,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
                 }
             } else {
                 Toast.makeText(
-                    requireContext(),
-                    message ?: "Failed to load categories",
+                    requireContext(), message ?: "Failed to load categories",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -441,13 +436,13 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             override fun afterTextChanged(s: Editable?) {}
         })
 
-        searchActivityViewModel.searchActivityResponse.observe(viewLifecycleOwner) { event ->
-            val response = event.peekContent()
-            val success = response.status
-            val data = response.data ?: emptyList()
+            searchActivityViewModel.searchActivityResponse.observe(viewLifecycleOwner) { event ->
+                val response = event.peekContent()
+                val success = response.status
+                val data = response.data ?: emptyList()
 
-            adapter.updateData(if (success == true) data else emptyList())
-        }
+                adapter.updateData(if (success == true) data else emptyList())
+            }
 
         bottomSheetDialog.show()
     }
@@ -499,19 +494,49 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
 
         val ratingCheckboxes = listOf(cbRating1, cbRating2, cbRating3, cbRating4, cbRating5)
 
-        cbAllRatings.setOnCheckedChangeListener { _, isChecked ->
-            ratingCheckboxes.forEach { it.isChecked = isChecked }
-        }
+        val selectedRatings = mutableSetOf<Int>()
 
-        ratingCheckboxes.forEach { cb ->
-            cb.setOnCheckedChangeListener { _, _ ->
-                cbAllRatings.isChecked = ratingCheckboxes.all { it.isChecked }
+        ratingCheckboxes.forEachIndexed { index, checkbox ->
+            checkbox.setOnCheckedChangeListener { _, isChecked ->
+                if (isChecked) {
+                    selectedRatings.add(index + 1)
+                } else {
+                    selectedRatings.remove(index + 1)
+                }
+
+                // अगर सब select हैं → "All Ratings" भी check हो
+                cbAllRatings.isChecked = selectedRatings.size == ratingCheckboxes.size
             }
         }
+
+        cbAllRatings.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                // सब select करो
+                ratingCheckboxes.forEach { it.isChecked = true }
+                selectedRatings.clear()
+                selectedRatings.addAll(1..5)
+            } else {
+                // सब deselect करो
+                ratingCheckboxes.forEach { it.isChecked = false }
+                selectedRatings.clear()
+            }
+        }
+
+        /*
+                cbAllRatings.setOnCheckedChangeListener { _, isChecked ->
+                    ratingCheckboxes.forEach { it.isChecked = isChecked }
+                }*/
+
+        /*   ratingCheckboxes.forEach { cb ->
+               cb.setOnCheckedChangeListener { _, _ ->
+                   cbAllRatings.isChecked = ratingCheckboxes.all { it.isChecked }
+               }
+           }*/
 
         //call api province
         provinceListApi()
 
+        //call api and observer
         getCategoryBottomSheetApi()
         getCategoryBottomSheetObserver()
 
@@ -588,7 +613,9 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
 
         val selectPriceAdapter =
             SelectPriceAdapter(requireContext(), priceRanges) { selectedPrices ->
-                selectedPrice = selectedPrices.toString()
+               // selectedPrice = selectedPrices.toString()
+                selectedPrice = selectedPrices.joinToString(",") { it.replace(" ", "").replace("-", "-") }
+
             }
         rvSelectPrice.layoutManager = GridLayoutManager(requireContext(), 1)
         rvSelectPrice.adapter = selectPriceAdapter
@@ -597,17 +624,24 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         closePopup.setOnClickListener { bottomSheetDialog.dismiss() }
 
         btnApply.setOnClickListener {
-            // 1️⃣ Selected City
             val selectedCityValue = spinnerCity.selectedItem?.toString() ?: ""
 
-            // 2️⃣ Selected Radius
             val selectedRadiusValue = selectedRadius
 
-            val selectedRatingsValue = ratingCheckboxes
-                .filter { it.isChecked }
-                .mapIndexed { index, _ -> index + 1 }
-                .joinToString(",")
+            val selectedRatingsValue = selectedRatings.joinToString(",")
 
+            /*val selectedRatingsValue = ratingCheckboxes
+                .mapIndexedNotNull { index, checkbox ->
+                    if (checkbox.isChecked) index + 1 else null
+                }
+                .maxOrNull()
+                ?.toString() ?: ""
+*/
+            /*    val selectedRatingsValue = ratingCheckboxes
+                    .filter { it.isChecked }
+                    .mapIndexed { index, _ -> index + 1 }
+                    .joinToString(",")
+    */
 
             val intent = Intent(requireContext(), ExploreActivity::class.java)
             intent.putExtra("selectedCity", selectedProvinceId)
@@ -652,8 +686,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             } else {
                 Toast.makeText(
                     requireContext(),
-                    message ?: "Failed to load categories",
-                    Toast.LENGTH_SHORT
+                    message ?: "Failed to load categories", Toast.LENGTH_SHORT
                 ).show()
             }
         }
@@ -676,6 +709,8 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         getCategoryApi()
         getActivityApi()
         getActivityByCategory(categoryId)
+        categoryId = ""
+        selectedProvinceId = ""
 
     }
 
@@ -745,4 +780,5 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         )
         addToWishlistApi(product.id)
     }
+
 }
