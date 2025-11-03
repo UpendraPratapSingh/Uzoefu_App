@@ -67,6 +67,10 @@ import com.travel.uzoefuapp.signUpModel.SignUpBody
 import com.travel.uzoefuapp.signUpModel.SignUpResponse
 import com.travel.uzoefuapp.updateProfileModel.UpdateProfileBody
 import com.travel.uzoefuapp.updateProfileModel.UpdateProfileResponse
+import com.travel.uzoefuapp.userRedeemReward.UserRedeemRewardBody
+import com.travel.uzoefuapp.userRedeemReward.UserRedeemRewardResponse
+import com.travel.uzoefuapp.userShareReward.UserShareRewardBody
+import com.travel.uzoefuapp.userShareReward.UserShareRewardResponse
 import io.reactivex.Observable
 import io.reactivex.Observer
 import okhttp3.MediaType
@@ -226,47 +230,57 @@ class CommonRepository @Inject constructor(private val services: ApiServices) {
         return services.activityTime(Uzoefu.encryptedPrefs.bearerToken, body)
     }
 
-    fun notificationSeen(body: NotificationSeenBody): Observable<NotificationSeenResponse>{
+    fun notificationSeen(body: NotificationSeenBody): Observable<NotificationSeenResponse> {
         return services.notificationSeen(Uzoefu.encryptedPrefs.bearerToken, body)
     }
 
-    fun ratingReview(): Observable<RatingReviewResponse>{
+    fun ratingReview(): Observable<RatingReviewResponse> {
         return services.ratingReview(Uzoefu.encryptedPrefs.bearerToken)
     }
 
-    fun notificationDelete(body: NotificationDeleteBody): Observable<NotificationDeleteResponse>{
-        return services.notificationDelete(Uzoefu.encryptedPrefs.bearerToken , body)
+    fun notificationDelete(body: NotificationDeleteBody): Observable<NotificationDeleteResponse> {
+        return services.notificationDelete(Uzoefu.encryptedPrefs.bearerToken, body)
     }
 
-    fun feedback(body: FeedbackBody): Observable<FeedbackResponse>{
+    fun feedback(body: FeedbackBody): Observable<FeedbackResponse> {
         return services.feedback(Uzoefu.encryptedPrefs.bearerToken, body)
     }
 
-    fun changePassword(body: ChangePasswordBody): Observable<ChangePasswordResponse>{
+    fun changePassword(body: ChangePasswordBody): Observable<ChangePasswordResponse> {
         return services.changePassword(Uzoefu.encryptedPrefs.bearerToken, body)
     }
 
-    fun bookingCancel(body: BookingCancelBody): Observable<BookingCancelResponse>{
+    fun bookingCancel(body: BookingCancelBody): Observable<BookingCancelResponse> {
         return services.bookingCanceled(Uzoefu.encryptedPrefs.bearerToken, body)
     }
 
-    fun branchWishlist(): Observable<BranchWishlistResponse>{
+    fun branchWishlist(): Observable<BranchWishlistResponse> {
         return services.branchWishlist(Uzoefu.encryptedPrefs.bearerToken)
     }
 
-    fun rewardData(): Observable<RewardResponse>{
+    fun rewardData(): Observable<RewardResponse> {
         return services.rewardPoint(Uzoefu.encryptedPrefs.bearerToken)
     }
 
-    fun rewardHistory(): Observable<RewardHistoryResponse>{
+    fun rewardHistory(): Observable<RewardHistoryResponse> {
         return services.rewardHistory(Uzoefu.encryptedPrefs.bearerToken)
     }
 
-    fun rewardListApi(): Observable<RewardRedeemResponse>{
+    fun rewardListApi(): Observable<RewardRedeemResponse> {
         return services.rewardList(Uzoefu.encryptedPrefs.bearerToken)
     }
 
+    fun userRedeemReward(body: UserRedeemRewardBody): Observable<UserRedeemRewardResponse> {
+        return services.userRedeemReward(body, Uzoefu.encryptedPrefs.bearerToken)
+    }
+
+    fun userShareReward(body: UserShareRewardBody): Observable<UserShareRewardResponse> {
+        return services.userShareReward(body, Uzoefu.encryptedPrefs.bearerToken)
+    }
+
     suspend fun makePayment(
+        deviceId: String,
+        userId: String,
         activityId: String,
         date: String,
         times: String,
@@ -289,6 +303,8 @@ class CommonRepository @Inject constructor(private val services: ApiServices) {
     ): Response<PaymentResponse> {
 
         // Single values as RequestBody
+        val deviceTypeBody = deviceId.toRequestBody("text/plain".toMediaTypeOrNull())
+        val userIdBody = userId.toRequestBody("text/plain".toMediaTypeOrNull())
         val activityIdBody = activityId.toRequestBody("text/plain".toMediaTypeOrNull())
         val dateBody = date.toRequestBody("text/plain".toMediaTypeOrNull())
         val timeBody = times.toRequestBody("text/plain".toMediaTypeOrNull())
@@ -324,6 +340,8 @@ class CommonRepository @Inject constructor(private val services: ApiServices) {
 
         return services.paymentBooking(
             Uzoefu.encryptedPrefs.bearerToken,
+            device_type = deviceTypeBody,
+            userId = userIdBody,
             activityId = activityIdBody,
             date = dateBody,
             times = timeBody,

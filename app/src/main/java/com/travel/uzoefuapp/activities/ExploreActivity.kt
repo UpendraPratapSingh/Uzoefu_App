@@ -17,6 +17,7 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Spinner
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
@@ -35,8 +36,8 @@ import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activityModl.ActivityBody
 import com.travel.uzoefuapp.activityModl.ActivityResponse
 import com.travel.uzoefuapp.activityModl.ActivityViewModel
-import com.travel.uzoefuapp.adapter.CategoryAdapter
 import com.travel.uzoefuapp.adapter.ExploreResultAdapter
+import com.travel.uzoefuapp.adapter.FilterCategoryAdapter
 import com.travel.uzoefuapp.adapter.OnCategoryClickListener
 import com.travel.uzoefuapp.adapter.OnWishlistListener
 import com.travel.uzoefuapp.adapter.SearchDestinationAdapter
@@ -71,9 +72,13 @@ class ExploreActivity : AppCompatActivity(), OnWishlistListener, OnCategoryClick
     private var filterActivity: List<FilterActivityResponse.Data.Datum> = ArrayList()
     private val notificationCountViewModel: NotificationCountViewModel by viewModels()
     private var selectedPrice: String = ""
+    private var selectCategory = ""
     private val provinceViewModel: ProvinceViewModel by viewModels()
     private val categoryViewModel: CategoryViewModel by viewModels()
     private var data1: List<CategoryResponse.Datum> = ArrayList()
+    private lateinit var categoryAdapter: FilterCategoryAdapter
+    private var isAllSelected = false
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,7 +127,6 @@ class ExploreActivity : AppCompatActivity(), OnWishlistListener, OnCategoryClick
         }
 
         binding.editFilter.setOnClickListener { showFilterPopup() }
-
 
         binding.editFilterTop.setOnClickListener { showFilterPopup() }
 
@@ -355,6 +359,20 @@ class ExploreActivity : AppCompatActivity(), OnWishlistListener, OnCategoryClick
         /*  rvCategories.layoutManager = GridLayoutManager(this, 3)
             rvCategories.adapter = CategoryAdapter(this, categoriesList)*/
 
+        // ✅ Handle Select All / Clear All clicks
+        val tvSelectAll = view?.findViewById<TextView>(R.id.tvSelectAll)
+
+        tvSelectAll?.setOnClickListener {
+            if (isAllSelected) {
+                categoryAdapter.clearAll()
+                tvSelectAll.text = "Select All"
+            } else {
+                categoryAdapter.selectAll()
+                tvSelectAll.text = "Clear All"
+            }
+            isAllSelected = !isAllSelected
+        }
+
         val priceRanges = listOf("0 - 150", "151 - 300", "301 - 500", "500+")
 
         val selectPriceAdapter = SelectPriceAdapter(this, priceRanges) { selectedPrices ->
@@ -398,7 +416,7 @@ class ExploreActivity : AppCompatActivity(), OnWishlistListener, OnCategoryClick
 */
             val intent = Intent(this@ExploreActivity, ExploreActivity::class.java)
             intent.putExtra("selectedCity", selectedProvinceId)
-            intent.putExtra("selectedRadius", categoryId)
+            intent.putExtra("selectedRadius", selectCategory)
             intent.putExtra("selectedPrice", selectedPrice)
             intent.putExtra("selectedRatings", selectedRatingsValue)
             intent.putExtra("source", "filter")
@@ -431,39 +449,103 @@ class ExploreActivity : AppCompatActivity(), OnWishlistListener, OnCategoryClick
         provinceViewModel.provinceListApi(progressDialog, this)
     }
 
+    /*
+        private fun getCategoryBottomSheetObserver() {
+            categoryViewModel.progressIndicator.observe(this) {}
+
+            categoryViewModel.mCategoryResponse.observe(this) { event ->
+                val content = event.peekContent()
+                val success = content.success
+                val message = content.message
+                data1 = content.data ?: emptyList()
+
+                val category = content.Datum()
+
+                if (success == true) {
+                    if (data1.isEmpty()) {
+                        rvCategories?.visibility = View.GONE
+                    } else {
+                        rvCategories?.visibility = View.VISIBLE
+                        rvCategories?.layoutManager =
+                            GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false)
+                        val categoryAdapter = CategoryAdapter(this, data1, this, categoryId)
+                        rvCategories?.adapter = categoryAdapter
+                    }
+                } else {
+                    Toast.makeText(
+                        this, message ?: "Failed to load categories",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            categoryViewModel.errorResponse.observe(this) { error ->
+                ErrorUtil.handlerGeneralError(this@ExploreActivity, error)
+            }
+        }
+    */
+
     private fun getCategoryBottomSheetObserver() {
-        categoryViewModel.progressIndicator.observe(this) {}
+        categoryViewModel.progressIndicator.observe(this) { isLoading ->
+            // Optional: show or hide progress bar
+            // progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
 
         categoryViewModel.mCategoryResponse.observe(this) { event ->
             val content = event.peekContent()
             val success = content.success
             val message = content.message
-            data1 = content.data ?: emptyList()
-
-            val category = content.Datum()
+            val data = content.data ?: emptyList<CategoryResponse.Datum>()
 
             if (success == true) {
-                if (data1.isEmpty()) {
+                if (data.isEmpty()) {
                     rvCategories?.visibility = View.GONE
                 } else {
                     rvCategories?.visibility = View.VISIBLE
-                    rvCategories?.layoutManager =
-                        GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false)
-                    val categoryAdapter = CategoryAdapter(this, data1, this, categoryId)
+
+                    rvCategories?.layoutManager = GridLayoutManager(
+                        this,
+                        3,
+                        GridLayoutManager.VERTICAL,
+                        false
+                    )
+
+                    // Initialize adapter
+                    categoryAdapter = FilterCategoryAdapter(
+                        this,
+                        data,
+                        object : FilterCategoryAdapter.OnCategoryClickListener {
+                            override fun onCategoryClick(
+                                selectedIds: List<Int>,
+                                selectedNames: List<String>
+                            ) {
+                                // Convert selected IDs into a comma-separated string (e.g. "1,2,3,4,5")
+                                selectCategory = selectedIds.joinToString(",")
+
+                                // Optional: If you also want names
+                                val selectedNamesString = selectedNames.joinToString(", ")
+
+                                Log.d("SelectedCategories", "IDs: $selectCategory")
+                                Log.d("SelectedCategories", "Names: $selectedNamesString")
+                            }
+                        }
+                    )
+
                     rvCategories?.adapter = categoryAdapter
+
                 }
             } else {
                 Toast.makeText(
-                    this, message ?: "Failed to load categories",
+                    this,
+                    message ?: "Failed to load categories",
                     Toast.LENGTH_SHORT
                 ).show()
             }
         }
+
         categoryViewModel.errorResponse.observe(this) { error ->
             ErrorUtil.handlerGeneralError(this@ExploreActivity, error)
         }
     }
-
 
     private fun getFilterObserver() {
         filterActivityViewModel.progressIndicator.observe(this) {
@@ -638,5 +720,6 @@ class ExploreActivity : AppCompatActivity(), OnWishlistListener, OnCategoryClick
         super.onResume()
         categoryId = ""
         selectedProvinceId = ""
+        selectCategory = ""
     }
 }

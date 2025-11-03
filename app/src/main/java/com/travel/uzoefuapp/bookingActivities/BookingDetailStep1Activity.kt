@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.bookingDetailFragment.Participant
 import com.travel.uzoefuapp.bookingDetailFragment.Step1Fragment
 import com.travel.uzoefuapp.bookingDetailFragment.Step2Fragment
@@ -76,13 +77,11 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         }
 
         window.apply {
-            // Make layout fullscreen (behind status bar)
             decorView.systemUiVisibility = (
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     )
 
-            // Transparent background
             statusBarColor = Color.TRANSPARENT
 
             // Force white icons/text in status bar
@@ -193,6 +192,14 @@ class BookingDetailStep1Activity : AppCompatActivity() {
                 }
         */
 
+        // ✅ If returning from payment success, go to Step 5 automatically
+        val goToStep = intent.getIntExtra("goToStep", -1)
+        if (goToStep == 5) {
+            currentStep = 5
+            openFragment(Step5Fragment.newInstance(activityId, productName))
+            updateStepper()
+        }
+
 
         nextBtn.setOnClickListener {
             when (currentStep) {
@@ -214,14 +221,18 @@ class BookingDetailStep1Activity : AppCompatActivity() {
 
                 3 -> {
                     if (validateStep3Fields()) {
-                        currentStep = 4
+                        callPaymentApi()
+                        /*currentStep = 4
                         openFragment(Step4Fragment.newInstance(activityId, productName))
-                        updateStepper()
+                        updateStepper()*/
                     }
                 }
 
                 4 -> {
-                    callPaymentApi()
+                    // callPaymentApi()
+                    currentStep = 5
+                    openFragment(Step5Fragment.newInstance(activityId, productName))
+                    updateStepper()
                 }
 
                 5 -> {
@@ -372,9 +383,9 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         // 1️⃣ Toast for testing
         //  Toast.makeText(this, "Payment Done Successfully", Toast.LENGTH_SHORT).show()
 
- /*       currentStep = 5
-        openFragment(Step5Fragment.newInstance(activityId, productName))
-        updateStepper()*/
+        /*       currentStep = 5
+               openFragment(Step5Fragment.newInstance(activityId, productName))
+               updateStepper()*/
 
         // 2️⃣ Booking info from SharedPreferences
         val sharedPref = getSharedPreferences("booking_pref", Context.MODE_PRIVATE)
@@ -386,6 +397,7 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         val subtotal = sharedPref.getString("subtotal", "0.00") ?: "0.00"
         val total = sharedPref.getString("total", "0.00") ?: "0.00"*/
         val activityId = sharedPref.getString("activity_id", "") ?: ""
+        val userId = Uzoefu.encryptedPrefs.userId
 
         val adultPrice = sharedPref.getInt("adultprice", 0)
         val kidsPrice = sharedPref.getInt("kidsprice", 0)
@@ -450,7 +462,10 @@ class BookingDetailStep1Activity : AppCompatActivity() {
                 resized.compress(Bitmap.CompressFormat.JPEG, 60, fos)
             }
 
-            Log.d("SignatureFile","File path: ${file.absolutePath}, Size: ${file.length() / 1024} KB")
+            Log.d(
+                "SignatureFile",
+                "File path: ${file.absolutePath}, Size: ${file.length() / 1024} KB"
+            )
             return file
         }
 
@@ -468,14 +483,22 @@ class BookingDetailStep1Activity : AppCompatActivity() {
 
                     if (file.exists() && file.length() > 0) {
                         val requestFile = file.asRequestBody("image/png".toMediaTypeOrNull())
-                        Log.d("SignatureFile","✅ Created file: ${file.name}, Size: ${file.length() / 1024} KB, Path: ${file.absolutePath}")
+                        Log.d(
+                            "SignatureFile",
+                            "✅ Created file: ${file.name}, Size: ${file.length() / 1024} KB, Path: ${file.absolutePath}"
+                        )
                         MultipartBody.Part.createFormData("signature[]", file.name, requestFile)
                     } else {
-                        Log.e("SignatureError","⚠️ File not created or empty for participant: ${participant.clientName}")
+                        Log.e(
+                            "SignatureError",
+                            "⚠️ File not created or empty for participant: ${participant.clientName}"
+                        )
                         null
                     }
                 } catch (e: Exception) {
-                    Log.e("SignatureError","❌ Failed to create file for ${participant.clientName}: ${e.message}"
+                    Log.e(
+                        "SignatureError",
+                        "❌ Failed to create file for ${participant.clientName}: ${e.message}"
                     )
                     null
                 }
@@ -487,12 +510,16 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         }
 
         // Log all parts
-        Log.d("PaymentLog", "ClientNames: ${clientNamesParts.size}, IDNumbers: ${idNumbersParts.size}, ContactNumbers: ${contactNumbersParts.size}, SignInDates: ${signInDatesParts.size}, Signatures: ${signatureFilesParts.size}"
+        Log.d(
+            "PaymentLog",
+            "ClientNames: ${clientNamesParts.size}, IDNumbers: ${idNumbersParts.size}, ContactNumbers: ${contactNumbersParts.size}, SignInDates: ${signInDatesParts.size}, Signatures: ${signatureFilesParts.size}"
         )
 
         //  Call ViewModel API
         paymentViewModel.ratingApi(
             progressDialog,
+            deviceType = "android",
+            userId = userId,
             activityId = activityId,
             date = date,
             times = selectedTime.toString(),
@@ -519,21 +546,26 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         paymentViewModel.progressIndicator.observe(this) {}
         paymentViewModel.paymentResponse.observe(this) { response ->
             val success = response.peekContent().success
-            val message = response.peekContent().message
             if (success == true) {
-                Toast.makeText(this, message ?: "Booking successful", Toast.LENGTH_SHORT).show()
+                //  Toast.makeText(this, message ?: "Booking successful", Toast.LENGTH_SHORT).show()
 
                 // ✅ Clear previously saved selected_time when API is successful
                 val sharedPrefTime = getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
                 sharedPrefTime.edit().remove("selected_time").apply()
 
 
+                val paymentUrl = response.peekContent().paymentUrl
 
-                currentStep = 5
+                /*currentStep = 5
                 openFragment(Step5Fragment.newInstance(activityId, productName))
+                updateStepper()*/
+
+                currentStep = 4
+                openFragment(Step4Fragment.newInstance(activityId, productName, paymentUrl))
                 updateStepper()
+
             } else {
-                Toast.makeText(this, message ?: "Booking failed", Toast.LENGTH_SHORT).show()
+                //Toast.makeText(this, message ?: "Booking failed", Toast.LENGTH_SHORT).show()
             }
         }
         paymentViewModel.errorResponse.observe(this) {
@@ -632,11 +664,17 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         }
 
         // ✅ Step4 -> Pay Now, Step5 -> Finish
-        nextBtn.text = when (currentStep) {
-            4 -> "Pay Now"
-            5 -> "Confirm"
-            else -> "Next"
+        nextBtn.apply {
+            text = when (currentStep) {
+                4 -> "Pay Now"
+                5 -> "Confirm"
+                else -> "Next"
+            }
+
+            // Hide button on Step 4 (Payment screen)
+            visibility = if (currentStep == 4) View.GONE else View.VISIBLE
         }
+
     }
 
 

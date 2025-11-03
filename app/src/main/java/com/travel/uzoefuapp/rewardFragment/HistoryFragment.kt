@@ -30,7 +30,6 @@ class HistoryFragment : Fragment() {
     ): View? {
         _binding = FragmentHistoryBinding.inflate(inflater, container, false)
 
-
         //call api and observer
         getRewardHistoryApi()
         getRewardHistoryObserver()
@@ -47,10 +46,17 @@ class HistoryFragment : Fragment() {
             rewardList = response.peekContent().data ?: emptyList()
 
             if (success == true) {
-                adapter = RewardRedeemAdapter(rewardList)
-                binding.recyclerViewRewards.layoutManager = LinearLayoutManager(requireContext())
-                binding.recyclerViewRewards.adapter = adapter
-
+                if (rewardList.isEmpty()) {
+                    binding.recyclerViewRewards.visibility = View.GONE
+                    binding.tvNoRewards.visibility = View.VISIBLE
+                } else {
+                    binding.recyclerViewRewards.visibility = View.VISIBLE
+                    binding.tvNoRewards.visibility = View.GONE
+                    adapter = RewardRedeemAdapter(rewardList)
+                    binding.recyclerViewRewards.layoutManager =
+                        LinearLayoutManager(requireContext())
+                    binding.recyclerViewRewards.adapter = adapter
+                }
             }
         }
         rewardHistoryViewModel.errorResponse.observe(viewLifecycleOwner) {

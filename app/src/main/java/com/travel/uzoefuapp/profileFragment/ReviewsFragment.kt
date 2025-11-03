@@ -27,7 +27,6 @@ class ReviewsFragment : Fragment() {
     private lateinit var reviewAdapter: RatingReviewAdapter
     private lateinit var recyclerView: RecyclerView
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -47,7 +46,6 @@ class ReviewsFragment : Fragment() {
         }
         ratingReviewViewModel.ratingReviewResponse.observe(viewLifecycleOwner) { response ->
             val success = response.peekContent().success
-            val message = response.peekContent().message
             ratingList = response.peekContent().data?.data ?: emptyList()
 
             if (success == true) {

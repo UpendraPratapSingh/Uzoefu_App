@@ -6,7 +6,8 @@ class SignUpBody(
     @SerializedName("contact_name") val contactName: String,
     @SerializedName("last_name") val lastName: String,
     @SerializedName("email") val email: String,
-    @SerializedName("password") val password: String
+    @SerializedName("password") val password: String,
+    @SerializedName("referral_code") val referralCode: String
 )
 
 

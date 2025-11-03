@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.webkit.WebSettings
 import android.webkit.WebView
@@ -142,6 +143,7 @@ class SettingsActivity : AppCompatActivity() {
         val legalLayout = view.findViewById<LinearLayout>(R.id.legalLayout)
         val shareLayout = view.findViewById<LinearLayout>(R.id.shareLayout)
         val signOutLayout = view.findViewById<LinearLayout>(R.id.signOutLayout)
+        val referralLayout = view.findViewById<LinearLayout>(R.id.referralLayout)
 
         aboutLayout.setOnClickListener {
             val webView = binding.webViewAboutUs
@@ -169,6 +171,49 @@ class SettingsActivity : AppCompatActivity() {
             val intent = Intent(this, TermAndConditionActivity::class.java)
             intent.putExtra("page_type", "terms")
             startActivity(intent)
+        }
+
+        referralLayout.setOnClickListener {
+            val referCode = Uzoefu.encryptedPrefs.statusDone
+            val referLink = "https://yourapp.com/referral?code=$referCode"
+            // val referLink = "https://uzoefu.co.za/reward/$referCode"
+
+            Log.e("referralCode", "showSettingsBottomSheetAAAAAAAAAAAA $referCode")
+
+            val shareMessage = """
+                
+        🎉✨ **Exclusive Offer Just for You!** ✨🎉
+        
+        Hey there! I’ve been using **Uzoefu App**, and it’s been an amazing experience.  
+        You can now join too — and guess what? You’ll get **₹150 bonus** just for signing up! 💰
+        
+        🔹 Here’s how it works:
+        1️⃣ Click on the link below to download or open the app  
+        2️⃣ Sign up using my referral code: **$referCode**  
+        3️⃣ You’ll instantly receive your reward once you complete your first activity! 🚀
+        
+        💡 **Why you’ll love Uzoefu App:**
+        - Easy and secure to use  
+        - Exciting rewards for every action  
+        - Trusted by thousands of happy users  
+        - Quick payouts and referral bonuses  
+
+        👉 Tap the link now to get started:  
+        $referLink
+
+        🌟 Don’t miss this chance — invite your friends and earn together! 🌟
+        
+        — Sent via Uzoefu ❤️
+        
+    """.trimIndent()
+
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_SUBJECT, "Invite & Earn ₹150 with Uzoefu App")
+                putExtra(Intent.EXTRA_TEXT, shareMessage)
+            }
+
+            startActivity(Intent.createChooser(intent, "Share via"))
         }
 
         shareLayout.setOnClickListener {
@@ -246,7 +291,7 @@ class SettingsActivity : AppCompatActivity() {
     }
 
     private fun logoutApi() {
-        logoutViewModel.userLogoutApi(progressDialog,this)
+        logoutViewModel.userLogoutApi(progressDialog, this)
     }
 
 }

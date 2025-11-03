@@ -5,7 +5,6 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,15 +14,15 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.redeemRewardModel.RewardRedeemResponse
 
-
-data class Reward(val title: String, val description: String, val pointsRequired: Int)
 
 class RewardAdapter(
     private val rewards: List<RewardRedeemResponse.Datum>,
     private val context: Context,
-    val currentBalance: String,
+    private val currentBalance: String,
+    private val onClickListener: RewardListClickListener,
     function: () -> Unit
 ) : RecyclerView.Adapter<RewardAdapter.RewardViewHolder>() {
     inner class RewardViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -44,9 +43,7 @@ class RewardAdapter(
         holder.tvTitle.text = reward.name
         holder.tvDescription.text = reward.description
         holder.tvPoints.text = "${reward.points} pts"
-        holder.btnRedeem.setOnClickListener {
-            showRedeemDialog(holder.itemView.context, reward)
-        }
+        holder.btnRedeem.setOnClickListener { showRedeemDialog(holder.itemView.context, reward) }
     }
 
     private fun showRedeemDialog(context: Context, reward: RewardRedeemResponse.Datum) {
@@ -70,8 +67,6 @@ class RewardAdapter(
 
         val newBalance = (currentBalanceVal - rewardPoints).coerceAtLeast(0)
 
-        Log.d("Balance", "New Balance: $newBalance")
-
         view.findViewById<TextView>(R.id.tvNewBalance).text = newBalance.toString()
 
         val code = reward.code
@@ -79,13 +74,15 @@ class RewardAdapter(
         view.findViewById<TextView>(R.id.btnCancel).setOnClickListener {
             dialog.dismiss()
         }
+
         view.findViewById<ImageView>(R.id.closeIcon).setOnClickListener {
             dialog.dismiss()
         }
+
         view.findViewById<TextView>(R.id.btnConfirm).setOnClickListener {
-            Toast.makeText(context, "Reward Redeemed Successfully!", Toast.LENGTH_SHORT).show()
             if (code != null) {
-                showRewardRedeemedDialog(code, 50)
+                onClickListener.getRewardIdOnClickLis(reward.id, Uzoefu.encryptedPrefs.userId)
+                showRewardRedeemedDialog(code, newBalance)
             }
             dialog.dismiss()
         }
@@ -116,12 +113,15 @@ class RewardAdapter(
                 Toast.makeText(context, "Code copied!", Toast.LENGTH_SHORT).show()
             }
         }
+
         btnDone.setOnClickListener {
             bottomSheetDialog.dismiss()
         }
+
         closeBtn.setOnClickListener {
             bottomSheetDialog.dismiss()
         }
+
         bottomSheetDialog.show()
     }
 

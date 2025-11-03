@@ -46,6 +46,9 @@ class Step3Fragment(val activityId: String) : Fragment() {
     ): View? {
         _binding = FragmentStep3Binding.inflate(inflater, container, false)
 
+        clearPreviousParticipants()
+
+
         binding.signaturePad.post {
             binding.signaturePad.clear()
         }
@@ -124,6 +127,12 @@ class Step3Fragment(val activityId: String) : Fragment() {
         return binding.root
     }
 
+    private fun clearPreviousParticipants() {
+        val sharedPref = requireContext().getSharedPreferences("participants_pref", 0)
+        sharedPref.edit().clear().apply()
+        participants.clear()
+    }
+
     private fun showDatePicker(editText: TextInputEditText) {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
@@ -170,51 +179,6 @@ class Step3Fragment(val activityId: String) : Fragment() {
         Toast.makeText(requireContext(), "Participant added", Toast.LENGTH_SHORT).show()
     }
 
-    /*    private fun addParticipant() {
-            val clientName = binding.etClientName.text.toString()
-            val idNumber = binding.etIdNumber.text.toString()
-            val contactNumber = binding.etContactNumber.text.toString()
-            val dateSigned = binding.etDateSigned.text.toString()
-            val signatureBitmap = binding.signaturePad.signatureBitmap
-
-            if (clientName.isBlank() || idNumber.isBlank() || contactNumber.isBlank() || dateSigned.isBlank()) {
-                Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
-                return
-            }
-
-            // Save signature as PNG file
-            val signatureFile = saveSignatureAsFile(signatureBitmap, clientName)
-
-            val participant = Participant(
-                clientName,
-                idNumber,
-                contactNumber,
-                dateSigned,
-                signatureFile.absolutePath // store file path instead of Base64
-            )
-            participants.add(participant)
-
-            saveParticipantsToPrefs()
-
-            binding.etClientName.text?.clear()
-            binding.etIdNumber.text?.clear()
-            binding.etContactNumber.text?.clear()
-            binding.etDateSigned.text?.clear()
-            binding.signaturePad.clear()
-
-            Toast.makeText(requireContext(), "Participant added", Toast.LENGTH_SHORT).show()
-        }
-
-        // Helper function to save bitmap as PNG file
-        private fun saveSignatureAsFile(bitmap: Bitmap, fileName: String): File {
-            val file = File(requireContext().cacheDir, "$fileName.png")
-            file.createNewFile()
-            val fos = FileOutputStream(file)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
-            fos.flush()
-            fos.close()
-            return file
-        }*/
 
     private fun saveParticipantsToPrefs() {
         val sharedPref = requireContext().getSharedPreferences("participants_pref", 0)
@@ -249,7 +213,6 @@ class Step3Fragment(val activityId: String) : Fragment() {
             binding.signaturePad.clear()
         }
     }
-
 
     private fun getParticipantsFromPrefs(): MutableList<Participant> {
         val sharedPref = requireContext().getSharedPreferences("participants_pref", 0)

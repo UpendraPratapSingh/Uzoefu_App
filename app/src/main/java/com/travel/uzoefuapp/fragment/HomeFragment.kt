@@ -64,7 +64,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import android.text.Editable
+import android.util.Log
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
+import com.travel.uzoefuapp.adapter.FilterCategoryAdapter
 import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistBody
 import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistViewModel
 import kotlinx.coroutines.Job
@@ -87,12 +90,15 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
     private var activityList: List<ActivityResponse.Datum> = ArrayList()
     private var discoverList: List<DiscoverDestinationResponse.Datum> = ArrayList()
     private var categoryId = ""
+    private var selectCategory = ""
     var selectedCity = ""
     private var selectedProvinceId: String = ""
     private var selectedPrice: String = ""
     private val searchActivityViewModel: SearchActivityViewModel by viewModels()
     private val branchWishlistViewModel: BranchWishlistViewModel by viewModels()
     private var searchJob: Job? = null
+    var isAllSelected = false
+    private lateinit var categoryAdapter: FilterCategoryAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -426,7 +432,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
                 searchJob?.cancel()
 
                 searchJob = lifecycleScope.launch {
-                    delay(400)
+                    delay(100)
 
                     val body = SearchActivityBody(activityName = query)
                     searchActivityViewModel.searchActivityApi(requireActivity(), body)
@@ -434,15 +440,16 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             }
 
             override fun afterTextChanged(s: Editable?) {}
+
         })
 
-            searchActivityViewModel.searchActivityResponse.observe(viewLifecycleOwner) { event ->
-                val response = event.peekContent()
-                val success = response.status
-                val data = response.data ?: emptyList()
+        searchActivityViewModel.searchActivityResponse.observe(viewLifecycleOwner) { event ->
+            val response = event.peekContent()
+            val success = response.status
+            val data = response.data ?: emptyList()
 
-                adapter.updateData(if (success == true) data else emptyList())
-            }
+            adapter.updateData(if (success == true) data else emptyList())
+        }
 
         bottomSheetDialog.show()
     }
@@ -609,12 +616,27 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             }
         }
 
+        // ✅ Handle Select All / Clear All clicks
+        val tvSelectAll = view?.findViewById<TextView>(R.id.tvSelectAll)
+
+        tvSelectAll?.setOnClickListener {
+            if (isAllSelected) {
+                categoryAdapter.clearAll()
+                tvSelectAll.text = "Select All"
+            } else {
+                categoryAdapter.selectAll()
+                tvSelectAll.text = "Clear All"
+            }
+            isAllSelected = !isAllSelected
+        }
+
         val priceRanges = listOf("0 - 150", "151 - 300", "301 - 500", "500+")
 
         val selectPriceAdapter =
             SelectPriceAdapter(requireContext(), priceRanges) { selectedPrices ->
-               // selectedPrice = selectedPrices.toString()
-                selectedPrice = selectedPrices.joinToString(",") { it.replace(" ", "").replace("-", "-") }
+                // selectedPrice = selectedPrices.toString()
+                selectedPrice =
+                    selectedPrices.joinToString(",") { it.replace(" ", "").replace("-", "-") }
 
             }
         rvSelectPrice.layoutManager = GridLayoutManager(requireContext(), 1)
@@ -645,7 +667,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
 
             val intent = Intent(requireContext(), ExploreActivity::class.java)
             intent.putExtra("selectedCity", selectedProvinceId)
-            intent.putExtra("selectedRadius", categoryId)
+            intent.putExtra("selectedRadius", selectCategory)
             intent.putExtra("selectedPrice", selectedPrice)
             intent.putExtra("selectedRatings", selectedRatingsValue)
             intent.putExtra("source", "filter")
@@ -662,38 +684,105 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         provinceViewModel.provinceListApi(progressDialog, requireActivity())
     }
 
+    /*
+        private fun getCategoryBottomSheetObserver() {
+            categoryViewModel.progressIndicator.observe(viewLifecycleOwner) {}
+
+            categoryViewModel.mCategoryResponse.observe(viewLifecycleOwner) { event ->
+                val content = event.peekContent()
+                val success = content.success
+                val message = content.message
+                data = content.data ?: emptyList()
+
+                val category = content.Datum()
+
+                if (success == true) {
+                    if (data.isEmpty()) {
+                        rvCategories?.visibility = View.GONE
+                    } else {
+                        rvCategories?.visibility = View.VISIBLE
+                        rvCategories?.layoutManager =
+                            GridLayoutManager(requireContext(), 3, GridLayoutManager.VERTICAL, false)
+                        val categoryAdapter = CategoryAdapter(requireContext(), data, this, categoryId)
+                        rvCategories?.adapter = categoryAdapter
+                    }
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        message ?: "Failed to load categories", Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            categoryViewModel.errorResponse.observe(viewLifecycleOwner) { error ->
+                ErrorUtil.handlerGeneralError(requireContext(), error)
+            }
+        }
+    */
+
+
     private fun getCategoryBottomSheetObserver() {
-        categoryViewModel.progressIndicator.observe(viewLifecycleOwner) {}
+        categoryViewModel.progressIndicator.observe(viewLifecycleOwner) { isLoading ->
+            // Optional: show or hide progress bar
+            // progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
 
         categoryViewModel.mCategoryResponse.observe(viewLifecycleOwner) { event ->
             val content = event.peekContent()
             val success = content.success
             val message = content.message
-            data = content.data ?: emptyList()
-
-            val category = content.Datum()
+            val data = content.data ?: emptyList<CategoryResponse.Datum>()
 
             if (success == true) {
                 if (data.isEmpty()) {
                     rvCategories?.visibility = View.GONE
                 } else {
                     rvCategories?.visibility = View.VISIBLE
-                    rvCategories?.layoutManager =
-                        GridLayoutManager(requireContext(), 3, GridLayoutManager.VERTICAL, false)
-                    val categoryAdapter = CategoryAdapter(requireContext(), data, this, categoryId)
+
+                    rvCategories?.layoutManager = GridLayoutManager(
+                        requireContext(),
+                        3,
+                        GridLayoutManager.VERTICAL,
+                        false
+                    )
+
+                    // Initialize adapter
+                    categoryAdapter = FilterCategoryAdapter(
+                        requireContext(),
+                        data,
+                        object : FilterCategoryAdapter.OnCategoryClickListener {
+                            override fun onCategoryClick(
+                                selectedIds: List<Int>,
+                                selectedNames: List<String>
+                            ) {
+                                // Convert selected IDs into a comma-separated string (e.g. "1,2,3,4,5")
+                                selectCategory = selectedIds.joinToString(",")
+
+                                // Optional: If you also want names
+                                val selectedNamesString = selectedNames.joinToString(", ")
+
+                                Log.d("SelectedCategories", "IDs: $selectCategory")
+                                Log.d("SelectedCategories", "Names: $selectedNamesString")
+                            }
+                        }
+                    )
+
                     rvCategories?.adapter = categoryAdapter
+
                 }
             } else {
                 Toast.makeText(
                     requireContext(),
-                    message ?: "Failed to load categories", Toast.LENGTH_SHORT
+                    message ?: "Failed to load categories",
+                    Toast.LENGTH_SHORT
                 ).show()
             }
         }
+
         categoryViewModel.errorResponse.observe(viewLifecycleOwner) { error ->
             ErrorUtil.handlerGeneralError(requireContext(), error)
         }
     }
+
 
     private fun getCategoryBottomSheetApi() {
         categoryViewModel.getCategory(progressDialog, requireActivity())
@@ -711,6 +800,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         getActivityByCategory(categoryId)
         categoryId = ""
         selectedProvinceId = ""
+        selectCategory = ""
 
     }
 

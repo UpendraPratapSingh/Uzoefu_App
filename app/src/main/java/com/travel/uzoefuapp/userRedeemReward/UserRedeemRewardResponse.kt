@@ -1,17 +1,16 @@
-package com.travel.uzoefuapp.paymentModel
+package com.travel.uzoefuapp.userRedeemReward
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import java.io.Serializable
 
 
-class PaymentResponse : Serializable {
-
+class UserRedeemRewardResponse : Serializable {
     @SerializedName("success")
     @Expose
     var success: Boolean? = null
 
-    @SerializedName("payment_url")
+    @SerializedName("message")
     @Expose
-    var paymentUrl: String? = null
+    var message: String? = null
 }

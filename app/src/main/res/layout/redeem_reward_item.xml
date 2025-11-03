@@ -24,6 +24,7 @@
             android:text="R100 Activity Credit"
             android:textColor="@color/black"
             android:textSize="16sp"
+            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@id/tvPoints"
             app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="parent"
@@ -39,6 +40,21 @@
             android:text=""
             android:textColor="@color/dark_cyan"
             android:textSize="12sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvRewardTitle" />
+
+        <TextView
+            android:id="@+id/tvPointsGet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/bg_points_badge_get"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:text=""
+            android:textColor="@color/red"
+            android:textSize="12sp"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/tvRewardTitle" />
 
@@ -50,17 +66,17 @@
             android:text="Confirmation Code  "
             android:textColor="@color/black"
             android:textSize="12sp"
-            android:visibility="visible"
-            app:layout_constraintWidth_percent="0.7"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvRewardTitle" />
+            app:layout_constraintTop_toBottomOf="@id/tvRewardTitle"
+            app:layout_constraintWidth_percent="0.7" />
 
         <TextView
             android:id="@+id/tvRedeemed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="Redeemed • "
+            android:text="Date • "
             android:textColor="@color/gray"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -70,9 +86,9 @@
             android:id="@+id/tvRedeemedDate"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_medium"
             android:text="12 October 2027"
             android:textColor="@color/gray"
-            android:fontFamily="@font/roboto_medium"
             android:textSize="12sp"
             app:layout_constraintStart_toEndOf="@+id/tvRedeemed"
             app:layout_constraintTop_toTopOf="@+id/tvRedeemed" />
@@ -94,10 +110,10 @@
             android:id="@+id/tvCodeCopied"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="UZR1234-300978-25"
-            android:textColor="@color/gray"
             android:layout_marginTop="5dp"
             android:fontFamily="@font/roboto_medium"
+            android:text="UZR1234-300978-25"
+            android:textColor="@color/gray"
             android:textSize="12sp"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/tvCode"

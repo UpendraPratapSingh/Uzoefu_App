@@ -22,6 +22,8 @@ class PaymentViewModel @Inject constructor(
 
     fun ratingApi(
         progressDialog: CustomProgressDialog,
+        deviceType: String,
+        userId: String,
         activityId: String,
         date: String,
         times: String,
@@ -48,6 +50,8 @@ class PaymentViewModel @Inject constructor(
                 progressIndicator.value = true
 
                 val response = repository.makePayment(
+                    deviceType,
+                    userId,
                     activityId,
                     date,
                     times,

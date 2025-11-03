@@ -62,6 +62,7 @@ class FilterCategoryAdapter(
             notifyItemChanged(position)
             listener.onCategoryClick(getSelectedIds(), getSelectedNames())
         }
+
     }
 
     override fun getItemCount(): Int = categories.size

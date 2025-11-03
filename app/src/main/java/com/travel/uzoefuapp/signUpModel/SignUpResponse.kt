@@ -32,6 +32,10 @@ class SignUpResponse : Serializable {
         @Expose
         var email: String? = null
 
+        @SerializedName("referral_code")
+        @Expose
+        var referralCode: String? = null
+
         @SerializedName("type")
         @Expose
         var type: String? = null

@@ -66,6 +66,10 @@ import com.travel.uzoefuapp.signUpModel.SignUpBody
 import com.travel.uzoefuapp.signUpModel.SignUpResponse
 import com.travel.uzoefuapp.updateProfileModel.UpdateProfileBody
 import com.travel.uzoefuapp.updateProfileModel.UpdateProfileResponse
+import com.travel.uzoefuapp.userRedeemReward.UserRedeemRewardBody
+import com.travel.uzoefuapp.userRedeemReward.UserRedeemRewardResponse
+import com.travel.uzoefuapp.userShareReward.UserShareRewardBody
+import com.travel.uzoefuapp.userShareReward.UserShareRewardResponse
 import io.reactivex.Observable
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -180,9 +184,11 @@ interface ApiServices {
     ): Observable<BookingCompleteResponse>
 
     @Multipart
-    @POST("payment")
+    @POST("payfast/payment")
     suspend fun paymentBooking(
         @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
+        @Part("device_type") device_type: RequestBody,
+        @Part("user_id") userId: RequestBody,
         @Part("activity_id") activityId: RequestBody,
         @Part("date") date: RequestBody,
         @Part("times") times: RequestBody,
@@ -330,5 +336,17 @@ interface ApiServices {
     fun rewardList(
         @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
     ): Observable<RewardRedeemResponse>
+
+    @POST("user_redeem_reward")
+    fun userRedeemReward(
+        @Body body: UserRedeemRewardBody,
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
+    ): Observable<UserRedeemRewardResponse>
+
+    @POST("user_share_reward")
+    fun userShareReward(
+        @Body body: UserShareRewardBody,
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
+    ): Observable<UserShareRewardResponse>
 
 }

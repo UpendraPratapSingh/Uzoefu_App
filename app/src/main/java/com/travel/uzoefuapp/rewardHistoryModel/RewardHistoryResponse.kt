@@ -19,13 +19,13 @@ class RewardHistoryResponse : Serializable {
     var data: List<Datum>? = null
 
     inner class Datum {
+        @SerializedName("type")
+        @Expose
+        var type: String? = null
+
         @SerializedName("id")
         @Expose
         var id: Int? = null
-
-        @SerializedName("user_id")
-        @Expose
-        var userId: Int? = null
 
         @SerializedName("name")
         @Expose
@@ -39,16 +39,12 @@ class RewardHistoryResponse : Serializable {
         @Expose
         var code: String? = null
 
-        @SerializedName("status")
+        @SerializedName("points")
         @Expose
-        var status: String? = null
+        var points: Int? = null
 
         @SerializedName("created_at")
         @Expose
         var createdAt: String? = null
-
-        @SerializedName("updated_at")
-        @Expose
-        var updatedAt: String? = null
     }
 }

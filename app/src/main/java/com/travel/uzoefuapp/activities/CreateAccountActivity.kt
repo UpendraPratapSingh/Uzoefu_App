@@ -15,6 +15,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.databinding.ActivityCreateAccountBinding
 import com.travel.uzoefuapp.signUpModel.SignUpBody
 import com.travel.uzoefuapp.signUpModel.SignUpViewModel
@@ -117,6 +118,7 @@ class CreateAccountActivity : AppCompatActivity() {
             lastName = binding.userNameLastEdit.text.toString(),
             email = binding.emailEdit.text.toString(),
             password = binding.passwordEdit.text.toString(),
+            referralCode = binding.userEditReferralCode.toString()
 
             )
         signUpViewModel.signUpUser(progressDialog, this, signUpBody)
@@ -127,15 +129,16 @@ class CreateAccountActivity : AppCompatActivity() {
         signUpViewModel.mRegisterResponse.observe(this) {
             val message = it.peekContent().message!!
             val success = it.peekContent().success!!
+            val referralCode = it.peekContent().data?.referralCode
 
             if (success) {
+                Uzoefu.encryptedPrefs.statusDone = referralCode.toString()
                 Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
                 val intent = Intent(this, LoginActivity::class.java)
                 startActivity(intent)
                 finish()
             } else {
                 Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
-
             }
         }
 

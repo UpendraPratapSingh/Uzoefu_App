@@ -118,6 +118,30 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/referralLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="12dp">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_marginEnd="8dp"
+                android:src="@drawable/feesback" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Refer your friend"
+                android:textSize="16sp" />
+
+        </LinearLayout>
+
+
+        <LinearLayout
             android:id="@+id/legalLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

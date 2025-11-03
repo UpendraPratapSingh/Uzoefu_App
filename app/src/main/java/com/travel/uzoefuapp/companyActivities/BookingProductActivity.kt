@@ -1,12 +1,14 @@
 package com.travel.uzoefuapp.companyActivities
 
 import CustomProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -26,11 +28,14 @@ import com.travel.uzoefuapp.adapter.ActionAdapter
 import com.travel.uzoefuapp.adapter.ProductSliderAdapter
 import com.travel.uzoefuapp.adapter.ProductTabAdapter
 import com.travel.uzoefuapp.adapter.SliderAdapter
+import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.bookingActivities.BookingDetailStep1Activity
 import com.travel.uzoefuapp.databinding.ActivityBookingProductBinding
 import com.travel.uzoefuapp.detailModel.DetailPageBody
 import com.travel.uzoefuapp.detailModel.DetailPageViewModel
 import com.travel.uzoefuapp.globalSettings.SettingsActivity
+import com.travel.uzoefuapp.userShareReward.UserShareRewardBody
+import com.travel.uzoefuapp.userShareReward.UserShareRewardViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
 import me.relex.circleindicator.CircleIndicator3
@@ -45,10 +50,12 @@ class BookingProductActivity : AppCompatActivity() {
     private val handler = Handler(Looper.getMainLooper())
     private var currentPage = 0
     private val addWishlistViewModel: AddWishlistViewModel by viewModels()
+    private val userShareRewardViewModel: UserShareRewardViewModel by viewModels()
     private var categoryId: Int = -1
     private var activeHour = ""
     private var location = ""
     private var telePhone = ""
+    private var adviceId = ""
 
     private val slideRunnable = object : Runnable {
         override fun run() {
@@ -85,9 +92,58 @@ class BookingProductActivity : AppCompatActivity() {
 
         categoryId = intent.getIntExtra("categoryId", -1)
 
-        getDetailApi(categoryId)
+        /*        if (categoryId != -1) {
+                    getDetailApi(categoryId)
+                    Log.e("TAGAAAAAAA", "onCreateAAAAAAA: $categoryId")
+                } else {
+                    // Deep link handle karo
+                    var data: Uri? = intent?.data
+                    if (data != null) {
+                        val adviceId = data.lastPathSegment // "222" milega
+                        Toast.makeText(this, "Advice ID: $adviceId", Toast.LENGTH_SHORT).show()
+                        *//*   val intent = Intent(this, GearzzoneAdviceDetailsActivity::class.java)
+                   intent.putExtra("adviceId", adviceId)
+                   startActivity(intent)*//*
+                // Ab yaha API call karke details dikha sakte ho
+                if (adviceId != null) {
+                    getDetailApi(adviceId.toInt())
+                    Log.e("TAGAAAAAAA", "onCreateBBBBBBBBBBBB: $adviceId")
+
+                }
+            }
+        }*/
+
+        val categoryId = intent.getIntExtra("categoryId", -1)
+
+        /*   if (categoryId != -1) {
+               // Normal case — open using category ID
+               getDetailApi(categoryId)
+               Log.e("TAG", "Normal Launch → categoryId: $categoryId")
+           } else {
+               // Deep link handling
+               val data: Uri? = intent?.data
+               if (data != null) {
+                   val adviceIdStr = data.lastPathSegment
+                   Log.d("DeepLink", "Raw URI: $data, adviceIdStr: $adviceIdStr")
+
+                   adviceIdStr?.toIntOrNull()?.let { adviceId ->
+                       Toast.makeText(this, "Advice ID: $adviceId", Toast.LENGTH_SHORT).show()
+                       getDetailApi(adviceId)
+                       Log.e("TAG", "Deep Link Launch → adviceId: $adviceId")
+                   } ?: run {
+                       Log.e("TAG", "Invalid adviceId in deep link: $data")
+                   }
+               } else {
+                   Log.e("TAG", "No deep link data found")
+               }
+           }*/
+        handleIntent(intent)
+
+
         getDetailObserver()
         activityAddToWishListObserver()
+        shareRewardPointObserver()
+
 
         binding.btnMore.setOnClickListener {
             val intent = Intent(this@BookingProductActivity, SettingsActivity::class.java)
@@ -139,26 +195,22 @@ class BookingProductActivity : AppCompatActivity() {
                 }
 
                 "Share" -> {
-                    val shareIntent = Intent(Intent.ACTION_SEND)
-                    shareIntent.type = "text/plain"
-
-                    val appLink = "https://play.google.com/store/apps/details?id=${packageName}"
-
-                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Check out this app!")
-                    shareIntent.putExtra(
-                        Intent.EXTRA_TEXT,
-                        "Hey! I found this awesome app. Download it here:\n$appLink"
-                    )
-
-                    startActivity(Intent.createChooser(shareIntent, "Share app via"))
+                    shareAdctivity(this, categoryId.toString())
+                    Log.e("TAGAAAAAA", "onCreate: $categoryId")
                 }
             }
         }
 
         binding.actionRecyclerView.adapter = actionAdapter
 
-        val adapter = ProductTabAdapter(this, categoryId, activeHour)
-        binding.viewPagerData.adapter = adapter
+        if (categoryId != -1) {
+            val adapter = ProductTabAdapter(this, categoryId, activeHour)
+            binding.viewPagerData.adapter = adapter
+        } else {
+            val adapter = ProductTabAdapter(this, adviceId.toInt(), activeHour)
+            binding.viewPagerData.adapter = adapter
+        }
+
 
         TabLayoutMediator(binding.tabLayout, binding.viewPagerData) { tab, position ->
             tab.text = when (position) {
@@ -182,6 +234,79 @@ class BookingProductActivity : AppCompatActivity() {
                 }
             }
         })
+    }
+
+    private fun shareRewardPointObserver() {
+        userShareRewardViewModel.progressIndicator.observe(this) {
+
+        }
+        userShareRewardViewModel.userShareRewardResponse.observe(this) { response ->
+            val success = response.peekContent().success
+            val message = response.peekContent().message
+
+            if (success == true) {
+                Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+
+            }
+
+        }
+        userShareRewardViewModel.errorResponse.observe(this) {
+            ErrorUtil.handlerGeneralError(this@BookingProductActivity, it)
+        }
+
+    }
+
+    private fun handleIntent(intent: Intent?) {
+        if (intent == null) return
+
+        val categoryId = intent.getIntExtra("categoryId", -1)
+        val data: Uri? = intent.data
+
+        when {
+            data != null -> { // Deep link launch
+                val pathSegments = data.pathSegments
+                adviceId = pathSegments[1].toIntOrNull().toString()
+                val userId = pathSegments[2]
+                //adviceId = data.lastPathSegment?.toIntOrNull().toString()
+                adviceId = data.lastPathSegment?.get(1).toString() // "222"
+
+                //val userId = data.lastPathSegment?.get(2).toString()
+                if (adviceId != null) {
+                    //  Log.d("Gearzzone", "DeepLink launch → adviceId: $adviceId")
+                    //Toast.makeText(this, "Activity ID: $adviceId", Toast.LENGTH_SHORT).show()
+                    getDetailApi(adviceId.toInt())
+                    shareRewardPointApi(userId)
+                } else {
+                    Log.e("Gearzzone", "Invalid adviceId in deep link: $data")
+                }
+            }
+
+            categoryId != -1 -> {
+                getDetailApi(categoryId)
+            }
+
+            else -> {
+                Log.e("Gearzzone", "No valid ID found in intent")
+            }
+        }
+    }
+
+    private fun shareRewardPointApi(userId: String) {
+        val body = UserShareRewardBody(
+            userId = userId
+        )
+        userShareRewardViewModel.userShareRewardListApi(this, progressDialog, body)
+
+    }
+
+    private fun shareAdctivity(context: Context, adviceId: String) {
+        val userId = Uzoefu.encryptedPrefs.userId
+        val shareLink = "https://uzoefu.co.za/reward/$adviceId/$userId"
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.type = "text/plain"
+        intent.putExtra(Intent.EXTRA_SUBJECT, "Check this advice on GearZ")
+        intent.putExtra(Intent.EXTRA_TEXT, shareLink)
+        context.startActivity(Intent.createChooser(intent, "Share via"))
     }
 
     private fun activityAddToWishListObserver() {
@@ -308,5 +433,12 @@ class BookingProductActivity : AppCompatActivity() {
     override fun onPause() {
         super.onPause()
         handler.removeCallbacks(slideRunnable)
+    }
+
+    // ✅ Handle if activity is relaunched due to deep link (singleTop mode)
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleIntent(intent)
     }
 }

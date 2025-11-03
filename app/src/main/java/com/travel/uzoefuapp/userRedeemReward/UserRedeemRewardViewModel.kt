@@ -1,4 +1,4 @@
-package com.travel.uzoefuapp.redeemRewardModel
+package com.travel.uzoefuapp.userRedeemReward
 
 import CustomProgressDialog
 import android.app.Activity
@@ -18,34 +18,37 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RewardRedeemViewModel @Inject constructor(application: Application, private val repository: CommonRepository
-): AndroidViewModel(application) {
+class UserRedeemRewardViewModel @Inject constructor(
+    application: Application, private val repository: CommonRepository
+) : AndroidViewModel(application) {
     val progressIndicator = MutableLiveData<Boolean>()
     val errorResponse = MutableLiveData<Throwable>()
-    val rewardRedeemResponse = MutableLiveData<Event<RewardRedeemResponse>>()
+    val userRedeemRewardResponse = MutableLiveData<Event<UserRedeemRewardResponse>>()
 
-    fun rewardRedeemListApi(
+    fun userRedeemRewardListApi(
         activity: Activity,
         progressDialog: CustomProgressDialog,
+        body: UserRedeemRewardBody
     ) =
         viewModelScope.launch {
-            rewardRedeemList(activity, progressDialog)
+            userRedeemReward(activity, progressDialog, body)
         }
 
-    private suspend fun rewardRedeemList(
+    private suspend fun userRedeemReward(
         activity: Activity,
         progressDialog: CustomProgressDialog,
+        body: UserRedeemRewardBody
     ) {
         progressDialog.start("")
         progressIndicator.value = true
-        repository.rewardListApi()
+        repository.userRedeemReward(body)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : DisposableObserver<RewardRedeemResponse>() {
+            .subscribe(object : DisposableObserver<UserRedeemRewardResponse>() {
                 @RequiresApi(Build.VERSION_CODES.S)
-                override fun onNext(value: RewardRedeemResponse) {
+                override fun onNext(value: UserRedeemRewardResponse) {
                     progressIndicator.value = false
-                    rewardRedeemResponse.value = Event(value)
+                    userRedeemRewardResponse.value = Event(value)
                     progressDialog.stop()
                 }
 
