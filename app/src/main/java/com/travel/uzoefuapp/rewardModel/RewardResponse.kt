@@ -17,4 +17,9 @@ class RewardResponse : Serializable {
     @SerializedName("reward_points")
     @Expose
     var rewardPoints: String? = null
+
+    @SerializedName("target_reward")
+    @Expose
+    var targetReward: Int? = null
+
 }

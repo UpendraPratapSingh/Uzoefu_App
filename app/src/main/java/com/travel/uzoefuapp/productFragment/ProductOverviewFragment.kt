@@ -49,7 +49,6 @@ class ProductOverviewFragment : Fragment() {
         }
         detailPageViewModel.mCategoryResponse.observe(viewLifecycleOwner) { response ->
             val success = response.peekContent().success
-            val message = response.peekContent().message
             val data1 = response.peekContent().data?.description
             val data2 = response.peekContent().data?.activityRating
             val data3 = response.peekContent().data?.activity?.branch
@@ -76,10 +75,7 @@ class ProductOverviewFragment : Fragment() {
 
                 spannable.setSpan(
                     ForegroundColorSpan(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.green_color
-                        )
+                        ContextCompat.getColor(requireContext(), R.color.green_color)
                     ),
                     startIndex,
                     endIndex,
@@ -97,6 +93,5 @@ class ProductOverviewFragment : Fragment() {
     private fun getDetailApi(categoryId: Int) {
         val body = DetailPageBody(activity_id = categoryId.toString())
         detailPageViewModel.getDetailPageApi(progressDialog, requireActivity(), body)
-
     }
 }

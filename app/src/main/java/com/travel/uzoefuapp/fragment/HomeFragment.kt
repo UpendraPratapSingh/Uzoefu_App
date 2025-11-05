@@ -433,14 +433,12 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
 
                 searchJob = lifecycleScope.launch {
                     delay(100)
-
                     val body = SearchActivityBody(activityName = query)
                     searchActivityViewModel.searchActivityApi(requireActivity(), body)
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {}
-
         })
 
         searchActivityViewModel.searchActivityResponse.observe(viewLifecycleOwner) { event ->
@@ -485,6 +483,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         val layoutCityRadius = view.findViewById<LinearLayout>(R.id.layoutCityRadius)
         val categoriesSection = view.findViewById<ConstraintLayout>(R.id.categoriesSection)
         val ratingFilterContainer = view.findViewById<LinearLayout>(R.id.ratingFilterContainer)
+        val tvSelectAll = view.findViewById<TextView>(R.id.tvSelectAll)
 
         rvCategories = view.findViewById(R.id.rvCategories)
         val rvSelectPrice = view.findViewById<RecyclerView>(R.id.rvSelectPrice)
@@ -516,29 +515,24 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             }
         }
 
+        var isUpdating = false // class level variable रखो
+
         cbAllRatings.setOnCheckedChangeListener { _, isChecked ->
+            if (isUpdating) return@setOnCheckedChangeListener
+
+            isUpdating = true
+
             if (isChecked) {
-                // सब select करो
                 ratingCheckboxes.forEach { it.isChecked = true }
                 selectedRatings.clear()
-                selectedRatings.addAll(1..5)
+                selectedRatings.addAll(listOf(1, 2, 3, 4, 5))
             } else {
-                // सब deselect करो
                 ratingCheckboxes.forEach { it.isChecked = false }
                 selectedRatings.clear()
             }
+
+            isUpdating = false
         }
-
-        /*
-                cbAllRatings.setOnCheckedChangeListener { _, isChecked ->
-                    ratingCheckboxes.forEach { it.isChecked = isChecked }
-                }*/
-
-        /*   ratingCheckboxes.forEach { cb ->
-               cb.setOnCheckedChangeListener { _, _ ->
-                   cbAllRatings.isChecked = ratingCheckboxes.all { it.isChecked }
-               }
-           }*/
 
         //call api province
         provinceListApi()
@@ -549,10 +543,10 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
 
         val radiusOptions = arrayOf(
             "Select Radius",
-            "2 Kilometres",
-            "5 Kilometres",
-            "10 Kilometres",
-            "20 Kilometres"
+            "2 Km",
+            "5 Km",
+            "10 Km",
+            "20 Km"
         )
 
         val radiusAdapter = ArrayAdapter(
@@ -616,10 +610,10 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
             }
         }
 
-        // ✅ Handle Select All / Clear All clicks
-        val tvSelectAll = view?.findViewById<TextView>(R.id.tvSelectAll)
 
-        tvSelectAll?.setOnClickListener {
+
+
+        tvSelectAll.setOnClickListener {
             if (isAllSelected) {
                 categoryAdapter.clearAll()
                 tvSelectAll.text = "Select All"
@@ -652,25 +646,15 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
 
             val selectedRatingsValue = selectedRatings.joinToString(",")
 
-            /*val selectedRatingsValue = ratingCheckboxes
-                .mapIndexedNotNull { index, checkbox ->
-                    if (checkbox.isChecked) index + 1 else null
-                }
-                .maxOrNull()
-                ?.toString() ?: ""
-*/
-            /*    val selectedRatingsValue = ratingCheckboxes
-                    .filter { it.isChecked }
-                    .mapIndexed { index, _ -> index + 1 }
-                    .joinToString(",")
-    */
-
             val intent = Intent(requireContext(), ExploreActivity::class.java)
             intent.putExtra("selectedCity", selectedProvinceId)
-            intent.putExtra("selectedRadius", selectCategory)
+            intent.putExtra("selectedCategory", selectCategory)
             intent.putExtra("selectedPrice", selectedPrice)
             intent.putExtra("selectedRatings", selectedRatingsValue)
+            intent.putExtra("selectedRadius", selectedRadius)
             intent.putExtra("source", "filter")
+
+            Log.d("SelectedCategories", "IDsAAAAAAAAAAAAA: $selectCategory")
 
             startActivity(intent)
             bottomSheetDialog.dismiss()

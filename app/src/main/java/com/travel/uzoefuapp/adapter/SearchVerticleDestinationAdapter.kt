@@ -17,7 +17,7 @@ import com.travel.uzoefuapp.filterActivityModel.FilterActivityResponse
 class SearchVerticleDestinationAdapter(
     val context: Context,
     private val activityList: List<FilterActivityResponse.Data.Datum>,
-    private val wishlistClickListener: OnWishlistListener
+    private val wishlistClickListener: OnWishlistSearchListener
 ) :
     RecyclerView.Adapter<SearchVerticleDestinationAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -53,7 +53,6 @@ class SearchVerticleDestinationAdapter(
             else R.drawable.ic_wish
         )
 
-        /*
                 holder.favIcon.setOnClickListener { view ->
                     view.animate()
                         .scaleX(1.3f)
@@ -70,7 +69,6 @@ class SearchVerticleDestinationAdapter(
 
                     wishlistClickListener.onWishlistClicked(list, position)
                 }
-        */
 
 
     }

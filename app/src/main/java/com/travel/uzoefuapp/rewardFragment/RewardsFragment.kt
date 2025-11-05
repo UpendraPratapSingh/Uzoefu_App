@@ -23,7 +23,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class RewardsFragment : Fragment(), RewardListClickListener {
     private var _binding: FragmentRewardsBinding? = null
     private val binding get() = _binding!!
-    var currentBalance = ""
+    private var currentBalance = ""
     private lateinit var adapter: RewardAdapter
     private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
     private val rewardViewModel: RewardViewModel by viewModels()
@@ -104,19 +104,58 @@ class RewardsFragment : Fragment(), RewardListClickListener {
         rewardRedeemViewModel.rewardRedeemListApi(requireActivity(), progressDialog)
     }
 
-    private fun getRewardObserver() {
-        rewardViewModel.progressIndicator.observe(viewLifecycleOwner) {
+    /*
+        private fun getRewardObserver() {
+            rewardViewModel.progressIndicator.observe(viewLifecycleOwner) {
 
-        }
-        rewardViewModel.rewardResponse.observe(viewLifecycleOwner) { response ->
-            val success = response.peekContent().success
-            val data = response.peekContent().rewardPoints
-            currentBalance = data.toString()
+            }
+            rewardViewModel.rewardResponse.observe(viewLifecycleOwner) { response ->
+                val success = response.peekContent().success
+                val data = response.peekContent()
+                currentBalance = data.rewardPoints.toString()
 
-            if (success == true) {
-                binding.tvAvailablePoints.text = data
+                // ✅ Safely parse numbers even if API returns "" or null
+                val rewardPoints = data.rewardPoints?.toIntOrNull() ?: 0
+                val targetReward = data.targetReward ?: 0
+
+                if (success == true) {
+                    binding.tvAvailablePoints.text = data.rewardPoints
+                    //binding.progressBar.max = data.targetReward?.toInt()!!
+                    binding.tvMilestonePoints.text = data.targetReward.toString()
+
+                    binding.progressBar.max = targetReward as Int
+                    binding.progressBar.progress = rewardPoints.coerceAtMost(targetReward)
+                }
+            }
+            rewardViewModel.errorResponse.observe(viewLifecycleOwner) {
+                ErrorUtil.handlerGeneralError(requireContext(), it)
             }
         }
+    */
+
+    private fun getRewardObserver() {
+        rewardViewModel.progressIndicator.observe(viewLifecycleOwner) { }
+
+        rewardViewModel.rewardResponse.observe(viewLifecycleOwner) { response ->
+            val data = response.peekContent()
+            val success = data.success == true
+            currentBalance = data.rewardPoints.toString()
+
+            if (success) {
+                // Safely convert values to Int (works even if backend sends as String)
+                val rewardPoints = data.rewardPoints?.toString()?.toIntOrNull() ?: 0
+                val targetReward = data.targetReward?.toString()?.toIntOrNull() ?: 0
+
+                // Update TextViews
+                binding.tvAvailablePoints.text = "$rewardPoints pts"
+                binding.tvMilestonePoints.text = "$targetReward pts"
+
+                // Update ProgressBar
+                binding.progressBar.max = targetReward
+                binding.progressBar.progress = rewardPoints.coerceAtMost(targetReward)
+            }
+        }
+
         rewardViewModel.errorResponse.observe(viewLifecycleOwner) {
             ErrorUtil.handlerGeneralError(requireContext(), it)
         }

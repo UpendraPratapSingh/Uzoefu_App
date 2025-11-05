@@ -33,7 +33,7 @@ data class Participant(
 )
 
 @AndroidEntryPoint
-class Step3Fragment(val activityId: String) : Fragment() {
+class Step3Fragment(val activityId: String, val booking: String) : Fragment() {
     private var _binding: FragmentStep3Binding? = null
     private val binding get() = _binding!!
     private val detailPageViewModel: DetailPageViewModel by viewModels()
@@ -46,10 +46,36 @@ class Step3Fragment(val activityId: String) : Fragment() {
     ): View? {
         _binding = FragmentStep3Binding.inflate(inflater, container, false)
 
-        clearPreviousParticipants()
+        ///  clearPreviousParticipants()
 
+        val savedParticipants = getParticipantsFromPrefs()
+
+        if (savedParticipants.isEmpty()) {
+            clearPreviousParticipants()
+            Toast.makeText(requireContext(), "Please fill participant details", Toast.LENGTH_LONG)
+                .show()
+        } else {
+            val lastParticipant = savedParticipants.last()
+
+            binding.etClientName.setText(lastParticipant.clientName)
+            binding.etIdNumber.setText(lastParticipant.idNumber)
+            binding.etContactNumber.setText(lastParticipant.contactNumber)
+            binding.etDateSigned.setText(lastParticipant.dateSigned)
+
+            val bitmap = base64ToBitmap(lastParticipant.signatureBase64)
+            binding.signaturePad.clear()
+            binding.signaturePad.post {
+                binding.signaturePad.signatureBitmap = bitmap
+            }
+            participants.clear()
+            participants.addAll(savedParticipants)
+        }
 
         binding.signaturePad.post {
+            binding.signaturePad.clear()
+        }
+
+        binding.btnClearSignature.setOnClickListener {
             binding.signaturePad.clear()
         }
 
@@ -141,11 +167,11 @@ class Step3Fragment(val activityId: String) : Fragment() {
 
         val datePickerDialog =
             DatePickerDialog(requireContext(), { _, selectedYear, selectedMonth, selectedDay ->
-                val formattedDate = String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay)
+                val formattedDate =
+                    String.format("%04d-%02d-%02d", selectedYear, selectedMonth + 1, selectedDay)
                 editText.setText(formattedDate)
             }, year, month, day)
 
-        // Prevent selecting previous dates
         datePickerDialog.datePicker.minDate = calendar.timeInMillis
 
         datePickerDialog.show()
@@ -162,7 +188,6 @@ class Step3Fragment(val activityId: String) : Fragment() {
             Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT).show()
             return
         }
-        // val testBitmap = BitmapFactory.decodeResource(resources, R.drawable.balloon)
         val signatureBase64 = bitmapToBase64(signatureBitmap)
         val participant =
             Participant(clientName, idNumber, contactNumber, dateSigned, signatureBase64)
@@ -179,7 +204,6 @@ class Step3Fragment(val activityId: String) : Fragment() {
         Toast.makeText(requireContext(), "Participant added", Toast.LENGTH_SHORT).show()
     }
 
-
     private fun saveParticipantsToPrefs() {
         val sharedPref = requireContext().getSharedPreferences("participants_pref", 0)
         val gson = Gson()
@@ -191,7 +215,6 @@ class Step3Fragment(val activityId: String) : Fragment() {
         }
     }
 
-
     fun saveCurrentParticipantIfNotEmpty() {
         val clientName = binding.etClientName.text.toString()
         val idNumber = binding.etIdNumber.text.toString()
@@ -201,11 +224,12 @@ class Step3Fragment(val activityId: String) : Fragment() {
 
         if (clientName.isNotBlank() || idNumber.isNotBlank() || contactNumber.isNotBlank() || dateSigned.isNotBlank()) {
             val signatureBase64 = bitmapToBase64(signatureBitmap)
-            val participant = Participant(clientName, idNumber, contactNumber, dateSigned, signatureBase64)
+            val participant =
+                Participant(clientName, idNumber, contactNumber, dateSigned, signatureBase64)
             participants.add(participant)
             saveParticipantsToPrefs()
 
-            // Optional: clear inputs after saving
+
             binding.etClientName.text?.clear()
             binding.etIdNumber.text?.clear()
             binding.etContactNumber.text?.clear()
@@ -228,12 +252,8 @@ class Step3Fragment(val activityId: String) : Fragment() {
 
     private fun bitmapToBase64(bitmap: Bitmap): String {
         val byteArrayOutputStream = ByteArrayOutputStream()
-        val resizedBitmap = resizeBitmap(bitmap, 500, 500) // smaller size
-        resizedBitmap.compress(
-            Bitmap.CompressFormat.JPEG,
-            50,
-            byteArrayOutputStream
-        ) // more compression
+        val resizedBitmap = resizeBitmap(bitmap, 500, 500)
+        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 50, byteArrayOutputStream)
         val byteArray = byteArrayOutputStream.toByteArray()
         return Base64.encodeToString(byteArray, Base64.DEFAULT)
     }

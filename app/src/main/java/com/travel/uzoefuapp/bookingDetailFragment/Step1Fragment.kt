@@ -6,6 +6,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -41,13 +42,14 @@ class Step1Fragment() :
     private var adultCount = 1
     private var kidCount = 1
     private var selectedDate = ""
-
     private var price: String? = null
     private var childrenPrice: String? = null
     private var activityId: String? = null
     private var address: String? = null
     private var town: String? = null
     private var productName: String? = null
+    private var selectedTime: String? = null
+    private var selectedDatePre: String? = null
 
     companion object {
         fun newInstance(
@@ -56,7 +58,9 @@ class Step1Fragment() :
             activityId: String,
             address: String,
             town: String,
-            productName: String
+            productName: String,
+            selectedTime: String,
+            selectedDate: String,
         ): Step1Fragment {
             val fragment = Step1Fragment()
             val args = Bundle()
@@ -66,6 +70,8 @@ class Step1Fragment() :
             args.putString("address", address)
             args.putString("town", town)
             args.putString("productName", productName)
+            args.putString("selectedTime", selectedTime)
+            args.putString("selectedDate", selectedDate)
             fragment.arguments = args
             return fragment
         }
@@ -84,19 +90,54 @@ class Step1Fragment() :
             address = it.getString("address")
             town = it.getString("town")
             productName = it.getString("productName")
+            selectedTime = it.getString("selectedTime")
+            selectedDatePre = it.getString("selectedDate")
         }
         binding.datePicker.setOnClickListener { datePickerCode() }
+
+        Log.e("SelectDate", "Selected Time: AAAAAAAAA $selectedTime")
+
 
         binding.tvTitle.text = address + town
         binding.tvSubtitle.text = productName
 
-        val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH) + 1
-        val day = calendar.get(Calendar.DAY_OF_MONTH)
+        if (selectedTime == "") {
+            val calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH) + 1
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        selectedDate = String.format("%04d-%02d-%02d", year, month, day)
-        binding.tvDate.text = selectedDate
+            selectedDate = String.format("%04d-%02d-%02d", year, month, day)
+            binding.tvDate.text = selectedDate
+            // binding.tvSelectedTime.text = selectedTime
+            binding.tvSelectedTime.text = "Select Time"
+
+            if (selectedDate.isEmpty()) {
+                val sharedPref =
+                    requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
+                sharedPref.edit().putString("selected_time", selectedTime).apply()
+                Log.e("SelectDate", "onCreateView: AAAAAAAAA $selectedDate")
+                Log.e("SelectDate", "onCreateView: AAAAAAAAA $selectedTime")
+            } else {
+                val sharedPref =
+                    requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
+                sharedPref.edit().putString("selected_time", selectedTime).apply()
+                Log.e("SelectDate", "onCreateView: AAAAAAAAA $selectedDate")
+                Log.e("SelectDate", "onCreateView: AAAAAAAAA $selectedTime")
+
+            }
+        } else {
+            binding.tvSelectedTime.text = selectedTime
+            binding.tvDate.text = selectedDatePre
+            selectedDate = selectedDatePre.toString()
+            Log.e("SelectDate", "onCreateViewBBBBBBBBBBBBBBB $selectedDate")
+            val sharedPref =
+                requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
+            sharedPref.edit().putString("selected_time", selectedTime).apply()
+            Log.e("SelectDate", "onCreateView: AAAAAAAAA $selectedDate")
+            Log.e("SelectDate", "onCreateView: AAAAAAAAA $selectedTime")
+        }
+
         activityId?.let { saveActivityIdLocally(it) }
         // priceCalculateApi()
         priceCalculateObserver()
@@ -192,7 +233,8 @@ class Step1Fragment() :
                     popupWindow.dismiss()
                 }*/
 
-                val sharedPref = requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
+                val sharedPref =
+                    requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
 
 // Agar TextView me "Select Time" hai, toh previous saved data remove karo
                 if (tvSelectedTime.text.toString() == "Select Time") {
@@ -206,7 +248,7 @@ class Step1Fragment() :
                     popupWindow.dismiss()
                 }
 
-              //  rvTimeSlotsPopup.adapter = adapter
+                //  rvTimeSlotsPopup.adapter = adapter
 
 
                 rvTimeSlotsPopup.layoutManager = GridLayoutManager(requireContext(), 4)

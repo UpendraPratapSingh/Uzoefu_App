@@ -129,7 +129,7 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:text=""
-                android:textColor="@color/black"
+                android:textColor="?attr/colorOnBackground"
                 android:textSize="14sp" />
 
             <TextView
@@ -139,7 +139,6 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:text="Highlights"
-                android:textColor="@color/black"
                 android:textSize="15sp"
                 android:textStyle="bold" />
 
@@ -155,7 +154,6 @@
                     android:layout_height="wrap_content"
                     android:drawablePadding="8dp"
                     android:text=""
-                    android:textColor="@color/black"
                     android:textSize="14sp" />
 
                 <!--             <TextView

@@ -58,8 +58,21 @@ class BookingDetailStep1Activity : AppCompatActivity() {
     private var childrenPrice = ""
     private var activityId = ""
     private var address = ""
+    private var booking = ""
     private var town = ""
+    private var selectedTime = ""
+    private var selectedDate = ""
     private var productName = ""
+
+
+    private var adultPrice: Int = 0
+    private var kidsPrice: Int = 0
+    private var subtotal: Int = 0
+    private var total: Int = 0
+
+    private var adultCount: Int = 0
+    private var kidsCount: Int = 0
+
     private val paymentViewModel: PaymentViewModel by viewModels()
     private val progressDialog by lazy { CustomProgressDialog(this) }
     private val notificationCountViewModel: NotificationCountViewModel by viewModels()
@@ -84,7 +97,6 @@ class BookingDetailStep1Activity : AppCompatActivity() {
 
             statusBarColor = Color.TRANSPARENT
 
-            // Force white icons/text in status bar
             WindowInsetsControllerCompat(this, decorView).isAppearanceLightStatusBars = false
         }
 
@@ -94,6 +106,7 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         town = intent.getStringExtra("town").toString()
         address = intent.getStringExtra("address").toString()
         productName = intent.getStringExtra("productName").toString()
+        booking = intent.getStringExtra("booking").toString()
 
         paymentObserver()
         notificationCountApi()
@@ -129,7 +142,16 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         }
 
         openFragment(
-            Step1Fragment.newInstance(price, childrenPrice, activityId, address, town, productName)
+            Step1Fragment.newInstance(
+                price,
+                childrenPrice,
+                activityId,
+                address,
+                town,
+                productName,
+                selectedTime,
+                selectedDate
+            )
         )
         updateStepper()
 
@@ -192,14 +214,12 @@ class BookingDetailStep1Activity : AppCompatActivity() {
                 }
         */
 
-        // ✅ If returning from payment success, go to Step 5 automatically
         val goToStep = intent.getIntExtra("goToStep", -1)
         if (goToStep == 5) {
             currentStep = 5
             openFragment(Step5Fragment.newInstance(activityId, productName))
             updateStepper()
         }
-
 
         nextBtn.setOnClickListener {
             when (currentStep) {
@@ -214,7 +234,7 @@ class BookingDetailStep1Activity : AppCompatActivity() {
                 2 -> {
                     if (validateStep2Fields()) {
                         currentStep = 3
-                        openFragment(Step3Fragment(activityId))
+                        openFragment(Step3Fragment(activityId, booking))
                         updateStepper()
                     }
                 }
@@ -351,11 +371,11 @@ class BookingDetailStep1Activity : AppCompatActivity() {
     private fun validateStep1Fields(): Boolean {
         // Get selected date from booking_pref
         val bookingPref = getSharedPreferences("booking_pref", Context.MODE_PRIVATE)
-        val selectedDate = bookingPref.getString("date", "") ?: ""
+        selectedDate = bookingPref.getString("date", "") ?: ""
 
         // Get selected time from ActivityPrefs
         val activityPref = getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
-        val selectedTime = activityPref.getString("selected_time", "") ?: ""
+        selectedTime = activityPref.getString("selected_time", "") ?: ""
 
         Log.e("SelectTime", "validateStep1Fields: $selectedTime")
 
@@ -390,19 +410,16 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         // 2️⃣ Booking info from SharedPreferences
         val sharedPref = getSharedPreferences("booking_pref", Context.MODE_PRIVATE)
         val date = sharedPref.getString("date", "") ?: ""
-        val adultCount = sharedPref.getInt("adultcount", 0)
-        val kidsCount = sharedPref.getInt("kidscount", 0)
-        /*val adultPrice = sharedPref.getString("adultprice", "0.00") ?: "0.00"
-        val kidsPrice = sharedPref.getString("kidsprice", "0.00") ?: "0.00"
-        val subtotal = sharedPref.getString("subtotal", "0.00") ?: "0.00"
-        val total = sharedPref.getString("total", "0.00") ?: "0.00"*/
+        adultCount = sharedPref.getInt("adultcount", 0)
+        kidsCount = sharedPref.getInt("kidscount", 0)
+
         val activityId = sharedPref.getString("activity_id", "") ?: ""
         val userId = Uzoefu.encryptedPrefs.userId
 
-        val adultPrice = sharedPref.getInt("adultprice", 0)
-        val kidsPrice = sharedPref.getInt("kidsprice", 0)
-        val subtotal = sharedPref.getInt("subtotal", 0)
-        val total = sharedPref.getInt("total", 0)
+        adultPrice = sharedPref.getInt("adultprice", 0)
+        kidsPrice = sharedPref.getInt("kidsprice", 0)
+        subtotal = sharedPref.getInt("subtotal", 0)
+        total = sharedPref.getInt("total", 0)
 
         Log.d("PaymentLog", "SharedPrefs -> Date: $date, Adults: $adultCount, Kids: $kidsCount")
         Log.d(
@@ -590,28 +607,6 @@ class BookingDetailStep1Activity : AppCompatActivity() {
             .commit()
     }
 
-    /*
-        private fun updateStepper() {
-            for (i in steps.indices) {
-                if (i < currentStep) {
-                    steps[i].setBackgroundResource(R.drawable.circle_active)
-                    steps[i].setTextColor(resources.getColor(R.color.green_color, theme))
-                } else {
-                    steps[i].setBackgroundResource(R.drawable.circle_inactive)
-                    steps[i].setTextColor(resources.getColor(android.R.color.darker_gray, theme))
-                }
-            }
-
-            for (i in lines.indices) {
-                if (i < currentStep) {
-                    lines[i].setBackgroundResource(R.color.line_active)
-                } else {
-                    lines[i].setBackgroundResource(R.color.line_inactive)
-                }
-            }
-        }
-    */
-
     private fun notificationCountObserver() {
         notificationCountViewModel.progressIndicator.observe(this) {
 
@@ -677,7 +672,6 @@ class BookingDetailStep1Activity : AppCompatActivity() {
 
     }
 
-
     override fun onBackPressed() {
         super.onBackPressed()
         if (currentStep > 1) {
@@ -690,12 +684,14 @@ class BookingDetailStep1Activity : AppCompatActivity() {
                         activityId,
                         address,
                         town,
-                        productName
+                        productName,
+                        selectedTime,
+                        selectedDate
                     )
                 )
 
                 2 -> openFragment(Step2Fragment())
-                3 -> openFragment(Step3Fragment(activityId))
+                3 -> openFragment(Step3Fragment(activityId, booking))
                 4 -> openFragment(Step4Fragment())
             }
             updateStepper()

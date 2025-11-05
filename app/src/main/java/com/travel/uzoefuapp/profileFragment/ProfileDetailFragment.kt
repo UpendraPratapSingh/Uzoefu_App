@@ -108,7 +108,11 @@ class ProfileDetailFragment : Fragment(), OnCategoryClickListener {
                     binding.categoriesRecyclerView.adapter = categoryAdapter
                 }
             } else {
-                Toast.makeText(requireContext(),message ?: "Failed to load categories", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    message ?: "Failed to load categories",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 

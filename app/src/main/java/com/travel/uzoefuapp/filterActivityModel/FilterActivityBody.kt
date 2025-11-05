@@ -7,4 +7,5 @@ class FilterActivityBody(
     @SerializedName("price") val price: String,
     @SerializedName("rating") val rating: String,
     @SerializedName("category_id") val categoryId: String,
+    @SerializedName("radius") val radius: String,
 )

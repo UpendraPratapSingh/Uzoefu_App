@@ -118,7 +118,7 @@ class CreateAccountActivity : AppCompatActivity() {
             lastName = binding.userNameLastEdit.text.toString(),
             email = binding.emailEdit.text.toString(),
             password = binding.passwordEdit.text.toString(),
-            referralCode = binding.userEditReferralCode.toString()
+            referralCode = binding.userEditReferralCode.text.toString()
 
             )
         signUpViewModel.signUpUser(progressDialog, this, signUpBody)

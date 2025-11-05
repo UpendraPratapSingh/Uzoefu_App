@@ -30,6 +30,7 @@ import com.travel.uzoefuapp.adapter.ProductTabAdapter
 import com.travel.uzoefuapp.adapter.SliderAdapter
 import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.bookingActivities.BookingDetailStep1Activity
+import com.travel.uzoefuapp.bookingDetailFragment.Participant
 import com.travel.uzoefuapp.databinding.ActivityBookingProductBinding
 import com.travel.uzoefuapp.detailModel.DetailPageBody
 import com.travel.uzoefuapp.detailModel.DetailPageViewModel
@@ -56,6 +57,8 @@ class BookingProductActivity : AppCompatActivity() {
     private var location = ""
     private var telePhone = ""
     private var adviceId = ""
+    private val participants = mutableListOf<Participant>()
+
 
     private val slideRunnable = object : Runnable {
         override fun run() {
@@ -376,6 +379,9 @@ class BookingProductActivity : AppCompatActivity() {
                         intent.putExtra("productName", data1?.activityName.toString())
                         intent.putExtra("address", address?.address.toString())
                         intent.putExtra("town", address?.town.toString())
+                        intent.putExtra("booking", "booking")
+                        val sharedPref = this.getSharedPreferences("participants_pref", 0)
+                        sharedPref.edit().clear().apply()
                         startActivity(intent)
                     }
                 }

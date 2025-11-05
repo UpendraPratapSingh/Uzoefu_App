@@ -9,21 +9,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
-import com.travel.uzoefuapp.bookingActivities.BookingDetailStep1Activity
 import com.travel.uzoefuapp.companyActivities.BookingProductActivity
 import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.FragmentStep4Binding
-import com.travel.uzoefuapp.paymentModel.PaymentViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class Step4Fragment : Fragment() {
-
     private var _binding: FragmentStep4Binding? = null
     private val binding get() = _binding!!
 
@@ -63,6 +60,8 @@ class Step4Fragment : Fragment() {
             saveDataToPrefs()
         }
 
+        binding.activityName.text = productName
+
         setupWebView()
         return binding.root
     }
@@ -74,6 +73,20 @@ class Step4Fragment : Fragment() {
             domStorageEnabled = true
             loadWithOverviewMode = true
             useWideViewPort = true
+            domStorageEnabled = true
+            loadWithOverviewMode = true
+            useWideViewPort = true
+            builtInZoomControls = true
+            displayZoomControls = false
+            mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+            setSupportZoom(true)
+
+            webView.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
+            webView.isVerticalScrollBarEnabled = true
+            webView.isHorizontalScrollBarEnabled = true
+
+            // Enable Chrome features (important for PayFast header rendering)
+            webView.webChromeClient = WebChromeClient()
         }
 
         progressDialog.start("")
@@ -89,30 +102,11 @@ class Step4Fragment : Fragment() {
                 if (isAdded && activity != null && !requireActivity().isFinishing) {
                     progressDialog.stop()
                 }
+                view?.evaluateJavascript(
+                    "window.scrollTo(0, 0); document.body.style.zoom='100%';",
+                    null
+                )
             }
-
-            /*
-                        override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                            url?.let {
-                                Log.d("PaymentWebView", "Loading URL: $it")
-
-                                when {
-                                    it.contains("success", true) -> {
-                                        progressDialog.stop()
-                                        goToStep5()
-                                    }
-
-                                    it.contains("failure", true) || it.contains("cancel", true) -> {
-                                        progressDialog.stop()
-                                        goToStep5()
-                                    }
-
-                                    else -> view?.loadUrl(it)
-                                }
-                            }
-                            return true
-                        }
-            */
 
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
                 url?.let {
@@ -139,7 +133,8 @@ class Step4Fragment : Fragment() {
                                 it.contains("cancel", true) ||
                                 it.contains("payment/failed", true) -> {
                             progressDialog.stop()
-                            Toast.makeText(requireContext(),
+                            Toast.makeText(
+                                requireContext(),
                                 "Payment failed or cancelled",
                                 Toast.LENGTH_SHORT
                             ).show()
@@ -169,7 +164,6 @@ class Step4Fragment : Fragment() {
 
         webView.webChromeClient = WebChromeClient()
 
-        // Load the payment URL
         paymentUrl?.let {
             Log.d("PaymentURL", "Loading Payment URL: $it")
             webView.loadUrl(it)
@@ -186,7 +180,6 @@ class Step4Fragment : Fragment() {
         startActivity(intent)
         requireActivity().finishAffinity()
     }
-
 
     private fun saveDataToPrefs() {
         val prefs = requireActivity().getSharedPreferences("BookingPrefs", 0)

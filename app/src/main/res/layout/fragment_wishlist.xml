@@ -129,8 +129,8 @@
 
             <ImageView
                 android:id="@+id/deleteIcon"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
                 android:src="@drawable/ic_delete" />
 
         </LinearLayout>

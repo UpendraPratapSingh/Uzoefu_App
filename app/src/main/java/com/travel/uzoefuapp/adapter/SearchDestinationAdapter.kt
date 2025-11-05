@@ -11,14 +11,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.travel.uzoefuapp.R
-import com.travel.uzoefuapp.activityModl.ActivityResponse
 import com.travel.uzoefuapp.companyActivities.BookingProductActivity
 import com.travel.uzoefuapp.filterActivityModel.FilterActivityResponse
 
 class SearchDestinationAdapter (
     val context: Context,
     private val activityList: List<FilterActivityResponse.Data.Datum>,
-    private val wishlistClickListener: OnWishlistListener
+    private val wishlistClickListener: OnWishlistSearchListener
 ) :
     RecyclerView.Adapter<SearchDestinationAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -58,7 +57,6 @@ class SearchDestinationAdapter (
             else R.drawable.ic_wish
         )
 
-/*
         holder.favIcon.setOnClickListener { view ->
             view.animate()
                 .scaleX(1.3f)
@@ -75,7 +73,6 @@ class SearchDestinationAdapter (
 
             wishlistClickListener.onWishlistClick(list, position)
         }
-*/
     }
 
     override fun getItemCount(): Int {

@@ -40,6 +40,7 @@ import com.travel.uzoefuapp.adapter.ExploreResultAdapter
 import com.travel.uzoefuapp.adapter.FilterCategoryAdapter
 import com.travel.uzoefuapp.adapter.OnCategoryClickListener
 import com.travel.uzoefuapp.adapter.OnWishlistListener
+import com.travel.uzoefuapp.adapter.OnWishlistSearchListener
 import com.travel.uzoefuapp.adapter.SearchDestinationAdapter
 import com.travel.uzoefuapp.adapter.SearchVerticleDestinationAdapter
 import com.travel.uzoefuapp.adapter.SelectPriceAdapter
@@ -58,7 +59,8 @@ import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class ExploreActivity : AppCompatActivity(), OnWishlistListener, OnCategoryClickListener {
+class ExploreActivity : AppCompatActivity(), OnWishlistListener, OnCategoryClickListener,
+    OnWishlistSearchListener {
     lateinit var binding: ActivityExploreBinding
     private val activityViewModel: ActivityViewModel by viewModels()
     private var categoryId = ""
@@ -95,19 +97,27 @@ class ExploreActivity : AppCompatActivity(), OnWishlistListener, OnCategoryClick
 
         val experienceActivity = intent.getStringExtra("ExperienceActivity")
         val selectedCityId = intent.getStringExtra("selectedCity") ?: ""
-        val selectedCategoryId = intent.getStringExtra("selectedRadius") ?: ""
+        val selectedCategoryId = intent.getStringExtra("selectedCategory") ?: ""
         val selectedPrice = intent.getStringExtra("selectedPrice") ?: ""
         val selectedRatings = intent.getStringExtra("selectedRatings") ?: ""
+        val selectedRadius = intent.getStringExtra("selectedRadius") ?: ""
         val source = intent.getStringExtra("source").toString()
 
         Log.e("FilterData", "City: $selectedCityId")
         Log.e("FilterData", "Radius: $selectedCategoryId")
         Log.e("FilterData", "Price: $selectedPrice")
         Log.e("FilterData", "Ratings: $selectedRatings")
+        Log.e("FilterData", "Selected Radius: $selectedRadius")
         Log.e("FilterData", "Source: $source ")
 
         if (source == "filter") {
-            getFilterApi(selectedCityId, selectedCategoryId, selectedPrice, selectedRatings)
+            getFilterApi(
+                selectedCityId,
+                selectedCategoryId,
+                selectedPrice,
+                selectedRatings,
+                selectedRadius
+            )
             getFilterObserver()
             notificationCountApi()
             notificationCountObserver()
@@ -298,7 +308,7 @@ class ExploreActivity : AppCompatActivity(), OnWishlistListener, OnCategoryClick
         getCategoryBottomSheetObserver()
 
         val radiusOptions = arrayOf(
-            "Select Radius", "2 Kilometres", "5 Kilometres", "10 Kilometres", "20 Kilometres"
+            "Select Radius", "2 Km", "5 Km", "10 Km", "20 Km"
         )
 
         val radiusAdapter =
@@ -416,27 +426,15 @@ class ExploreActivity : AppCompatActivity(), OnWishlistListener, OnCategoryClick
 */
             val intent = Intent(this@ExploreActivity, ExploreActivity::class.java)
             intent.putExtra("selectedCity", selectedProvinceId)
-            intent.putExtra("selectedRadius", selectCategory)
+            intent.putExtra("selectedCategory", selectCategory)
             intent.putExtra("selectedPrice", selectedPrice)
             intent.putExtra("selectedRatings", selectedRatingsValue)
+            intent.putExtra("selectedRadius", selectedRadius)
             intent.putExtra("source", "filter")
 
             startActivity(intent)
             bottomSheetDialog.dismiss()
         }
-
-        /*
-                btnApply.setOnClickListener {
-                    val intent = Intent(this@SelectDestinationActivity, ExploreActivity::class.java)
-                    intent.putExtra("selectedCity", selectedProvinceId)
-                    intent.putExtra("selectedRadius", categoryId)
-                    intent.putExtra("selectedPrice", selectedPrice)
-                    intent.putExtra("selectedRatings", selectedRatingsValue)
-                    intent.putExtra("source", "filter")
-                    startActivity(intent)
-                    bottomSheetDialog.dismiss()
-                }
-        */
 
         bottomSheetDialog.show()
     }
@@ -598,13 +596,15 @@ class ExploreActivity : AppCompatActivity(), OnWishlistListener, OnCategoryClick
         selectedCityId: String,
         selectedCategoryId: String,
         selectedPrice: String,
-        selectedRatings: String
+        selectedRatings: String,
+        selectedRadius: String
     ) {
         val body = FilterActivityBody(
             provinceId = selectedCityId,
             price = selectedPrice,
             rating = selectedRatings,
-            categoryId = selectedCategoryId
+            categoryId = selectedCategoryId,
+            radius = selectedRadius
         )
         filterActivityViewModel.filterActivityBody(progressDialog, this, body)
     }
@@ -679,6 +679,8 @@ class ExploreActivity : AppCompatActivity(), OnWishlistListener, OnCategoryClick
     }
 
     override fun onWishlistClick(product: ActivityResponse.Datum, position: Int) {
+        Log.e("WishlistDebug", "onWishlistClick called for id=${product.id}")
+
         product.isWish = !(product.isWish ?: false)
 
         val viewHolder = binding.destinationRecycler.findViewHolderForAdapterPosition(position)
@@ -693,10 +695,43 @@ class ExploreActivity : AppCompatActivity(), OnWishlistListener, OnCategoryClick
     }
 
     override fun onWishlistClicked(product: ActivityResponse.Datum, position: Int) {
+        Log.e("WishlistDebug", "onWishlistClicked called for id=${product.id}")
+
         product.isWish = !(product.isWish ?: false)
 
         val viewHolder = binding.categoriesRecycler.findViewHolderForAdapterPosition(position)
                 as? ExploreResultAdapter.ViewHolder
+
+        viewHolder?.favIcon?.setImageResource(
+            if (product.isWish == true) R.drawable.wishlist_color
+            else R.drawable.ic_wish
+        )
+        addToWishlistApi(product.id)
+
+    }
+
+    override fun onWishlistClick(product: FilterActivityResponse.Data.Datum, position: Int) {
+        Log.e("WishlistDebug", "onWishlistClick called for id=${product.id}")
+
+        product.isWish = !(product.isWish ?: false)
+
+        val viewHolder = binding.destinationRecycler.findViewHolderForAdapterPosition(position)
+                as? SearchDestinationAdapter.ViewHolder
+
+        viewHolder?.favIcon?.setImageResource(
+            if (product.isWish == true) R.drawable.wishlist_color
+            else R.drawable.ic_wish
+        )
+        addToWishlistApi(product.id)
+    }
+
+    override fun onWishlistClicked(product: FilterActivityResponse.Data.Datum, position: Int) {
+        Log.e("WishlistDebug", "onWishlistClicked called for id=${product.id}")
+
+        product.isWish = !(product.isWish ?: false)
+
+        val viewHolder = binding.categoriesRecycler.findViewHolderForAdapterPosition(position)
+                as? SearchVerticleDestinationAdapter.ViewHolder
 
         viewHolder?.favIcon?.setImageResource(
             if (product.isWish == true) R.drawable.wishlist_color

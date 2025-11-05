@@ -83,7 +83,11 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
             if (selectedWishlistIds.isNotEmpty()) {
                 deleteWishListApi()
             } else {
-                Toast.makeText(requireContext(),"Please select an item to delete", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Please select an item to delete",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
