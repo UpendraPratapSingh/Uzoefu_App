@@ -104,7 +104,6 @@
             android:gravity="center"
             android:paddingBottom="8dp"
             android:text="Tailor your listing to showcase the amenities that matter the most."
-            android:textColor="@android:color/black"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

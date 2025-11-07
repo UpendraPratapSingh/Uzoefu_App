@@ -57,6 +57,7 @@ class BookingProductActivity : AppCompatActivity() {
     private var location = ""
     private var telePhone = ""
     private var adviceId = ""
+    private var activityName = ""
     private val participants = mutableListOf<Participant>()
 
 
@@ -95,51 +96,8 @@ class BookingProductActivity : AppCompatActivity() {
 
         categoryId = intent.getIntExtra("categoryId", -1)
 
-        /*        if (categoryId != -1) {
-                    getDetailApi(categoryId)
-                    Log.e("TAGAAAAAAA", "onCreateAAAAAAA: $categoryId")
-                } else {
-                    // Deep link handle karo
-                    var data: Uri? = intent?.data
-                    if (data != null) {
-                        val adviceId = data.lastPathSegment // "222" milega
-                        Toast.makeText(this, "Advice ID: $adviceId", Toast.LENGTH_SHORT).show()
-                        *//*   val intent = Intent(this, GearzzoneAdviceDetailsActivity::class.java)
-                   intent.putExtra("adviceId", adviceId)
-                   startActivity(intent)*//*
-                // Ab yaha API call karke details dikha sakte ho
-                if (adviceId != null) {
-                    getDetailApi(adviceId.toInt())
-                    Log.e("TAGAAAAAAA", "onCreateBBBBBBBBBBBB: $adviceId")
-
-                }
-            }
-        }*/
-
         val categoryId = intent.getIntExtra("categoryId", -1)
 
-        /*   if (categoryId != -1) {
-               // Normal case — open using category ID
-               getDetailApi(categoryId)
-               Log.e("TAG", "Normal Launch → categoryId: $categoryId")
-           } else {
-               // Deep link handling
-               val data: Uri? = intent?.data
-               if (data != null) {
-                   val adviceIdStr = data.lastPathSegment
-                   Log.d("DeepLink", "Raw URI: $data, adviceIdStr: $adviceIdStr")
-
-                   adviceIdStr?.toIntOrNull()?.let { adviceId ->
-                       Toast.makeText(this, "Advice ID: $adviceId", Toast.LENGTH_SHORT).show()
-                       getDetailApi(adviceId)
-                       Log.e("TAG", "Deep Link Launch → adviceId: $adviceId")
-                   } ?: run {
-                       Log.e("TAG", "Invalid adviceId in deep link: $data")
-                   }
-               } else {
-                   Log.e("TAG", "No deep link data found")
-               }
-           }*/
         handleIntent(intent)
 
 
@@ -206,24 +164,29 @@ class BookingProductActivity : AppCompatActivity() {
 
         binding.actionRecyclerView.adapter = actionAdapter
 
-        if (categoryId != -1) {
-            val adapter = ProductTabAdapter(this, categoryId, activeHour)
-            binding.viewPagerData.adapter = adapter
-        } else {
-            val adapter = ProductTabAdapter(this, adviceId.toInt(), activeHour)
-            binding.viewPagerData.adapter = adapter
-        }
+        /*
+                if (categoryId != -1) {
+                    val adapter = ProductTabAdapter(this, categoryId, activeHour, activityName)
+                    Log.e("ActivityName", "getDetailObserver:AAAAAAAAAAAAD $activityName")
 
+                    binding.viewPagerData.adapter = adapter
+                } else {
+                    val adapter = ProductTabAdapter(this, adviceId.toInt(), activeHour, activityName)
+                    Log.e("ActivityName", "getDetailObserver:AAAAAAAAAAB $activityName")
 
-        TabLayoutMediator(binding.tabLayout, binding.viewPagerData) { tab, position ->
-            tab.text = when (position) {
-                0 -> "Overview"
-                1 -> "Information"
-                2 -> "Reviews"
-                3 -> "FAQ"
-                else -> ""
-            }
-        }.attach()
+                    binding.viewPagerData.adapter = adapter
+                }
+
+                TabLayoutMediator(binding.tabLayout, binding.viewPagerData) { tab, position ->
+                    tab.text = when (position) {
+                        0 -> "Overview"
+                        1 -> "Information"
+                        2 -> "Reviews"
+                        3 -> "FAQ"
+                        else -> ""
+                    }
+                }.attach()
+        */
 
         binding.viewPagerData.registerOnPageChangeCallback(object :
             ViewPager2.OnPageChangeCallback() {
@@ -256,7 +219,6 @@ class BookingProductActivity : AppCompatActivity() {
         userShareRewardViewModel.errorResponse.observe(this) {
             ErrorUtil.handlerGeneralError(this@BookingProductActivity, it)
         }
-
     }
 
     private fun handleIntent(intent: Intent?) {
@@ -266,16 +228,17 @@ class BookingProductActivity : AppCompatActivity() {
         val data: Uri? = intent.data
 
         when {
-            data != null -> { // Deep link launch
+            data != null -> {
                 val pathSegments = data.pathSegments
-                adviceId = pathSegments[1].toIntOrNull().toString()
+                // adviceId = pathSegments[1].toIntOrNull().toString()
+                adviceId = pathSegments[1]
                 val userId = pathSegments[2]
                 //adviceId = data.lastPathSegment?.toIntOrNull().toString()
-                adviceId = data.lastPathSegment?.get(1).toString() // "222"
+                //adviceId = data.lastPathSegment?.get(1).toString() // "222"
 
                 //val userId = data.lastPathSegment?.get(2).toString()
                 if (adviceId != null) {
-                    //  Log.d("Gearzzone", "DeepLink launch → adviceId: $adviceId")
+                    Log.d("Gearzzone", "DeepLink launch → adviceId: $adviceId")
                     //Toast.makeText(this, "Activity ID: $adviceId", Toast.LENGTH_SHORT).show()
                     getDetailApi(adviceId.toInt())
                     shareRewardPointApi(userId)
@@ -343,17 +306,44 @@ class BookingProductActivity : AppCompatActivity() {
             val isWish = response.peekContent().data?.iswish
             activeHour = response.peekContent().data?.todayHours.toString()
             val activityId = data1?.id
+            activityName = response.peekContent().data?.activity?.activityName ?: ""
 
             location = response.peekContent().data?.activity?.branch?.address.toString()
 
             telePhone = response.peekContent().data?.activity?.branch?.teliphoneNumber.toString()
+
+
+            if (categoryId != -1) {
+                val adapter = ProductTabAdapter(this, categoryId, activeHour, activityName)
+                Log.e("ActivityName", "getDetailObserver:AAAAAAAAAAAAD $activityName")
+
+                binding.viewPagerData.adapter = adapter
+            } else {
+                val adapter = ProductTabAdapter(this, adviceId.toInt(), activeHour, activityName)
+                Log.e("ActivityName", "getDetailObserver:AAAAAAAAAAB $activityName")
+
+                binding.viewPagerData.adapter = adapter
+            }
+
+            TabLayoutMediator(binding.tabLayout, binding.viewPagerData) { tab, position ->
+                tab.text = when (position) {
+                    0 -> "Overview"
+                    1 -> "Information"
+                    2 -> "Reviews"
+                    3 -> "FAQ"
+                    else -> ""
+                }
+            }.attach()
+
+
 
             if (success == true) {
                 binding.main.visibility = View.VISIBLE
                 binding.tvTitle.text = data1?.activityName.toString()
                 binding.tvCategory.text = data2?.name.toString()
                 binding.tvPrice.text = "R ${data3?.groupPrice ?: 0}"
-
+                activityName = response.peekContent().data?.activity?.activityName ?: ""
+                Log.e("ActivityName", "getDetailObserver: $activityName")
                 val images = response.peekContent().data?.images ?: emptyList()
 
                 val thumbnailAdapter = ProductSliderAdapter(images) { _ -> }

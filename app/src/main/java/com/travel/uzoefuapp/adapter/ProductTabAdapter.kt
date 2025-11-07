@@ -12,7 +12,8 @@ import com.travel.uzoefuapp.productFragment.ProductReviewFragment
 class ProductTabAdapter(
     activity: AppCompatActivity,
     private val categoryId: Int,
-    private val activeHour: String
+    private val activeHour: String,
+    private val activityName: String
 ) :
     FragmentStateAdapter(activity) {
 
@@ -41,6 +42,9 @@ class ProductTabAdapter(
                 val fragment = ProductReviewFragment()
                 val bundle = Bundle()
                 bundle.putInt("categoryId", categoryId)
+                bundle.putString("activityName", activityName)
+                android.util.Log.e("ProductTabAdapter", "Sending to ProductReviewFragment -> categoryId: $categoryId, activityName: $activityName")
+
                 fragment.arguments = bundle
                 fragment
             }

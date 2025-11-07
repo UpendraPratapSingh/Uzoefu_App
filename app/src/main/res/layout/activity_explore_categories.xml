@@ -126,7 +126,6 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/roboto_semi_bold"
         android:text="@string/no_data_found"
-        android:textColor="@color/black"
         android:textFontWeight="500"
         android:textSize="20sp"
         android:visibility="gone"

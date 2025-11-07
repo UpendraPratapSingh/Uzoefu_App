@@ -57,6 +57,25 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+
+        if (Uzoefu.encryptedPrefs.rememberMe) {
+            val savedEmail = Uzoefu.encryptedPrefs.savedEmail
+            val savedPassword = Uzoefu.encryptedPrefs.savedPassword
+            if (!savedEmail.isNullOrEmpty() && !savedPassword.isNullOrEmpty()) {
+                binding.emailEdit.setText(savedEmail)
+                binding.passwordEdit.setText(savedPassword)
+                binding.rememberCheck.isChecked = true
+            }
+        }
+
+        // ✅ If already logged in and Remember Me enabled → skip login screen
+        if (!Uzoefu.encryptedPrefs.bearerToken.isNullOrEmpty() && Uzoefu.encryptedPrefs.rememberMe) {
+            startActivity(Intent(this, DashboardActivity::class.java))
+            finish()
+            return
+        }
+
+
         binding.emailIcon.setOnClickListener {
             isPasswordVisible = !isPasswordVisible
             if (isPasswordVisible) {
@@ -87,6 +106,17 @@ class LoginActivity : AppCompatActivity() {
                 Uzoefu.encryptedPrefs.isFirstTime = false
                 Uzoefu.encryptedPrefs.bearerToken = "Bearer ${response?.token ?: ""}"
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+                if (binding.rememberCheck.isChecked) {
+                    Uzoefu.encryptedPrefs.rememberMe = true
+                    Uzoefu.encryptedPrefs.savedEmail = phoneNumber
+                    Uzoefu.encryptedPrefs.savedPassword = password
+                } else {
+                    Uzoefu.encryptedPrefs.rememberMe = false
+                    Uzoefu.encryptedPrefs.savedEmail = ""
+                    Uzoefu.encryptedPrefs.savedPassword = ""
+                }
+
+
                 val intent = Intent(this@LoginActivity, DashboardActivity::class.java)
                 startActivity(intent)
             } else {

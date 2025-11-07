@@ -34,7 +34,7 @@ class PreferenceManager(context: Context) {
         )*/
 
     private val prefs = EncryptedSharedPreferences.create(
-        context, "YourEncryptedPreferences",
+        context, "myPreferences",
         masterKey,
         EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
@@ -107,6 +107,28 @@ class PreferenceManager(context: Context) {
             editor.putString(BEARER_USER_TOKEN, userToken)
             editor.apply()
         }
+
+    var rememberMe: Boolean
+        get() = prefs.getBoolean("REMEMBER_ME", false)
+        set(value) {
+            editor.putBoolean("REMEMBER_ME", value)
+            editor.apply()
+        }
+
+    var savedEmail: String
+        get() = prefs.getString("SAVED_EMAIL", "") ?: ""
+        set(value) {
+            editor.putString("SAVED_EMAIL", value)
+            editor.apply()
+        }
+
+    var savedPassword: String
+        get() = prefs.getString("SAVED_PASSWORD", "") ?: ""
+        set(value) {
+            editor.putString("SAVED_PASSWORD", value)
+            editor.apply()
+        }
+
 
     var userId: String
         get() = prefs.getString(USER_ID, "") ?: ""
@@ -266,5 +288,8 @@ class PreferenceManager(context: Context) {
         private const val selectPaymentId = "paymentId"
         private const val activityId = "activityId"
         private const val passengersId = 0
+        private const val REMEMBER_ME = "REMEMBER_ME"
+        private const val SAVED_EMAIL = "SAVED_EMAIL"
+        private const val SAVED_PASSWORD = "SAVED_PASSWORD"
     }
 }

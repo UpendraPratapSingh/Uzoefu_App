@@ -339,7 +339,6 @@ class CommonRepository @Inject constructor(private val services: ApiServices) {
 
 
         return services.paymentBooking(
-            Uzoefu.encryptedPrefs.bearerToken,
             device_type = deviceTypeBody,
             userId = userIdBody,
             activityId = activityIdBody,

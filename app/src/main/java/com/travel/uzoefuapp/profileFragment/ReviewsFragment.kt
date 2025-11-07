@@ -25,7 +25,6 @@ class ReviewsFragment : Fragment() {
     private val progressDialog by lazy { CustomProgressDialog(requireActivity()) }
     private var ratingList: List<RatingReviewResponse.Data.Datum> = ArrayList()
     private lateinit var reviewAdapter: RatingReviewAdapter
-    private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,11 +48,17 @@ class ReviewsFragment : Fragment() {
             ratingList = response.peekContent().data?.data ?: emptyList()
 
             if (success == true) {
-                recyclerView = view?.findViewById(R.id.rating_review_recycler_view)!!
-                reviewAdapter = RatingReviewAdapter(ratingList)
-
-                recyclerView.layoutManager = LinearLayoutManager(requireContext())
-                recyclerView.adapter = reviewAdapter
+                if (ratingList.isEmpty()) {
+                    binding.ratingReviewRecyclerView.visibility = View.GONE
+                    binding.tvNoRewards.visibility = View.VISIBLE
+                } else {
+                    binding.ratingReviewRecyclerView.visibility = View.VISIBLE
+                    binding.tvNoRewards.visibility = View.GONE
+                    reviewAdapter = RatingReviewAdapter(ratingList)
+                    binding.ratingReviewRecyclerView.layoutManager =
+                        LinearLayoutManager(requireContext())
+                    binding.ratingReviewRecyclerView.adapter = reviewAdapter
+                }
             }
         }
         ratingReviewViewModel.errorResponse.observe(viewLifecycleOwner) {

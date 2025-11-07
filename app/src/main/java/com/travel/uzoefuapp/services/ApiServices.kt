@@ -186,7 +186,6 @@ interface ApiServices {
     @Multipart
     @POST("payfast/payment")
     suspend fun paymentBooking(
-        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
         @Part("device_type") device_type: RequestBody,
         @Part("user_id") userId: RequestBody,
         @Part("activity_id") activityId: RequestBody,

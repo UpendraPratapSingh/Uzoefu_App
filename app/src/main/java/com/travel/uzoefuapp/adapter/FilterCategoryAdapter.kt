@@ -18,12 +18,11 @@ class FilterCategoryAdapter(
     private val listener: OnCategoryClickListener
 ) : RecyclerView.Adapter<FilterCategoryAdapter.ViewHolder>() {
 
-    // ✅ Maintain multiple selected IDs as Integers
     private val selectedIds = mutableSetOf<Int>()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.category_recyclerview, parent, false)
+            .inflate(R.layout.category_filter_recyclerview, parent, false)
         return ViewHolder(view)
     }
 
@@ -39,7 +38,6 @@ class FilterCategoryAdapter(
 
         val isSelected = selectedIds.contains(category.id)
 
-        // ✅ Update UI based on selection state
         if (isSelected) {
             holder.itemView.setBackgroundResource(R.drawable.category_selected_background)
             holder.categoryText.setTextColor(ContextCompat.getColor(context, R.color.dark_cyan))

@@ -885,6 +885,21 @@ class DetailPageResponse : Serializable {
                 @SerializedName("public_sun_to")
                 @Expose
                 var publicSunTo: String? = null
+
+                @SerializedName("state")
+                @Expose
+                var state: State? = null
+
+                inner class State{
+                    @SerializedName("id")
+                    @Expose
+                    var id: Int? = null
+
+                    @SerializedName("name")
+                    @Expose
+                    var name: String? = null
+
+                }
             }
 
             inner class Category {

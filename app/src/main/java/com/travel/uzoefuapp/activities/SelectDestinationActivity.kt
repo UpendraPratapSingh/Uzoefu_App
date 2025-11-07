@@ -327,6 +327,43 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCat
         spinnerCity = view.findViewById(R.id.spinnerCity)
         val spinnerRadius = view.findViewById<Spinner>(R.id.spinnerRadius)
 
+        /*        val cbAllRatings = view.findViewById<CheckBox>(R.id.cbAllRatings)
+                val cbRating1 = view.findViewById<CheckBox>(R.id.cbRating1)
+                val cbRating2 = view.findViewById<CheckBox>(R.id.cbRating2)
+                val cbRating3 = view.findViewById<CheckBox>(R.id.cbRating3)
+                val cbRating4 = view.findViewById<CheckBox>(R.id.cbRating4)
+                val cbRating5 = view.findViewById<CheckBox>(R.id.cbRating5)
+
+                val ratingCheckboxes = listOf(cbRating1, cbRating2, cbRating3, cbRating4, cbRating5)
+
+                val selectedRatings = mutableSetOf<Int>()
+
+                ratingCheckboxes.forEachIndexed { index, checkbox ->
+                    checkbox.setOnCheckedChangeListener { _, isChecked ->
+                        if (isChecked) {
+                            selectedRatings.add(index + 1)
+                        } else {
+                            selectedRatings.remove(index + 1)
+                        }
+
+                        cbAllRatings.isChecked = selectedRatings.size == ratingCheckboxes.size
+                    }
+                }
+
+                cbAllRatings.setOnCheckedChangeListener { _, isChecked ->
+                    if (isChecked) {
+                        ratingCheckboxes.forEach { it.isChecked = true }
+                        selectedRatings.clear()
+                        selectedRatings.addAll(1..5)
+                    } else {
+                        ratingCheckboxes.forEach { it.isChecked = false }
+                        selectedRatings.clear()
+                    }
+                }
+                */
+
+        var isUpdating = false // class-level variable
+
         val cbAllRatings = view.findViewById<CheckBox>(R.id.cbAllRatings)
         val cbRating1 = view.findViewById<CheckBox>(R.id.cbRating1)
         val cbRating2 = view.findViewById<CheckBox>(R.id.cbRating2)
@@ -335,31 +372,40 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCat
         val cbRating5 = view.findViewById<CheckBox>(R.id.cbRating5)
 
         val ratingCheckboxes = listOf(cbRating1, cbRating2, cbRating3, cbRating4, cbRating5)
-
         val selectedRatings = mutableSetOf<Int>()
 
         ratingCheckboxes.forEachIndexed { index, checkbox ->
             checkbox.setOnCheckedChangeListener { _, isChecked ->
+                if (isUpdating) return@setOnCheckedChangeListener
+
                 if (isChecked) {
                     selectedRatings.add(index + 1)
                 } else {
                     selectedRatings.remove(index + 1)
                 }
 
+                // agar sab select ho gaye to "All Ratings" bhi check ho
+                isUpdating = true
                 cbAllRatings.isChecked = selectedRatings.size == ratingCheckboxes.size
+                isUpdating = false
             }
         }
 
         cbAllRatings.setOnCheckedChangeListener { _, isChecked ->
+            if (isUpdating) return@setOnCheckedChangeListener
+
+            isUpdating = true
             if (isChecked) {
                 ratingCheckboxes.forEach { it.isChecked = true }
                 selectedRatings.clear()
-                selectedRatings.addAll(1..5)
+                selectedRatings.addAll(listOf(1, 2, 3, 4, 5))
             } else {
                 ratingCheckboxes.forEach { it.isChecked = false }
                 selectedRatings.clear()
             }
+            isUpdating = false
         }
+
 
         /*      cbAllRatings.setOnCheckedChangeListener { _, isChecked ->
                   ratingCheckboxes.forEach { it.isChecked = isChecked }

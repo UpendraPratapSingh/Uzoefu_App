@@ -36,7 +36,6 @@ class FAQFragment : Fragment() {
         getFaqListApi(categoryId)
         getFaqObserver()
 
-
         return binding.root
     }
 

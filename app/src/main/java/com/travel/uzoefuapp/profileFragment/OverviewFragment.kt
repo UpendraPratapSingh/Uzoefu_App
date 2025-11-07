@@ -337,6 +337,13 @@ class OverviewFragment : Fragment() {
                 Uzoefu.encryptedPrefs.bearerToken = ""
                 Uzoefu.encryptedPrefs.isNotification = false
                 Uzoefu.encryptedPrefs.isFirstTime = false
+                Uzoefu.encryptedPrefs.apply {
+                    userId = ""
+                    rememberMe = false
+                    savedEmail = ""
+                    savedPassword = ""
+                }
+
 
                 Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
 

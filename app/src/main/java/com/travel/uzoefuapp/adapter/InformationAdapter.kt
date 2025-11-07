@@ -70,7 +70,7 @@ class InformationAdapter(
                     setTextColor(Color.DKGRAY)
                     textSize = 14f
                     setPadding(0, 8, 0, 0)
-                    isSingleLine = false // important
+                    isSingleLine = false
                     ellipsize = null
                 }
                 holder.containerContent.addView(textView)

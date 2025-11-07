@@ -89,7 +89,6 @@
                     android:layout_marginStart="12dp"
                     android:layout_weight="1"
                     android:text="support@uzoefu.com"
-                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
                 <Button
@@ -120,7 +119,6 @@
                     android:layout_marginStart="12dp"
                     android:layout_weight="1"
                     android:text="+91 9876543210"
-                    android:textColor="@color/black"
                     android:textSize="16sp" />
 
                 <Button

@@ -99,13 +99,64 @@ class Step4Fragment : Fragment() {
             }
 
             override fun onPageFinished(view: WebView?, url: String?) {
-                if (isAdded && activity != null && !requireActivity().isFinishing) {
-                    progressDialog.stop()
+                super.onPageFinished(view, url)
+                progressDialog.stop()
+                Log.d("PaymentWebView", "✅ WebView finished loading")
+
+                url?.let { currentUrl ->
+                    Log.d("PaymentWebView", "📍 Current URL: $currentUrl")
+
+                    // Check payment result from URL
+                    if (currentUrl.contains("check_status", true)) {
+                        when {
+                            currentUrl.contains("success=true", true) -> {
+                                Log.d("PaymentWebView", "🎉 Payment SUCCESS detected")
+
+                                // Show success message
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Payment Successful!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                                // Navigate after 3 seconds
+                                view?.postDelayed({
+                                    if (isAdded && isResumed) {
+                                        val intent =
+                                            Intent(requireContext(), DashboardActivity::class.java)
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        startActivity(intent)
+                                        requireActivity().finish()
+                                    }
+                                }, 3000)
+                            }
+
+                            currentUrl.contains("success=false", true) -> {
+                                Log.d("PaymentWebView", "❌ Payment FAILED detected")
+
+                                // Show failure message
+                                Toast.makeText(
+                                    requireContext(),
+                                    "Payment Failed. Please try again.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+
+                                // Navigate after 3 seconds
+                                view?.postDelayed({
+                                    if (isAdded && isResumed) {
+                                        val intent = Intent(
+                                            requireContext(),
+                                            BookingProductActivity::class.java
+                                        )
+                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        startActivity(intent)
+                                        requireActivity().finish()
+                                    }
+                                }, 3000)
+                            }
+                        }
+                    }
                 }
-                view?.evaluateJavascript(
-                    "window.scrollTo(0, 0); document.body.style.zoom='100%';",
-                    null
-                )
             }
 
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
@@ -113,9 +164,8 @@ class Step4Fragment : Fragment() {
                     Log.d("PaymentWebView", "Loading URL: $it")
 
                     when {
-                        it.contains("success", true) ||
-                                it.contains("payment/success", true) ||
-                                it.contains("booking/confirmation", true) -> {
+                        it.contains("check_status", true) ||
+                                it.contains("success=true", true) -> {
                             progressDialog.stop()
                             Log.e("Success", "Payment success detected")
 

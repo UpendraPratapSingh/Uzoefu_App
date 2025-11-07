@@ -54,12 +54,13 @@ class ProductOverviewFragment : Fragment() {
             val data3 = response.peekContent().data?.activity?.branch
             val data4 = response.peekContent().data?.todayHours
             val ratingCount = response.peekContent().data?.ratingCount
-
+            val stateName = data3?.state?.name
+            
             if (success == true) {
                 binding.tvDescription.text = data1?.description ?: ""
                 binding.highlights.text = data1?.highlights?.joinToString("\n") { "• $it" } ?: ""
                 binding.tvLocation.text =
-                    "${data3?.branchName.toString()} , ${data3?.address.toString()}"
+                    "${data3?.branchName.toString()} , ${stateName.toString()}"
                 binding.tvPhone.text = "Tel:+${data3?.teliphoneNumber.toString()}"
                 binding.tvCell.text = "Cel:+${data3?.contactNumber.toString()}"
                 binding.tvTime.text = data4.toString()

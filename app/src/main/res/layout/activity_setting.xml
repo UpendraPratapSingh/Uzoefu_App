@@ -81,7 +81,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_weight="1"
                 android:text="My Profile"
-                android:textColor="@color/black"
                 android:textSize="16sp" />
 
             <ImageView
@@ -121,7 +120,6 @@
                 android:layout_marginStart="16dp"
                 android:layout_weight="1"
                 android:text="Change Password"
-                android:textColor="@color/black"
                 android:textSize="16sp" />
 
             <ImageView

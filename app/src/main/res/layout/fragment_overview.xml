@@ -434,7 +434,6 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_light"
                             android:text="Profile Details"
-                            android:textColor="@color/black"
                             android:textSize="16sp" />
 
                         <TextView
@@ -442,7 +441,6 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_light"
                             android:text="Update your profile details and preferences"
-                            android:textColor="@color/black"
                             android:textSize="12sp" />
                     </LinearLayout>
 
@@ -476,7 +474,6 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_light"
                             android:text="Privacy and Security"
-                            android:textColor="@color/black"
                             android:textSize="16sp" />
 
                         <TextView
@@ -484,7 +481,6 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_light"
                             android:text="Password details and security preferences"
-                            android:textColor="@color/black"
                             android:textSize="12sp" />
                     </LinearLayout>
 
@@ -517,7 +513,6 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_light"
                             android:text="Legal"
-                            android:textColor="@color/black"
                             android:textSize="16sp" />
 
                         <TextView
@@ -525,7 +520,6 @@
                             android:layout_height="wrap_content"
                             android:fontFamily="@font/roboto_light"
                             android:text="Terms and Conditions and your privacy Policy"
-                            android:textColor="@color/black"
                             android:textSize="12sp" />
                     </LinearLayout>
 

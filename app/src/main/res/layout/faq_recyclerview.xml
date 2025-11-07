@@ -19,9 +19,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:fontFamily="@font/roboto_medium"
             android:text="What is the cancellation policy?"
             android:textColor="@color/nuetral_bold_color"
-            android:fontFamily="@font/roboto_medium"
             android:textSize="16sp" />
 
         <ImageView
@@ -36,9 +36,10 @@
         android:id="@+id/tvAnswer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
         android:paddingTop="6dp"
         android:text="Answer will be shown here."
         android:textSize="14sp"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </LinearLayout>

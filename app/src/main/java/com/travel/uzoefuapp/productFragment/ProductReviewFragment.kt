@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -17,6 +18,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.RatingBar
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.viewModels
@@ -49,6 +51,7 @@ class ProductReviewFragment : Fragment() {
     private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
     var data: MutableList<DetailPageResponse.Data.ActivityRating> = ArrayList()
     private var selectedReview: DetailPageResponse.Data.ActivityRating? = null
+    private var activityName = ""
 
     @SuppressLint("NotifyDataSetChanged")
     private val pickImagesLauncher =
@@ -76,6 +79,7 @@ class ProductReviewFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentProductReviewBinding.inflate(inflater, container, false)
         categoryId = arguments?.getInt("categoryId")
+        activityName = arguments?.getString("activityName").toString()
 
         val sharedPref = requireContext().getSharedPreferences("review_pref", Context.MODE_PRIVATE)
         val hasReviewed = selectedReview?.let { review ->
@@ -136,10 +140,13 @@ class ProductReviewFragment : Fragment() {
         val reviewRecyclerView = view.findViewById<RecyclerView>(R.id.review_photo_recycler_view)
         val postBtn = view.findViewById<Button>(R.id.btnPost)
         val closeBtn = view.findViewById<ImageView>(R.id.ivClose)
+        val tvTitle = view.findViewById<TextView>(R.id.tvTitle)
 
-        // ✅ Prefill previous rating & review text
         ratingBar.rating = selectedReview?.rating?.toFloat() ?: 0f
         experienceEdit.setText(selectedReview?.description ?: "")
+
+        Log.e("TAG", "showReviewBottomSheet: $activityName")
+        tvTitle.text = activityName
 
         closeBtn.setOnClickListener {
             bottomSheetDialog.dismiss()
