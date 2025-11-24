@@ -18,17 +18,14 @@ class ActivityTimeResponse: Serializable {
     @Expose
     var data: List<Datum>? = null
 
+
     inner class Datum{
-        @SerializedName("id")
+        @SerializedName("time")
         @Expose
-        var id: Int? = null
+        var time: String? = null
 
-        @SerializedName("day")
+        @SerializedName("available")
         @Expose
-        var day: String? = null
-
-        @SerializedName("available_times")
-        @Expose
-        var availableTimes: List<String>? = null
+        var available: Int? = null
     }
 }

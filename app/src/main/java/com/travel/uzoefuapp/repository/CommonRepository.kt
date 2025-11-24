@@ -24,6 +24,7 @@ import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistResponse
 import com.travel.uzoefuapp.categoryModel.CategoryResponse
 import com.travel.uzoefuapp.changePasswordModel.ChangePasswordBody
 import com.travel.uzoefuapp.changePasswordModel.ChangePasswordResponse
+import com.travel.uzoefuapp.deleteAccountModel.DeleteAccountResponse
 import com.travel.uzoefuapp.deleteWishlistModel.DeleteWishlistBody
 import com.travel.uzoefuapp.deleteWishlistModel.DeleteWishlistResponse
 import com.travel.uzoefuapp.detailModel.DetailPageBody
@@ -276,6 +277,10 @@ class CommonRepository @Inject constructor(private val services: ApiServices) {
 
     fun userShareReward(body: UserShareRewardBody): Observable<UserShareRewardResponse> {
         return services.userShareReward(body, Uzoefu.encryptedPrefs.bearerToken)
+    }
+
+    fun deleteAccount(): Observable<DeleteAccountResponse>{
+        return services.deleteAccount(Uzoefu.encryptedPrefs.bearerToken)
     }
 
     suspend fun makePayment(

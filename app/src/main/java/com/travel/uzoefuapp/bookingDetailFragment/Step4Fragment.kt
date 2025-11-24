@@ -23,7 +23,6 @@ import dagger.hilt.android.AndroidEntryPoint
 class Step4Fragment : Fragment() {
     private var _binding: FragmentStep4Binding? = null
     private val binding get() = _binding!!
-
     private var activityId: String? = null
     private var productName: String? = null
     private var paymentUrl: String? = null

@@ -60,6 +60,10 @@ class DetailPageResponse : Serializable {
         @Expose
         var amenities: List<Amenity>? = null
 
+        @SerializedName("operationhour")
+        @Expose
+        var operationhour: List<Operationhour>? = null
+
         @SerializedName("images")
         @Expose
         var images: List<Image>? = null
@@ -95,6 +99,44 @@ class DetailPageResponse : Serializable {
         @SerializedName("today_hours")
         @Expose
         var todayHours: String? = null
+
+        inner class Operationhour {
+            @SerializedName("id")
+            @Expose
+            var id: Int? = null
+
+            @SerializedName("activity_id")
+            @Expose
+            var activityId: Int? = null
+
+            @SerializedName("user_id")
+            @Expose
+            var userId: Int? = null
+
+            @SerializedName("no_people")
+            @Expose
+            var noPeople: Int? = null
+
+            @SerializedName("group")
+            @Expose
+            var group: Int? = null
+
+            @SerializedName("day")
+            @Expose
+            var day: String? = null
+
+            @SerializedName("time")
+            @Expose
+            var time: List<String>? = null
+
+            @SerializedName("created_at")
+            @Expose
+            var createdAt: String? = null
+
+            @SerializedName("updated_at")
+            @Expose
+            var updatedAt: String? = null
+        }
 
         inner class Amenity {
             @SerializedName("id")
@@ -890,7 +932,7 @@ class DetailPageResponse : Serializable {
                 @Expose
                 var state: State? = null
 
-                inner class State{
+                inner class State {
                     @SerializedName("id")
                     @Expose
                     var id: Int? = null

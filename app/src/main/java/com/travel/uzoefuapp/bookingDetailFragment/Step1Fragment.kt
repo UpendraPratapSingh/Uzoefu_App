@@ -95,9 +95,6 @@ class Step1Fragment() :
         }
         binding.datePicker.setOnClickListener { datePickerCode() }
 
-        Log.e("SelectDate", "Selected Time: AAAAAAAAA $selectedTime")
-
-
         binding.tvTitle.text = address + town
         binding.tvSubtitle.text = productName
 
@@ -116,15 +113,10 @@ class Step1Fragment() :
                 val sharedPref =
                     requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
                 sharedPref.edit().putString("selected_time", selectedTime).apply()
-                Log.e("SelectDate", "onCreateView: AAAAAAAAA $selectedDate")
-                Log.e("SelectDate", "onCreateView: AAAAAAAAA $selectedTime")
             } else {
                 val sharedPref =
                     requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
                 sharedPref.edit().putString("selected_time", selectedTime).apply()
-                Log.e("SelectDate", "onCreateView: AAAAAAAAA $selectedDate")
-                Log.e("SelectDate", "onCreateView: AAAAAAAAA $selectedTime")
-
             }
         } else {
             binding.tvSelectedTime.text = selectedTime
@@ -134,15 +126,13 @@ class Step1Fragment() :
             val sharedPref =
                 requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
             sharedPref.edit().putString("selected_time", selectedTime).apply()
-            Log.e("SelectDate", "onCreateView: AAAAAAAAA $selectedDate")
-            Log.e("SelectDate", "onCreateView: AAAAAAAAA $selectedTime")
         }
 
         activityId?.let { saveActivityIdLocally(it) }
         // priceCalculateApi()
         priceCalculateObserver()
         priceCalculateApi()
-        activityTimeApi()
+        activityTimeApi(selectedDate)
 
         binding.selectTime.setOnClickListener {
             showTimeSlotPopup(it, binding.tvSelectedTime, selectedDate)
@@ -177,7 +167,6 @@ class Step1Fragment() :
                 triggerPriceCalculation()
             }
         }
-
         return binding.root
     }
 
@@ -192,24 +181,14 @@ class Step1Fragment() :
             return
         }
 
-        val dayName = getDayNameFromDate(selectedDate)
-
         activityTimeViewModel.activityTimeResponse.observe(viewLifecycleOwner) { response ->
             val success = response.peekContent().success
             val data = response.peekContent().data
 
             if (success == true && !data.isNullOrEmpty()) {
-                val dayData = data.find { it.day.equals(dayName, ignoreCase = true) }
-                val timeSlots = dayData?.availableTimes ?: emptyList()
 
-                if (timeSlots.isEmpty()) {
-                    Toast.makeText(
-                        requireContext(),
-                        "No time slots available for $dayName",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    return@observe
-                }
+                // API gives correct time slots directly
+                val timeSlots: List<String> = data.map { it.time ?: "Unknown" }
 
                 val popupView = LayoutInflater.from(requireContext())
                     .inflate(R.layout.popup_time_slots, null)
@@ -226,22 +205,98 @@ class Step1Fragment() :
                 }
 
                 val rvTimeSlotsPopup = popupView.findViewById<RecyclerView>(R.id.rvTimeSlotsPopup)
-                /*val adapter = TimeSlotAdapter(timeSlots) { selectedTime ->
-                    tvSelectedTime.text = selectedTime
-                    val sharedPref = requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
-                    sharedPref.edit().putString("selected_time", selectedTime).apply()
-                    popupWindow.dismiss()
-                }*/
 
                 val sharedPref =
                     requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
 
-// Agar TextView me "Select Time" hai, toh previous saved data remove karo
+                // Reset saved time if default text
                 if (tvSelectedTime.text.toString() == "Select Time") {
                     sharedPref.edit().remove("selected_time").apply()
                 }
 
-// Fir Adapter set karo
+                val adapter = TimeSlotAdapter(timeSlots) { selectedTime ->
+                    tvSelectedTime.text = selectedTime
+                    sharedPref.edit().putString("selected_time", selectedTime).apply()
+                    popupWindow.dismiss()
+                }
+
+                rvTimeSlotsPopup.layoutManager = GridLayoutManager(requireContext(), 4)
+                rvTimeSlotsPopup.adapter = adapter
+
+                popupWindow.showAsDropDown(anchorView)
+
+            } else {
+                Toast.makeText(requireContext(), "No time slots found", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        activityTimeViewModel.errorResponse.observe(viewLifecycleOwner) {
+            ErrorUtil.handlerGeneralError(requireActivity(), it)
+        }
+    }
+
+    /*    private fun showTimeSlotPopup(
+            anchorView: View,
+            tvSelectedTime: TextView,
+            selectedDate: String
+        ) {
+            if (selectedDate.isEmpty()) {
+                Toast.makeText(requireContext(), "Please select a date first", Toast.LENGTH_SHORT)
+                    .show()
+                return
+            }
+
+            val dayName = getDayNameFromDate(selectedDate)
+
+            activityTimeViewModel.activityTimeResponse.observe(viewLifecycleOwner) { response ->
+                val success = response.peekContent().success
+                val data = response.peekContent().data
+
+                if (success == true && !data.isNullOrEmpty()) {
+                    val dayData = data.find { it.time.equals(dayName, ignoreCase = true) }
+                    val timeSlots = dayData?.time ?: emptyList()
+
+
+                    if (timeSlots.isEmpty()) {
+                        Toast.makeText(
+                            requireContext(),
+                            "No time slots available for $dayName",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        return@observe
+                    }
+
+                    val popupView = LayoutInflater.from(requireContext())
+                        .inflate(R.layout.popup_time_slots, null)
+
+                    val popupWindow = PopupWindow(
+                        popupView,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        true
+                    ).apply {
+                        setBackgroundDrawable(ColorDrawable(Color.WHITE))
+                        isOutsideTouchable = true
+                        isFocusable = true
+                    }
+
+                    val rvTimeSlotsPopup = popupView.findViewById<RecyclerView>(R.id.rvTimeSlotsPopup)
+                    *//*val adapter = TimeSlotAdapter(timeSlots) { selectedTime ->
+                    tvSelectedTime.text = selectedTime
+                    val sharedPref = requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
+                    sharedPref.edit().putString("selected_time", selectedTime).apply()
+                    popupWindow.dismiss()
+                }*//*
+
+                val sharedPref =
+                    requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
+
+                // Agar TextView me "Select Time" hai, toh previous saved data remove karo
+                if (tvSelectedTime.text.toString() == "Select Time") {
+                    sharedPref.edit().remove("selected_time").apply()
+                }
+
+               // Fir Adapter set karo
                 val adapter = TimeSlotAdapter(timeSlots) { selectedTime ->
                     tvSelectedTime.text = selectedTime
                     sharedPref.edit().putString("selected_time", selectedTime).apply()
@@ -263,7 +318,7 @@ class Step1Fragment() :
         activityTimeViewModel.errorResponse.observe(viewLifecycleOwner) {
             ErrorUtil.handlerGeneralError(requireActivity(), it)
         }
-    }
+    }*/
 
     private fun getDayNameFromDate(dateString: String): String {
         val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
@@ -340,15 +395,13 @@ class Step1Fragment() :
         }
     */
 
-
-    private fun activityTimeApi() {
+    private fun activityTimeApi(selectedDay: String) {
         val body = ActivityTimeBody(
-            activityId = activityId.toString()
+            activityId = activityId.toString(),
+            date = selectedDay.toString()
         )
         activityTimeViewModel.activityTimeApi(requireActivity(), progressDialog, body)
-
     }
-
 
     private fun saveActivityIdLocally(activityId: String) {
         val prefs = requireContext().getSharedPreferences("MyPrefs", 0)
@@ -363,8 +416,8 @@ class Step1Fragment() :
         val subtotal = (adultCount * adultPrice) + (kidCount * childPrice)
         val total = subtotal
 
-        binding.tvSubtotal.text = "R$subtotal"
-        binding.tvTotal.text = "R$total"
+        binding.tvSubtotal.text = "R $subtotal"
+        binding.tvTotal.text = "R $total"
     }
 
     private fun triggerPriceCalculation() {
@@ -439,6 +492,31 @@ class Step1Fragment() :
         }
     }
 
+    /*
+        private fun datePickerCode() {
+            val calendar = Calendar.getInstance()
+            val year = calendar.get(Calendar.YEAR)
+            val month = calendar.get(Calendar.MONTH)
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+            val datePickerDialog = DatePickerDialog(
+                requireContext(),
+                { _, selectedYear, selectedMonth, selectedDay ->
+                    val monthFormatted = String.format("%02d", selectedMonth + 1)
+                    val dayFormatted = String.format("%02d", selectedDay)
+
+                    selectedDate = "$selectedYear-$monthFormatted-$dayFormatted"
+
+                    binding.tvDate.text = selectedDate
+                    triggerPriceCalculation()
+                    activityTimeApi(selectedDay)
+                },
+                year, month, day
+            )
+            datePickerDialog.datePicker.minDate = calendar.timeInMillis
+            datePickerDialog.show()
+        }
+    */
     private fun datePickerCode() {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)
@@ -454,11 +532,18 @@ class Step1Fragment() :
                 selectedDate = "$selectedYear-$monthFormatted-$dayFormatted"
 
                 binding.tvDate.text = selectedDate
+
                 triggerPriceCalculation()
+
+                // 🚀 Always send FULL date in string format
+                activityTimeApi(selectedDate)
             },
             year, month, day
         )
+
         datePickerDialog.datePicker.minDate = calendar.timeInMillis
         datePickerDialog.show()
     }
+
+
 }

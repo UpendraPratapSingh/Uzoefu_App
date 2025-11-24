@@ -3,6 +3,7 @@ package com.travel.uzoefuapp.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.travel.uzoefuapp.profileFragment.ChangePasswordFragment
 import com.travel.uzoefuapp.profileFragment.CompanyFragment
 import com.travel.uzoefuapp.profileFragment.OverviewFragment
 import com.travel.uzoefuapp.profileFragment.ProfileDetailFragment

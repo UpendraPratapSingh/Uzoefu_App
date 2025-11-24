@@ -24,6 +24,7 @@ import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistResponse
 import com.travel.uzoefuapp.categoryModel.CategoryResponse
 import com.travel.uzoefuapp.changePasswordModel.ChangePasswordBody
 import com.travel.uzoefuapp.changePasswordModel.ChangePasswordResponse
+import com.travel.uzoefuapp.deleteAccountModel.DeleteAccountResponse
 import com.travel.uzoefuapp.deleteWishlistModel.DeleteWishlistBody
 import com.travel.uzoefuapp.deleteWishlistModel.DeleteWishlistResponse
 import com.travel.uzoefuapp.detailModel.DetailPageBody
@@ -347,5 +348,10 @@ interface ApiServices {
         @Body body: UserShareRewardBody,
         @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
     ): Observable<UserShareRewardResponse>
+
+    @POST("account/delete")
+    fun deleteAccount(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
+    ): Observable<DeleteAccountResponse>
 
 }

@@ -53,7 +53,6 @@ class InformationAdapter(
         if (item.isExpanded) {
             holder.containerContent.visibility = View.VISIBLE
 
-            // Add business hours if available
             item.hours?.forEach { hour ->
                 val row = LayoutInflater.from(holder.itemView.context)
                     .inflate(R.layout.item_business_hour, holder.containerContent, false)
@@ -62,9 +61,8 @@ class InformationAdapter(
                 holder.containerContent.addView(row)
             }
 
-            // Add answer text if available
             item.answer?.let { answerText ->
-                val formattedText = answerText.replace("\n", "<br>") // convert line breaks to HTML
+                val formattedText = answerText.replace("\n", "<br>")
                 val textView = TextView(holder.itemView.context).apply {
                     text = Html.fromHtml(formattedText, Html.FROM_HTML_MODE_LEGACY)
                     setTextColor(Color.DKGRAY)
@@ -75,7 +73,6 @@ class InformationAdapter(
                 }
                 holder.containerContent.addView(textView)
             }
-
         } else {
             holder.containerContent.visibility = View.GONE
         }

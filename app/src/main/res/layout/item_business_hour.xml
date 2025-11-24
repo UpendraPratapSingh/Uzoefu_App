@@ -4,27 +4,32 @@
     android:orientation="vertical"
     android:padding="8dp">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="top"
         android:orientation="horizontal"
-        android:paddingVertical="2dp">
+        android:paddingVertical="4dp">
 
         <TextView
             android:id="@+id/tvDay"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:paddingEnd="8dp"
             android:text="Monday"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvTime"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.5"
-            android:text="09:00 - 17:00"
+            android:layout_weight="2"
+            android:ellipsize="end"
+            android:lineSpacingExtra="2dp"
+            android:maxLines="5"
+            android:text="09:00 - 17:00, 09:00 - 17:00, 09:00 - 17:00, 09:00 - 17:00"
             android:textColor="@android:color/darker_gray"
             android:textSize="14sp" />
 

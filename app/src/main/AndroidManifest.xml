@@ -19,6 +19,12 @@
         android:theme="@style/Base.Theme.UzoefuApp"
         tools:targetApi="31">
         <activity
+            android:name=".activities.PermissionActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.DeleteAccountActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.ChangePasswordActivity"
             android:exported="false" />
         <activity
@@ -122,8 +128,8 @@
             android:name=".companyActivities.BookingProductActivity"
             android:exported="true"
             android:screenOrientation="portrait">
-
             <intent-filter android:autoVerify="true">
+
                 <!-- HTTP / HTTPS links ke liye -->
                 <action android:name="android.intent.action.VIEW" />
 
@@ -135,9 +141,7 @@
                     android:pathPrefix="/reward"
                     android:scheme="https" />
             </intent-filter>
-
         </activity>
-
         <activity
             android:name=".companyActivities.CompanyLandingActivity"
             android:exported="false" />

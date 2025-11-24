@@ -23,7 +23,10 @@ import androidx.core.content.FileProvider
 import androidx.fragment.app.viewModels
 import com.bumptech.glide.Glide
 import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.activities.ChangePasswordActivity
+import com.travel.uzoefuapp.activities.DeleteAccountActivity
 import com.travel.uzoefuapp.activities.LoginActivity
+import com.travel.uzoefuapp.activities.PermissionActivity
 import com.travel.uzoefuapp.activities.TermAndConditionActivity
 import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.bookingActivities.BookListActivity
@@ -65,7 +68,7 @@ class OverviewFragment : Fragment() {
     ): View {
         _binding = FragmentOverviewBinding.inflate(inflater, container, false)
 
-        //Called Observer
+        //Called api and Observer
         getProfileApi()
         overviewApi()
         getProfileObserver()
@@ -96,16 +99,15 @@ class OverviewFragment : Fragment() {
         }
 
         binding.termAndCondition.setOnClickListener {
-            val intent = Intent(requireContext(), TermAndConditionActivity::class.java)
+            val intent = Intent(requireContext(), DeleteAccountActivity::class.java)
             intent.putExtra("page_type", "terms")
             startActivity(intent)
         }
 
         binding.privacyAndPolicy.setOnClickListener {
-            val intent = Intent(requireContext(), TermAndConditionActivity::class.java)
+            val intent = Intent(requireContext(), PermissionActivity::class.java)
             intent.putExtra("page_type", "privacy")
             startActivity(intent)
-
         }
 
         binding.reviewLayout.setOnClickListener {
@@ -117,7 +119,8 @@ class OverviewFragment : Fragment() {
         }
 
         binding.profileDetailLayout.setOnClickListener {
-            tabSwitchListener?.switchToProfile(1)
+            val intent = Intent(requireContext(), ChangePasswordActivity::class.java)
+            startActivity(intent)
         }
 
         binding.logoutAccount.setOnClickListener { openLogoutCustomPopup() }
@@ -146,7 +149,6 @@ class OverviewFragment : Fragment() {
     private fun getRewardListApi() {
         rewardViewModel.rewardListApi(requireActivity(), progressDialog)
     }
-
 
     private fun overviewObserver() {
         overviewViewModel.progressIndicator.observe(viewLifecycleOwner) {

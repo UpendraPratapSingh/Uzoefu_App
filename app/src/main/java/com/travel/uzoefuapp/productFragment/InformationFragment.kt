@@ -29,7 +29,6 @@ class InformationFragment : Fragment() {
     private var informationList: List<DetailPageResponse.Data.Hours> = ArrayList()
     private var indemnityAnswer: String = ""
 
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,6 +37,7 @@ class InformationFragment : Fragment() {
         _binding = FragmentInformationBinding.inflate(inflater, container, false)
         categoryId = arguments?.getInt("categoryId")
 
+        //observer class
         setupObserver()
         getDetailApi()
 
@@ -49,85 +49,122 @@ class InformationFragment : Fragment() {
             activity_id = categoryId.toString()
         )
         detailPageViewModel.getDetailPageApi(progressDialog, requireActivity(), body)
-
     }
 
     private fun setupObserver() {
-        detailPageViewModel.progressIndicator.observe(viewLifecycleOwner) {}
+        detailPageViewModel.progressIndicator.observe(viewLifecycleOwner) {
 
+        }
         detailPageViewModel.mCategoryResponse.observe(viewLifecycleOwner) { response ->
             val success = response.peekContent().success
             val message = response.peekContent().message
 
             if (success == true) {
-                val hoursData = response.peekContent().data?.hours
-
+                val hoursData = response.peekContent().data?.operationhour
                 // Convert API Hours into ExpandableItem
                 val expandableList = mutableListOf<ExpandableItem>()
 
-                hoursData?.let { apiHours ->
+                /*
+                                hoursData?.let { apiHours ->
+                                    val businessHours = mutableListOf<BusinessHour>()
+                                    apiHours.?.let {
+                                        businessHours.add(
+                                            BusinessHour(
+                                                "Monday",
+                                                "${apiHours.monFrom} - ${apiHours.monTo}"
+                                            )
+                                        )
+                                    }
+                                    apiHours.tueFrom?.let {
+                                        businessHours.add(
+                                            BusinessHour(
+                                                "Tuesday",
+                                                "${apiHours.tueFrom} - ${apiHours.tueTo}"
+                                            )
+                                        )
+                                    }
+                                    apiHours.wedFrom?.let {
+                                        businessHours.add(
+                                            BusinessHour(
+                                                "Wednesday",
+                                                "${apiHours.wedFrom} - ${apiHours.wedTo}"
+                                            )
+                                        )
+                                    }
+                                    apiHours.thuFrom?.let {
+                                        businessHours.add(
+                                            BusinessHour(
+                                                "Thursday",
+                                                "${apiHours.thuFrom} - ${apiHours.thuTo}"
+                                            )
+                                        )
+                                    }
+                                    apiHours.friFrom?.let {
+                                        businessHours.add(
+                                            BusinessHour(
+                                                "Friday",
+                                                "${apiHours.friFrom} - ${apiHours.friTo}"
+                                            )
+                                        )
+                                    }
+                                    apiHours.satFrom?.let {
+                                        businessHours.add(
+                                            BusinessHour(
+                                                "Saturday",
+                                                "${apiHours.satFrom} - ${apiHours.satTo}"
+                                            )
+                                        )
+                                    }
+                                    apiHours.sunFrom?.let {
+                                        businessHours.add(
+                                            BusinessHour(
+                                                "Sunday",
+                                                "${apiHours.sunFrom} - ${apiHours.sunTo}"
+                                            )
+                                        )
+                                    }
+                                    apiHours.publicMonFrom?.let {
+                                        businessHours.add(
+                                            BusinessHour(
+                                                "Public Holiday Hours",
+                                                "${apiHours.publicMonFrom} - ${apiHours.publicMonTo}"
+                                            )
+                                        )
+                                    }
+
+                                    expandableList.add(
+                                        ExpandableItem("Activity Hours", hours = businessHours)
+                                    )
+                                }
+                */
+
+                hoursData?.let { apiHoursList ->
+
                     val businessHours = mutableListOf<BusinessHour>()
-                    apiHours.monFrom?.let {
+
+                    apiHoursList.forEach { item ->
+
+                        val fullDay = when (item.day) {
+                            "Mon" -> "Monday"
+                            "Tue" -> "Tuesday"
+                            "Wed" -> "Wednesday"
+                            "Thu" -> "Thursday"
+                            "Fri" -> "Friday"
+                            "Sat" -> "Saturday"
+                            "Sun" -> "Sunday"
+                            else -> item.day
+                        }
+
+                        val timeText = if (item.time?.isNotEmpty() == true) {
+                            item.time!!.joinToString(", ")
+                        } else {
+                            "Closed"
+                        }
+
                         businessHours.add(
                             BusinessHour(
-                                "Monday",
-                                "${apiHours.monFrom} - ${apiHours.monTo}"
-                            )
-                        )
-                    }
-                    apiHours.tueFrom?.let {
-                        businessHours.add(
-                            BusinessHour(
-                                "Tuesday",
-                                "${apiHours.tueFrom} - ${apiHours.tueTo}"
-                            )
-                        )
-                    }
-                    apiHours.wedFrom?.let {
-                        businessHours.add(
-                            BusinessHour(
-                                "Wednesday",
-                                "${apiHours.wedFrom} - ${apiHours.wedTo}"
-                            )
-                        )
-                    }
-                    apiHours.thuFrom?.let {
-                        businessHours.add(
-                            BusinessHour(
-                                "Thursday",
-                                "${apiHours.thuFrom} - ${apiHours.thuTo}"
-                            )
-                        )
-                    }
-                    apiHours.friFrom?.let {
-                        businessHours.add(
-                            BusinessHour(
-                                "Friday",
-                                "${apiHours.friFrom} - ${apiHours.friTo}"
-                            )
-                        )
-                    }
-                    apiHours.satFrom?.let {
-                        businessHours.add(
-                            BusinessHour(
-                                "Saturday",
-                                "${apiHours.satFrom} - ${apiHours.satTo}"
-                            )
-                        )
-                    }
-                    apiHours.sunFrom?.let {
-                        businessHours.add(
-                            BusinessHour(
-                                "Sunday",
-                                "${apiHours.sunFrom} - ${apiHours.sunTo}"
-                            )
-                        )
-                    }
-                    apiHours.publicMonFrom?.let {
-                        businessHours.add(
-                            BusinessHour(
-                                "Public Holiday Hours",
-                                "${apiHours.publicMonFrom} - ${apiHours.publicMonTo}"
+                                day = fullDay.toString(),
+                                time = timeText
                             )
                         )
                     }
