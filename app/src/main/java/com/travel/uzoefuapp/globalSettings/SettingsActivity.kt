@@ -2,7 +2,6 @@ package com.travel.uzoefuapp.globalSettings
 
 import CustomProgressDialog
 import android.annotation.SuppressLint
-import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -10,7 +9,6 @@ import android.view.View
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -18,13 +16,10 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import androidx.lifecycle.viewModelScope
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.R
-import com.travel.uzoefuapp.activities.FeedbackActivity
-import com.travel.uzoefuapp.activities.HelpCentreActivity
 import com.travel.uzoefuapp.activities.LoginActivity
-import com.travel.uzoefuapp.activities.SettingActivity
+import com.travel.uzoefuapp.activities.SupportActivity
 import com.travel.uzoefuapp.activities.TermAndConditionActivity
 import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.databinding.ActivitySettingsBinding
@@ -33,7 +28,6 @@ import com.travel.uzoefuapp.notification.NotificationActivity
 import com.travel.uzoefuapp.notificationModel.NotificationCountViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
-
 
 @AndroidEntryPoint
 class SettingsActivity : AppCompatActivity() {
@@ -141,42 +135,43 @@ class SettingsActivity : AppCompatActivity() {
         val helpLayout = view.findViewById<LinearLayout>(R.id.helpLayout)
         val feedbackLayout = view.findViewById<LinearLayout>(R.id.feedbackLayout)
         val legalLayout = view.findViewById<LinearLayout>(R.id.legalLayout)
-        val shareLayout = view.findViewById<LinearLayout>(R.id.shareLayout)
-        val signOutLayout = view.findViewById<LinearLayout>(R.id.signOutLayout)
         val referralLayout = view.findViewById<LinearLayout>(R.id.referralLayout)
 
         aboutLayout.setOnClickListener {
-            val webView = binding.webViewAboutUs
-            setupWebView(webView)
-            webView.loadUrl("https://mobappswebsolutions.com/uzoefu/aboutUs")
+            val intent = Intent(this, TermAndConditionActivity::class.java)
+            intent.putExtra("page_type", "terms")
+            startActivity(intent)
             bottomSheetDialog.dismiss()
         }
 
         settingsLayout.setOnClickListener {
-            val intent = Intent(this, SettingActivity::class.java)
+            val intent = Intent(this, TermAndConditionActivity::class.java)
+            intent.putExtra("page_type", "privacy")
             startActivity(intent)
         }
 
         helpLayout.setOnClickListener {
-            val intent = Intent(this, HelpCentreActivity::class.java)
+            val intent = Intent(this, TermAndConditionActivity::class.java)
+            intent.putExtra("page_type", "refund")
+
             startActivity(intent)
         }
 
         feedbackLayout.setOnClickListener {
-            val intent = Intent(this, FeedbackActivity::class.java)
+            val intent = Intent(this, TermAndConditionActivity::class.java)
+            intent.putExtra("page_type", "faq")
             startActivity(intent)
         }
 
         legalLayout.setOnClickListener {
-            val intent = Intent(this, TermAndConditionActivity::class.java)
-            intent.putExtra("page_type", "terms")
+            val intent = Intent(this, SupportActivity::class.java)
             startActivity(intent)
         }
 
         referralLayout.setOnClickListener {
             val referCode = Uzoefu.encryptedPrefs.statusDone
-            val referLink = "https://yourapp.com/referral?code=$referCode"
-            // val referLink = "https://uzoefu.co.za/reward/$referCode"
+            //val referLink = "https://yourapp.com/referral?code=$referCode"
+            val referLink = "https://uzoefu.co.za/reward/$referCode"
 
             Log.e("referralCode", "showSettingsBottomSheetAAAAAAAAAAAA $referCode")
 
@@ -215,29 +210,6 @@ class SettingsActivity : AppCompatActivity() {
 
             startActivity(Intent.createChooser(intent, "Share via"))
         }
-
-        shareLayout.setOnClickListener {
-            val shareIntent = Intent(Intent.ACTION_SEND)
-            shareIntent.type = "text/plain"
-
-            val appLink = "https://play.google.com/store/apps/details?id=${packageName}"
-
-            shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Check out this app!")
-            shareIntent.putExtra(
-                Intent.EXTRA_TEXT,
-                "Hey! I found this awesome app. Download it here:\n$appLink"
-            )
-
-            startActivity(Intent.createChooser(shareIntent, "Share app via"))
-
-            bottomSheetDialog.dismiss()
-
-        }
-
-        signOutLayout.setOnClickListener {
-            openLogoutCustomPopup()
-            bottomSheetDialog.dismiss()
-        }
         bottomSheetDialog.show()
     }
 
@@ -268,30 +240,4 @@ class SettingsActivity : AppCompatActivity() {
             ErrorUtil.handlerGeneralError(this, it)
         }
     }
-
-    private fun openLogoutCustomPopup() {
-        val dialogView = layoutInflater.inflate(R.layout.logout_popup, null)
-
-        val dialog = AlertDialog.Builder(this)
-            .setView(dialogView)
-            .setCancelable(false)
-            .create()
-
-        dialogView.findViewById<Button>(R.id.btnCancel).setOnClickListener {
-            dialog.dismiss()
-        }
-
-        dialogView.findViewById<Button>(R.id.btnLogout).setOnClickListener {
-            dialog.dismiss()
-            logoutApi()
-        }
-
-        dialog.window?.setBackgroundDrawableResource(android.R.color.transparent)
-        dialog.show()
-    }
-
-    private fun logoutApi() {
-        logoutViewModel.userLogoutApi(progressDialog, this)
-    }
-
 }

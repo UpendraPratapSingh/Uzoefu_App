@@ -20,6 +20,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activityTimeModel.ActivityTimeBody
+import com.travel.uzoefuapp.activityTimeModel.ActivityTimeResponse
 import com.travel.uzoefuapp.activityTimeModel.ActivityTimeViewModel
 import com.travel.uzoefuapp.adapter.TimeSlotAdapter
 import com.travel.uzoefuapp.databinding.FragmentStep1Binding
@@ -50,6 +51,8 @@ class Step1Fragment() :
     private var productName: String? = null
     private var selectedTime: String? = null
     private var selectedDatePre: String? = null
+    private var availableSeat: Int = 0
+    private var activityTimeList: List<ActivityTimeResponse.Datum> = emptyList()
 
     companion object {
         fun newInstance(
@@ -139,9 +142,17 @@ class Step1Fragment() :
         }
 
         binding.btnPlusAdult.setOnClickListener {
-            adultCount++
-            binding.tvAdultCount.text = adultCount.toString()
-            triggerPriceCalculation()
+            if (adultCount + kidCount < availableSeat) {
+                adultCount++
+                binding.tvAdultCount.text = adultCount.toString()
+                triggerPriceCalculation()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Only $availableSeat seats available",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
         binding.btnMinusAdult.setOnClickListener {
@@ -153,10 +164,18 @@ class Step1Fragment() :
         }
 
         binding.btnPlusKid.setOnClickListener {
-            kidCount++
-            binding.tvKidCount.text = kidCount.toString()
-            calculateLocalPrice()
-            triggerPriceCalculation()
+            if (adultCount + kidCount < availableSeat) {
+                kidCount++
+                binding.tvKidCount.text = kidCount.toString()
+                calculateLocalPrice()
+                triggerPriceCalculation()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Only $availableSeat seats available",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
         binding.btnMinusKids.setOnClickListener {
@@ -167,6 +186,7 @@ class Step1Fragment() :
                 triggerPriceCalculation()
             }
         }
+
         return binding.root
     }
 
@@ -182,12 +202,15 @@ class Step1Fragment() :
         }
 
         activityTimeViewModel.activityTimeResponse.observe(viewLifecycleOwner) { response ->
+
             val success = response.peekContent().success
             val data = response.peekContent().data
 
             if (success == true && !data.isNullOrEmpty()) {
 
-                // API gives correct time slots directly
+                // Save full list
+                activityTimeList = data
+
                 val timeSlots: List<String> = data.map { it.time ?: "Unknown" }
 
                 val popupView = LayoutInflater.from(requireContext())
@@ -209,14 +232,32 @@ class Step1Fragment() :
                 val sharedPref =
                     requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
 
-                // Reset saved time if default text
-                if (tvSelectedTime.text.toString() == "Select Time") {
-                    sharedPref.edit().remove("selected_time").apply()
-                }
-
                 val adapter = TimeSlotAdapter(timeSlots) { selectedTime ->
+
                     tvSelectedTime.text = selectedTime
+
+                    // Save time
                     sharedPref.edit().putString("selected_time", selectedTime).apply()
+
+                    // --- IMPORTANT ---
+                    // Find index of selected time → get correct availableSeat
+                    val index = timeSlots.indexOf(selectedTime)
+
+                    if (index != -1) {
+                        availableSeat = activityTimeList[index].available ?: 0
+                    }
+
+                    // Toast.makeText(requireContext(), "Seats Available: $availableSeat", Toast.LENGTH_SHORT).show()
+
+                    // ⭐ RESET PASSENGER COUNTS WHEN TIME CHANGES
+                    adultCount = 1     // or 0 — jo aap chaho
+                    kidCount = 0
+
+                    binding.tvAdultCount.text = adultCount.toString()
+                    binding.tvKidCount.text = kidCount.toString()
+
+                    triggerPriceCalculation()
+
                     popupWindow.dismiss()
                 }
 
@@ -517,6 +558,7 @@ class Step1Fragment() :
             datePickerDialog.show()
         }
     */
+
     private fun datePickerCode() {
         val calendar = Calendar.getInstance()
         val year = calendar.get(Calendar.YEAR)

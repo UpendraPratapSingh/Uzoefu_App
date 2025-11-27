@@ -78,6 +78,8 @@ dependencies {
     implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("com.google.android.material:material:1.10.0")
 
+    implementation ("com.hbb20:ccp:2.5.1")
+
     implementation("com.tbuonomo:dotsindicator:4.3")
     implementation("androidx.media3:media3-exoplayer:1.3.1")
     implementation("androidx.media3:media3-ui:1.3.1")

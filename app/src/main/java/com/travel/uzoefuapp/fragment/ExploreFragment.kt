@@ -1,28 +1,34 @@
 package com.travel.uzoefuapp.fragment
 
 import CustomProgressDialog
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.R
+import com.travel.uzoefuapp.activities.SupportActivity
+import com.travel.uzoefuapp.activities.TermAndConditionActivity
 import com.travel.uzoefuapp.activityModl.ActivityResponse
 import com.travel.uzoefuapp.adapter.DestinationAdapter
 import com.travel.uzoefuapp.adapter.DestinationCategoryAdapter
 import com.travel.uzoefuapp.adapter.OnWishlistClickListener
+import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistBody
 import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistViewModel
 import com.travel.uzoefuapp.databinding.FragmentExploreBinding
 import com.travel.uzoefuapp.discoverDestinationModel.DiscoverDestinationResponse
 import com.travel.uzoefuapp.discoverDestinationModel.DiscoverDestinationViewModel
-import com.travel.uzoefuapp.globalSettings.SettingsActivity
 import com.travel.uzoefuapp.notification.NotificationActivity
 import com.travel.uzoefuapp.notificationModel.NotificationCountViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
@@ -58,8 +64,7 @@ class ExploreFragment : Fragment(), OnWishlistClickListener {
         notificationCountObserver()
 
         binding.menuIcon.setOnClickListener {
-            val intent = Intent(requireContext(), SettingsActivity::class.java)
-            startActivity(intent)
+            showSettingsBottomSheet()
         }
 
         binding.notificationLayout.setOnClickListener {
@@ -68,10 +73,98 @@ class ExploreFragment : Fragment(), OnWishlistClickListener {
         }
 
         binding.menuIcon.setOnClickListener {
-            val intent = Intent(requireContext(), SettingsActivity::class.java)
-            startActivity(intent)
+            showSettingsBottomSheet()
         }
         return binding.root
+    }
+
+    @SuppressLint("MissingInflatedId")
+    private fun showSettingsBottomSheet() {
+        val bottomSheetDialog = BottomSheetDialog(requireContext())
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_settings, null)
+        bottomSheetDialog.setContentView(view)
+
+        val aboutLayout = view.findViewById<LinearLayout>(R.id.aboutLayout)
+        val settingsLayout = view.findViewById<LinearLayout>(R.id.settingsLayout)
+        val helpLayout = view.findViewById<LinearLayout>(R.id.helpLayout)
+        val feedbackLayout = view.findViewById<LinearLayout>(R.id.feedbackLayout)
+        val legalLayout = view.findViewById<LinearLayout>(R.id.legalLayout)
+        val referralLayout = view.findViewById<LinearLayout>(R.id.referralLayout)
+
+        aboutLayout.setOnClickListener {
+            val intent = Intent(requireContext(), TermAndConditionActivity::class.java)
+            intent.putExtra("page_type", "terms")
+            startActivity(intent)
+            bottomSheetDialog.dismiss()
+        }
+
+        settingsLayout.setOnClickListener {
+            val intent = Intent(requireContext(), TermAndConditionActivity::class.java)
+            intent.putExtra("page_type", "privacy")
+            startActivity(intent)
+        }
+
+        helpLayout.setOnClickListener {
+            val intent = Intent(requireContext(), TermAndConditionActivity::class.java)
+            intent.putExtra("page_type", "refund")
+
+            startActivity(intent)
+        }
+
+        feedbackLayout.setOnClickListener {
+            val intent = Intent(requireContext(), TermAndConditionActivity::class.java)
+            intent.putExtra("page_type", "faq")
+            startActivity(intent)
+        }
+
+        legalLayout.setOnClickListener {
+            val intent = Intent(requireContext(), SupportActivity::class.java)
+            startActivity(intent)
+        }
+
+        referralLayout.setOnClickListener {
+            val referCode = Uzoefu.encryptedPrefs.statusDone
+            //val referLink = "https://yourapp.com/referral?code=$referCode"
+            val referLink = "https://uzoefu.co.za/reward/$referCode"
+
+            Log.e("referralCode", "showSettingsBottomSheetAAAAAAAAAAAA $referCode")
+
+            val shareMessage = """
+                
+        🎉✨ **Exclusive Offer Just for You!** ✨🎉
+        
+        Hey there! I’ve been using **Uzoefu App**, and it’s been an amazing experience.  
+        You can now join too — and guess what? You’ll get **₹150 bonus** just for signing up! 💰
+        
+        🔹 Here’s how it works:
+        1️⃣ Click on the link below to download or open the app  
+        2️⃣ Sign up using my referral code: **$referCode**  
+        3️⃣ You’ll instantly receive your reward once you complete your first activity! 🚀
+        
+        💡 **Why you’ll love Uzoefu App:**
+        - Easy and secure to use  
+        - Exciting rewards for every action  
+        - Trusted by thousands of happy users  
+        - Quick payouts and referral bonuses  
+
+        👉 Tap the link now to get started:  
+        $referLink
+
+        🌟 Don’t miss this chance — invite your friends and earn together! 🌟
+        
+        — Sent via Uzoefu ❤️
+        
+    """.trimIndent()
+
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_SUBJECT, "Invite & Earn ₹150 with Uzoefu App")
+                putExtra(Intent.EXTRA_TEXT, shareMessage)
+            }
+
+            startActivity(Intent.createChooser(intent, "Share via"))
+        }
+        bottomSheetDialog.show()
     }
 
     private fun branchAddToWishlistObserver() {

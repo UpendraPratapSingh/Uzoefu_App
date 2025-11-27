@@ -34,7 +34,7 @@ class PreferenceManager(context: Context) {
         )*/
 
     private val prefs = EncryptedSharedPreferences.create(
-        context, "myPreferences",
+        context, "YourEncryptedPreferencesFileNames",
         masterKey,
         EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
         EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM

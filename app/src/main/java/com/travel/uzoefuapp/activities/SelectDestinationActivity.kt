@@ -42,12 +42,12 @@ import com.travel.uzoefuapp.adapter.OnCategoryClickListener
 import com.travel.uzoefuapp.adapter.OnWishlistListener
 import com.travel.uzoefuapp.adapter.SelectPriceAdapter
 import com.travel.uzoefuapp.adapter.SelectedDestinationAdapter
+import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.categoryModel.CategoryResponse
 import com.travel.uzoefuapp.categoryModel.CategoryViewModel
 import com.travel.uzoefuapp.databinding.ActivitySelectDestinationBinding
 import com.travel.uzoefuapp.discoverDestinationModel.DestinationDetailResponse
 import com.travel.uzoefuapp.discoverDestinationModel.DestinationDetailViewModel
-import com.travel.uzoefuapp.globalSettings.SettingsActivity
 import com.travel.uzoefuapp.notification.NotificationActivity
 import com.travel.uzoefuapp.notificationModel.NotificationCountViewModel
 import com.travel.uzoefuapp.provinceModel.ProvinceViewModel
@@ -105,8 +105,7 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCat
         }
 
         binding.menuIcon.setOnClickListener {
-            val intent = Intent(this, SettingsActivity::class.java)
-            startActivity(intent)
+            showSettingsBottomSheet()
         }
 
         val categoryId = intent.getStringExtra("categoryId") ?: ""
@@ -141,6 +140,95 @@ class SelectDestinationActivity : AppCompatActivity(), OnWishlistListener, OnCat
             binding.textView.text = categoryName ?: ""
         }
         binding.filterData.setOnClickListener { showFilterPopup() }
+    }
+
+    @SuppressLint("MissingInflatedId")
+    private fun showSettingsBottomSheet() {
+        val bottomSheetDialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_settings, null)
+        bottomSheetDialog.setContentView(view)
+
+        val aboutLayout = view.findViewById<LinearLayout>(R.id.aboutLayout)
+        val settingsLayout = view.findViewById<LinearLayout>(R.id.settingsLayout)
+        val helpLayout = view.findViewById<LinearLayout>(R.id.helpLayout)
+        val feedbackLayout = view.findViewById<LinearLayout>(R.id.feedbackLayout)
+        val legalLayout = view.findViewById<LinearLayout>(R.id.legalLayout)
+        val referralLayout = view.findViewById<LinearLayout>(R.id.referralLayout)
+
+        aboutLayout.setOnClickListener {
+            val intent = Intent(this, TermAndConditionActivity::class.java)
+            intent.putExtra("page_type", "terms")
+            startActivity(intent)
+            bottomSheetDialog.dismiss()
+        }
+
+        settingsLayout.setOnClickListener {
+            val intent = Intent(this, TermAndConditionActivity::class.java)
+            intent.putExtra("page_type", "privacy")
+            startActivity(intent)
+        }
+
+        helpLayout.setOnClickListener {
+            val intent = Intent(this, TermAndConditionActivity::class.java)
+            intent.putExtra("page_type", "refund")
+
+            startActivity(intent)
+        }
+
+        feedbackLayout.setOnClickListener {
+            val intent = Intent(this, TermAndConditionActivity::class.java)
+            intent.putExtra("page_type", "faq")
+            startActivity(intent)
+        }
+
+        legalLayout.setOnClickListener {
+            val intent = Intent(this, SupportActivity::class.java)
+            startActivity(intent)
+        }
+
+        referralLayout.setOnClickListener {
+            val referCode = Uzoefu.encryptedPrefs.statusDone
+            //val referLink = "https://yourapp.com/referral?code=$referCode"
+            val referLink = "https://uzoefu.co.za/reward/$referCode"
+
+            Log.e("referralCode", "showSettingsBottomSheetAAAAAAAAAAAA $referCode")
+
+            val shareMessage = """
+                
+        🎉✨ **Exclusive Offer Just for You!** ✨🎉
+        
+        Hey there! I’ve been using **Uzoefu App**, and it’s been an amazing experience.  
+        You can now join too — and guess what? You’ll get **₹150 bonus** just for signing up! 💰
+        
+        🔹 Here’s how it works:
+        1️⃣ Click on the link below to download or open the app  
+        2️⃣ Sign up using my referral code: **$referCode**  
+        3️⃣ You’ll instantly receive your reward once you complete your first activity! 🚀
+        
+        💡 **Why you’ll love Uzoefu App:**
+        - Easy and secure to use  
+        - Exciting rewards for every action  
+        - Trusted by thousands of happy users  
+        - Quick payouts and referral bonuses  
+
+        👉 Tap the link now to get started:  
+        $referLink
+
+        🌟 Don’t miss this chance — invite your friends and earn together! 🌟
+        
+        — Sent via Uzoefu ❤️
+        
+    """.trimIndent()
+
+            val intent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_SUBJECT, "Invite & Earn ₹150 with Uzoefu App")
+                putExtra(Intent.EXTRA_TEXT, shareMessage)
+            }
+
+            startActivity(Intent.createChooser(intent, "Share via"))
+        }
+        bottomSheetDialog.show()
     }
 
     private fun provinceListObserver() {

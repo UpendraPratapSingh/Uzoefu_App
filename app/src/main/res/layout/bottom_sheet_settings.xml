@@ -15,7 +15,7 @@
         android:background="@drawable/handle_bar_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,18 +34,12 @@
             android:orientation="horizontal"
             android:padding="12dp">
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/about_us" />
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_regular"
-                android:text="About"
-                android:textSize="16sp" />
+                android:text="Terms and Conditions"
+                android:textSize="16sp"/>
         </LinearLayout>
 
         <LinearLayout
@@ -56,18 +50,13 @@
             android:orientation="horizontal"
             android:padding="12dp">
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/setting" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_regular"
-                android:text="Settings"
-                android:textSize="16sp" />
+                android:text="Privacy Policy"
+                android:textSize="16sp"/>
 
         </LinearLayout>
 
@@ -79,18 +68,12 @@
             android:orientation="horizontal"
             android:padding="12dp">
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/help_support" />
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_regular"
-                android:text="Help Centre"
-                android:textSize="16sp" />
+                android:text="Refund &amp; Cancellation Policy"
+                android:textSize="16sp"/>
 
         </LinearLayout>
 
@@ -102,18 +85,12 @@
             android:orientation="horizontal"
             android:padding="12dp">
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/feesback" />
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_regular"
-                android:text="Feedback"
-                android:textSize="16sp" />
+                android:text="FAQ"
+                android:textSize="16sp"/>
 
         </LinearLayout>
 
@@ -125,19 +102,12 @@
             android:orientation="horizontal"
             android:padding="12dp">
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/referral"
-                android:backgroundTint="@color/dark_black" />
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_regular"
                 android:text="Refer your friend"
-                android:textSize="16sp" />
+                android:textSize="16sp"/>
 
         </LinearLayout>
 
@@ -149,66 +119,14 @@
             android:orientation="horizontal"
             android:padding="12dp">
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/business" />
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/roboto_regular"
-                android:text="Legal"
-                android:textSize="16sp" />
+                android:text="Support"
+                android:textSize="16sp"/>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/shareLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="12dp">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/shared" />
-
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Share"
-                android:textSize="16sp" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/signOutLayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="12dp">
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="8dp"
-                android:src="@drawable/log_out" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/roboto_regular"
-                android:text="Sign Out"
-                android:textSize="16sp" />
-
-        </LinearLayout>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

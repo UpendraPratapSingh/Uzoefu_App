@@ -65,6 +65,8 @@ import com.travel.uzoefuapp.rewardHistoryModel.RewardHistoryResponse
 import com.travel.uzoefuapp.rewardModel.RewardResponse
 import com.travel.uzoefuapp.signUpModel.SignUpBody
 import com.travel.uzoefuapp.signUpModel.SignUpResponse
+import com.travel.uzoefuapp.supportModel.SupportBody
+import com.travel.uzoefuapp.supportModel.SupportResponse
 import com.travel.uzoefuapp.updateProfileModel.UpdateProfileBody
 import com.travel.uzoefuapp.updateProfileModel.UpdateProfileResponse
 import com.travel.uzoefuapp.userRedeemReward.UserRedeemRewardBody
@@ -353,5 +355,11 @@ interface ApiServices {
     fun deleteAccount(
         @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
     ): Observable<DeleteAccountResponse>
+
+    @POST("support")
+    fun support(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
+        @Body body: SupportBody
+    ): Observable<SupportResponse>
 
 }

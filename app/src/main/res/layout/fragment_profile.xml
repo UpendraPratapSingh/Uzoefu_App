@@ -46,7 +46,7 @@
                 android:layout_height="24dp"
                 android:layout_gravity="center"
                 android:src="@drawable/notification"
-                app:tint="@color/dark_black" />
+                app:tint="@color/dark_black"/>
 
             <TextView
                 android:id="@+id/notificationBadge"
@@ -55,10 +55,11 @@
                 android:layout_gravity="top|end"
                 android:background="@drawable/badge_background"
                 android:gravity="center"
-                android:visibility="gone"
                 android:text="0"
                 android:textColor="@android:color/white"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:visibility="gone"/>
+
         </FrameLayout>
 
         <ImageView
@@ -70,7 +71,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/dark_black" />
+            app:tint="@color/dark_black"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -92,22 +93,22 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Overview" />
+            android:text="Overview"/>
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Profile" />
+            android:text="Profile"/>
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Reviews" />
+            android:text="Reviews"/>
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Rewards" />
+            android:text="Rewards"/>
 
     </com.google.android.material.tabs.TabLayout>
 
@@ -119,6 +120,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tabLayout" />
+        app:layout_constraintTop_toBottomOf="@id/tabLayout"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

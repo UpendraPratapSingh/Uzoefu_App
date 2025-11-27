@@ -66,6 +66,8 @@ import com.travel.uzoefuapp.rewardModel.RewardResponse
 import com.travel.uzoefuapp.services.ApiServices
 import com.travel.uzoefuapp.signUpModel.SignUpBody
 import com.travel.uzoefuapp.signUpModel.SignUpResponse
+import com.travel.uzoefuapp.supportModel.SupportBody
+import com.travel.uzoefuapp.supportModel.SupportResponse
 import com.travel.uzoefuapp.updateProfileModel.UpdateProfileBody
 import com.travel.uzoefuapp.updateProfileModel.UpdateProfileResponse
 import com.travel.uzoefuapp.userRedeemReward.UserRedeemRewardBody
@@ -279,8 +281,12 @@ class CommonRepository @Inject constructor(private val services: ApiServices) {
         return services.userShareReward(body, Uzoefu.encryptedPrefs.bearerToken)
     }
 
-    fun deleteAccount(): Observable<DeleteAccountResponse>{
+    fun deleteAccount(): Observable<DeleteAccountResponse> {
         return services.deleteAccount(Uzoefu.encryptedPrefs.bearerToken)
+    }
+
+    fun support(body: SupportBody): Observable<SupportResponse> {
+        return services.support(Uzoefu.encryptedPrefs.bearerToken, body)
     }
 
     suspend fun makePayment(

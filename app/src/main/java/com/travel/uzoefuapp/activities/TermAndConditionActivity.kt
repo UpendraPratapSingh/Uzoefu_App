@@ -23,13 +23,23 @@ class TermAndConditionActivity : AppCompatActivity() {
         val pageType = intent.getStringExtra("page_type") ?: "terms"
         when (pageType) {
             "privacy" -> {
-                binding.headerTitle.text = "Privacy Policy"
-                webView.loadUrl("https://mobappswebsolutions.com/uzoefu/privacy/policy")
+                binding.headerTitle.text = "Privacy and Policy"
+                webView.loadUrl("https://uzoefu.co.za/privacy/policy?for=app")
+            }
+
+            "refund" -> {
+                binding.headerTitle.text = "Refund and Cancellation Policy"
+                webView.loadUrl("https://uzoefu.co.za/refund-cancellation-policies?for=app")
+            }
+
+            "faq" -> {
+                binding.headerTitle.text = "FAQ"
+                webView.loadUrl("https://uzoefu.co.za/faq?for=app")
             }
 
             else -> {
                 binding.headerTitle.text = "Terms & Conditions"
-                webView.loadUrl("https://mobappswebsolutions.com/uzoefu/termcondition")
+                webView.loadUrl("https://uzoefu.co.za/termcondition?for=app")
             }
         }
     }
@@ -58,3 +68,5 @@ class TermAndConditionActivity : AppCompatActivity() {
         }
     }
 }
+
+
