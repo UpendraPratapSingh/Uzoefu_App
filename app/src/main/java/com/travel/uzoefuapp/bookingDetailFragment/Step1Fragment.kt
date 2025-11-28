@@ -53,6 +53,8 @@ class Step1Fragment() :
     private var selectedDatePre: String? = null
     private var availableSeat: Int = 0
     private var activityTimeList: List<ActivityTimeResponse.Datum> = emptyList()
+    private var shouldOpenPopup = false
+    private var popupWindow: PopupWindow? = null
 
     companion object {
         fun newInstance(
@@ -138,6 +140,7 @@ class Step1Fragment() :
         activityTimeApi(selectedDate)
 
         binding.selectTime.setOnClickListener {
+            shouldOpenPopup = true
             showTimeSlotPopup(it, binding.tvSelectedTime, selectedDate)
         }
 
@@ -195,11 +198,15 @@ class Step1Fragment() :
         tvSelectedTime: TextView,
         selectedDate: String
     ) {
+
         if (selectedDate.isEmpty()) {
             Toast.makeText(requireContext(), "Please select a date first", Toast.LENGTH_SHORT)
                 .show()
             return
         }
+
+        // ----- IMPORTANT: If popup already open → close first -----
+        popupWindow?.dismiss()
 
         activityTimeViewModel.activityTimeResponse.observe(viewLifecycleOwner) { response ->
 
@@ -208,26 +215,26 @@ class Step1Fragment() :
 
             if (success == true && !data.isNullOrEmpty()) {
 
-                // Save full list
                 activityTimeList = data
-
-                val timeSlots: List<String> = data.map { it.time ?: "Unknown" }
+                val timeSlots = data.map { it.time ?: "Unknown" }
 
                 val popupView = LayoutInflater.from(requireContext())
                     .inflate(R.layout.popup_time_slots, null)
 
-                val popupWindow = PopupWindow(
+                popupWindow = PopupWindow(
                     popupView,
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     true
                 ).apply {
                     setBackgroundDrawable(ColorDrawable(Color.WHITE))
-                    isOutsideTouchable = true
+                    isOutsideTouchable = true   // Allow outside touch dismiss
                     isFocusable = true
+                    elevation = 20f              // Smooth shadow
                 }
 
-                val rvTimeSlotsPopup = popupView.findViewById<RecyclerView>(R.id.rvTimeSlotsPopup)
+                val rvTimeSlotsPopup =
+                    popupView.findViewById<RecyclerView>(R.id.rvTimeSlotsPopup)
 
                 val sharedPref =
                     requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
@@ -235,22 +242,14 @@ class Step1Fragment() :
                 val adapter = TimeSlotAdapter(timeSlots) { selectedTime ->
 
                     tvSelectedTime.text = selectedTime
-
-                    // Save time
                     sharedPref.edit().putString("selected_time", selectedTime).apply()
 
-                    // --- IMPORTANT ---
-                    // Find index of selected time → get correct availableSeat
                     val index = timeSlots.indexOf(selectedTime)
-
                     if (index != -1) {
                         availableSeat = activityTimeList[index].available ?: 0
                     }
 
-                    // Toast.makeText(requireContext(), "Seats Available: $availableSeat", Toast.LENGTH_SHORT).show()
-
-                    // ⭐ RESET PASSENGER COUNTS WHEN TIME CHANGES
-                    adultCount = 1     // or 0 — jo aap chaho
+                    adultCount = 1
                     kidCount = 0
 
                     binding.tvAdultCount.text = adultCount.toString()
@@ -258,23 +257,106 @@ class Step1Fragment() :
 
                     triggerPriceCalculation()
 
-                    popupWindow.dismiss()
+                    popupWindow?.dismiss()   // GUARANTEED dismiss
                 }
 
                 rvTimeSlotsPopup.layoutManager = GridLayoutManager(requireContext(), 4)
                 rvTimeSlotsPopup.adapter = adapter
 
-                popupWindow.showAsDropDown(anchorView)
+                popupWindow?.showAsDropDown(anchorView)
 
             } else {
                 Toast.makeText(requireContext(), "No time slots found", Toast.LENGTH_SHORT).show()
             }
         }
-
-        activityTimeViewModel.errorResponse.observe(viewLifecycleOwner) {
-            ErrorUtil.handlerGeneralError(requireActivity(), it)
-        }
     }
+
+
+    /*    private fun showTimeSlotPopup(
+            anchorView: View,
+            tvSelectedTime: TextView,
+            selectedDate: String
+        ) {
+            if (selectedDate.isEmpty()) {
+                Toast.makeText(requireContext(), "Please select a date first", Toast.LENGTH_SHORT)
+                    .show()
+                return
+            }
+
+            activityTimeViewModel.activityTimeResponse.observe(viewLifecycleOwner) { response ->
+
+                val success = response.peekContent().success
+                val data = response.peekContent().data
+
+                if (success == true && !data.isNullOrEmpty()) {
+
+                    // Save full list
+                    activityTimeList = data
+
+                    val timeSlots: List<String> = data.map { it.time ?: "Unknown" }
+
+                    val popupView = LayoutInflater.from(requireContext())
+                        .inflate(R.layout.popup_time_slots, null)
+
+                    val popupWindow = PopupWindow(
+                        popupView,
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.WRAP_CONTENT,
+                        true
+                    ).apply {
+                        setBackgroundDrawable(ColorDrawable(Color.WHITE))
+                        isOutsideTouchable = false
+                        isFocusable = true
+                    }
+
+                    val rvTimeSlotsPopup = popupView.findViewById<RecyclerView>(R.id.rvTimeSlotsPopup)
+
+                    val sharedPref =
+                        requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
+
+                    val adapter = TimeSlotAdapter(timeSlots) { selectedTime ->
+
+                        tvSelectedTime.text = selectedTime
+
+                        // Save time
+                        sharedPref.edit().putString("selected_time", selectedTime).apply()
+
+                        // --- IMPORTANT ---
+                        // Find index of selected time → get correct availableSeat
+                        val index = timeSlots.indexOf(selectedTime)
+
+                        if (index != -1) {
+                            availableSeat = activityTimeList[index].available ?: 0
+                        }
+
+                        // Toast.makeText(requireContext(), "Seats Available: $availableSeat", Toast.LENGTH_SHORT).show()
+
+                        // ⭐ RESET PASSENGER COUNTS WHEN TIME CHANGES
+                        adultCount = 1     // or 0 — jo aap chaho
+                        kidCount = 0
+
+                        binding.tvAdultCount.text = adultCount.toString()
+                        binding.tvKidCount.text = kidCount.toString()
+
+                        triggerPriceCalculation()
+
+                        popupWindow?.dismiss()
+                    }
+
+                    rvTimeSlotsPopup.layoutManager = GridLayoutManager(requireContext(), 4)
+                    rvTimeSlotsPopup.adapter = adapter
+
+                    popupWindow.showAsDropDown(anchorView)
+
+                } else {
+                    Toast.makeText(requireContext(), "No time slots found", Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            activityTimeViewModel.errorResponse.observe(viewLifecycleOwner) {
+                ErrorUtil.handlerGeneralError(requireActivity(), it)
+            }
+        }*/
 
     /*    private fun showTimeSlotPopup(
             anchorView: View,
@@ -585,6 +667,53 @@ class Step1Fragment() :
 
         datePickerDialog.datePicker.minDate = calendar.timeInMillis
         datePickerDialog.show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val body = ActivityTimeBody(
+            activityId = activityId.toString(),
+            date = selectedDate
+        )
+        activityTimeViewModel.activityTimeApi(requireActivity(), progressDialog, body)
+
+        shouldOpenPopup = false  // prevent auto popup opening
+
+        restoreSelectedTimeAndSeat()
+    }
+
+    private fun restoreSelectedTimeAndSeat() {
+        val sharedPref =
+            requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
+        val savedTime = sharedPref.getString("selected_time", "") ?: ""
+
+        if (savedTime.isNotEmpty()) {
+            binding.tvSelectedTime.text = savedTime
+        }
+
+        // Wait for API data
+        activityTimeViewModel.activityTimeResponse.observe(viewLifecycleOwner) { response ->
+
+            val data = response.peekContent().data ?: return@observe
+
+            activityTimeList = data
+            val timeSlots = data.map { it.time ?: "" }
+
+            val index = timeSlots.indexOf(savedTime)
+
+            if (index != -1) {
+                availableSeat = data[index].available ?: 0
+            }
+
+            // OPTIONAL: If you want to reset counts onResume
+            adultCount = 1
+            kidCount = 0
+
+            binding.tvAdultCount.text = adultCount.toString()
+            binding.tvKidCount.text = kidCount.toString()
+
+            triggerPriceCalculation()
+        }
     }
 
 

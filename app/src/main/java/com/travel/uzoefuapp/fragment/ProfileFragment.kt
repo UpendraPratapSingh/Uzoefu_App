@@ -60,6 +60,7 @@ class ProfileFragment(private var i: Int) : Fragment() {
         /*   val adapter = TabAdapter(requireActivity())
            binding.viewPager.adapter = adapter
         */
+
         val adapter = TabAdapter(requireActivity())
         binding.viewPager.adapter = adapter
 
