@@ -67,7 +67,6 @@ class BookingDetailStep1Activity : AppCompatActivity() {
     private var selectedDate = ""
     private var productName = ""
 
-
     private var adultPrice: Int = 0
     private var kidsPrice: Int = 0
     private var subtotal: Int = 0
@@ -97,7 +96,6 @@ class BookingDetailStep1Activity : AppCompatActivity() {
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                     )
-
             statusBarColor = Color.TRANSPARENT
 
             WindowInsetsControllerCompat(this, decorView).isAppearanceLightStatusBars = false
@@ -360,6 +358,7 @@ class BookingDetailStep1Activity : AppCompatActivity() {
     private fun validateStep3Fields(): Boolean {
         val participants = getParticipantsFromPrefs()
 
+
         if (participants.isEmpty()) {
             Toast.makeText(this, "Add at least one participant", Toast.LENGTH_SHORT).show()
             return false
@@ -425,7 +424,6 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         }
     }
 
-
     /*
         private fun validateStep1Fields(): Boolean {
             // Get selected date from booking_pref
@@ -488,7 +486,6 @@ class BookingDetailStep1Activity : AppCompatActivity() {
 
         return true
     }
-
 
     private fun callPaymentApi() {
         // 1️⃣ Toast for testing
@@ -715,9 +712,7 @@ class BookingDetailStep1Activity : AppCompatActivity() {
                     binding.notificationBadge.visibility = View.VISIBLE
                     binding.notificationBadge.text = count.toString()
                 }
-
             }
-
         }
         notificationCountViewModel.errorResponse.observe(this) {
             ErrorUtil.handlerGeneralError(this, it)
@@ -728,7 +723,6 @@ class BookingDetailStep1Activity : AppCompatActivity() {
         notificationCountViewModel.notificationCountApi(this, progressDialog)
 
     }
-
 
     private fun updateStepper() {
         for (i in steps.indices) {
@@ -760,11 +754,48 @@ class BookingDetailStep1Activity : AppCompatActivity() {
             // Hide button on Step 4 (Payment screen)
             visibility = if (currentStep == 4) View.GONE else View.VISIBLE
         }
-
     }
 
+    /*
+        override fun onBackPressed() {
+            super.onBackPressed()
+            if (currentStep > 1) {
+                currentStep--
+                when (currentStep) {
+                    1 -> openFragment(
+                        Step1Fragment.newInstance(
+                            price,
+                            childrenPrice,
+                            activityId,
+                            address,
+                            town,
+                            productName,
+                            selectedTime,
+                            selectedDate
+                        )
+                    )
+
+                    2 -> openFragment(Step2Fragment())
+                    3 -> openFragment(Step3Fragment(activityId, booking))
+                    4 -> openFragment(Step4Fragment())
+                }
+                updateStepper()
+            } else {
+                finish()
+            }
+        }
+    */
+
+    @SuppressLint("MissingSuperCall")
     override fun onBackPressed() {
-        super.onBackPressed()
+
+        // Step-4 Back Disabled (FINAL)
+        if (currentStep == 4) {
+            Toast.makeText(this, "You cannot go back on this step", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        // Your existing navigation for Step 1/2/3
         if (currentStep > 1) {
             currentStep--
             when (currentStep) {
@@ -783,11 +814,12 @@ class BookingDetailStep1Activity : AppCompatActivity() {
 
                 2 -> openFragment(Step2Fragment())
                 3 -> openFragment(Step3Fragment(activityId, booking))
-                4 -> openFragment(Step4Fragment())
             }
             updateStepper()
         } else {
             finish()
         }
     }
+
+
 }

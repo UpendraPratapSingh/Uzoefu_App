@@ -172,7 +172,7 @@
                         android:layout_height="wrap_content"
                         android:text="4.5"
                         android:textColor="@android:color/darker_gray"
-                        android:textSize="32sp"
+                        android:textSize="28sp"
                         android:textStyle="bold" />
 
                     <TextView

@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.changePasswordModel.ChangePasswordBody
 import com.travel.uzoefuapp.changePasswordModel.ChangePasswordViewModel
+import com.travel.uzoefuapp.dashboard.DashboardActivity
 import com.travel.uzoefuapp.databinding.ActivityChangePasswordBinding
 import com.travel.uzoefuapp.utils.ErrorUtil
 import dagger.hilt.android.AndroidEntryPoint
@@ -92,7 +93,8 @@ class ChangePasswordActivity : AppCompatActivity() {
 
             if (success == true) {
                 Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
-                val intent = Intent(this@ChangePasswordActivity, SettingActivity::class.java)
+                val intent = Intent(this, DashboardActivity::class.java)
+                intent.putExtra("openProfileFragment", true)
                 startActivity(intent)
             }
         }

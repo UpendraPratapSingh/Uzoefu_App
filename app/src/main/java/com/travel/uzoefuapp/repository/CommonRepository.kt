@@ -21,6 +21,8 @@ import com.travel.uzoefuapp.bookingCompleteModel.BookingDetailBody
 import com.travel.uzoefuapp.bookingCompleteModel.BookingDetailResponse
 import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistBody
 import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistResponse
+import com.travel.uzoefuapp.branchWishlistModel.DeleteBranchBody
+import com.travel.uzoefuapp.branchWishlistModel.DeleteBranchResponse
 import com.travel.uzoefuapp.categoryModel.CategoryResponse
 import com.travel.uzoefuapp.changePasswordModel.ChangePasswordBody
 import com.travel.uzoefuapp.changePasswordModel.ChangePasswordResponse
@@ -287,6 +289,14 @@ class CommonRepository @Inject constructor(private val services: ApiServices) {
 
     fun support(body: SupportBody): Observable<SupportResponse> {
         return services.support(Uzoefu.encryptedPrefs.bearerToken, body)
+    }
+
+    fun branchList(): Observable<com.travel.uzoefuapp.branchWishlistModel.GetWishlistResponse>{
+        return services.wishlistBranch(Uzoefu.encryptedPrefs.bearerToken)
+    }
+
+    fun deleteBranchWishlist(body: DeleteBranchBody): Observable<DeleteBranchResponse>{
+        return services.deleteBranchList(Uzoefu.encryptedPrefs.bearerToken, body)
     }
 
     suspend fun makePayment(

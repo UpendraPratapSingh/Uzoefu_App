@@ -75,57 +75,78 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+
+    <LinearLayout
+        android:id="@+id/tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="10dp"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
         android:background="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/forYouDestConst">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@id/forYouDestConst">
 
+        <!-- Activities Tab -->
         <TextView
-            android:id="@+id/nextActivityText"
+            android:id="@+id/btnActivities"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="15dp"
-            android:fontFamily="@font/roboto_medium"
-            android:text="My Next Activities"
-            android:textColor="@color/black"
+            android:layout_height="42dp"
+            android:background="@drawable/tab_selected"
+            android:gravity="center"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
+            android:text="Activities"
             android:textSize="16sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:textStyle="bold"
+            android:textColor="@android:color/white" />
 
+        <!-- Space between tabs -->
+        <Space
+            android:layout_width="20dp"
+            android:layout_height="1dp" />
+
+        <!-- Branches Tab -->
+        <TextView
+            android:id="@+id/btnBranches"
+            android:layout_width="wrap_content"
+            android:layout_height="42dp"
+            android:background="@drawable/tab_unselected"
+            android:gravity="center"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
+            android:text="Branches"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#6E6E6E" />
+
+        <!-- Push Edit / Icons to end -->
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1" />
+
+        <!-- Edit Text (Hide/Show) -->
         <TextView
             android:id="@+id/editText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="20dp"
-            android:fontFamily="@font/roboto_regular"
             android:text="Edit"
             android:textColor="@color/green_color"
             android:textSize="16sp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:fontFamily="@font/roboto_regular"
+            android:visibility="gone" />
 
+        <!-- Icon Layout -->
         <LinearLayout
             android:id="@+id/iconLayout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="20dp"
             android:orientation="horizontal"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <!--  <ImageView
-                  android:id="@+id/copyIcon"
-                  android:layout_width="24dp"
-                  android:layout_height="24dp"
-                  android:layout_marginEnd="10dp"
-                  android:src="@drawable/ic_copy" />-->
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/deleteIcon"
@@ -135,46 +156,119 @@
 
         </LinearLayout>
 
-        <ScrollView
+    </LinearLayout>
+
+    <!-- =============== FRAGMENT CONTAINER =============== -->
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tabLayout" />
+
+    <!--
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="10dp"
+            android:background="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/nextActivityText">
+            app:layout_constraintTop_toBottomOf="@+id/forYouDestConst">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
+            <TextView
+                android:id="@+id/nextActivityText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="15dp"
+                android:fontFamily="@font/roboto_medium"
+                android:text="My Next Activities"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/editText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="20dp"
+                android:fontFamily="@font/roboto_regular"
+                android:text="Edit"
+                android:textColor="@color/green_color"
+                android:textSize="16sp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/iconLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                &lt;!&ndash;  <ImageView
+                      android:id="@+id/copyIcon"
+                      android:layout_width="24dp"
+                      android:layout_height="24dp"
+                      android:layout_marginEnd="10dp"
+                      android:src="@drawable/ic_copy" />&ndash;&gt;
+
+                <ImageView
+                    android:id="@+id/deleteIcon"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_delete" />
+
+            </LinearLayout>
+
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="0dp"
+                android:layout_marginTop="10dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/nextActivityText">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/wishlist_Recycler"
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:visibility="visible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    android:layout_height="wrap_content">
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/wishlist_Recycler"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:visibility="visible"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-        </ScrollView>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/noDataText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_semi_bold"
-            android:gravity="center"
-            android:text="Your wishlist is empty. Start adding your favorites!"
-            android:textColor="@color/nuetral_bold_color"
-            android:textFontWeight="500"
-            android:textSize="20sp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            </ScrollView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/noDataText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_semi_bold"
+                android:gravity="center"
+                android:text="Your wishlist is empty. Start adding your favorites!"
+                android:textColor="@color/nuetral_bold_color"
+                android:textFontWeight="500"
+                android:textSize="20sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

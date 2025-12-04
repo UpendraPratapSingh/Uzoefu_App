@@ -21,6 +21,8 @@ import com.travel.uzoefuapp.bookingCompleteModel.BookingDetailBody
 import com.travel.uzoefuapp.bookingCompleteModel.BookingDetailResponse
 import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistBody
 import com.travel.uzoefuapp.branchWishlistModel.BranchWishlistResponse
+import com.travel.uzoefuapp.branchWishlistModel.DeleteBranchBody
+import com.travel.uzoefuapp.branchWishlistModel.DeleteBranchResponse
 import com.travel.uzoefuapp.categoryModel.CategoryResponse
 import com.travel.uzoefuapp.changePasswordModel.ChangePasswordBody
 import com.travel.uzoefuapp.changePasswordModel.ChangePasswordResponse
@@ -361,5 +363,16 @@ interface ApiServices {
         @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
         @Body body: SupportBody
     ): Observable<SupportResponse>
+
+    @POST("branch/wishlist/data")
+    fun wishlistBranch(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken
+    ): Observable<com.travel.uzoefuapp.branchWishlistModel.GetWishlistResponse>
+
+    @POST("delete/branch/wishlist")
+    fun deleteBranchList(
+        @Header("Authorization") token: String = Uzoefu.encryptedPrefs.bearerToken,
+        @Body body: DeleteBranchBody
+    ): Observable<DeleteBranchResponse>
 
 }

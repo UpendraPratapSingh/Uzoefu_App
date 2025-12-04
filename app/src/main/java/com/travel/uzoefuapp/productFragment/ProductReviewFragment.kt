@@ -44,7 +44,6 @@ class ProductReviewFragment : Fragment() {
     private lateinit var reviewAdapter: ReviewAdapter
     private lateinit var adapter: PhotoAdapter
     private val photos = mutableListOf<Uri>()
-    private val PICK_IMAGES = 1001
     private var categoryId: Int? = null
     private val detailPageViewModel: DetailPageViewModel by viewModels()
     private val ratingViewModel: RatingViewModel by viewModels()
@@ -92,6 +91,7 @@ class ProductReviewFragment : Fragment() {
             showReviewBottomSheet(requireContext(), selectedReview)
         }
 
+        //call api and observer
         getDetailObserver()
         categoryId?.let { getDetailApi(it) }
         ratingObserver()
@@ -117,7 +117,6 @@ class ProductReviewFragment : Fragment() {
                 }
 
                 binding.writeReviewBtn.visibility = View.GONE
-
 
                 categoryId?.let { getDetailApi(it) }
             }
@@ -181,7 +180,6 @@ class ProductReviewFragment : Fragment() {
         postBtn.setOnClickListener {
             val rating = ratingBar.rating
             val experience = experienceEdit.text.toString().trim()
-            // Toast.makeText(context, "Posted: $rating stars, $experience", Toast.LENGTH_SHORT).show()
 
             // ✅ Call API with new rating & description
             doRatingApi(rating, experience)
@@ -234,6 +232,8 @@ class ProductReviewFragment : Fragment() {
             val success = response.peekContent().success
             val message = response.peekContent().message
             val data = response.peekContent().data?.activityRating ?: emptyList()
+            val count = response.peekContent().data?.ratingCount.toString()
+            // val apiData = response.peekContent().data
 
             if (success == true) {
                 reviews.clear()
@@ -247,6 +247,17 @@ class ProductReviewFragment : Fragment() {
                      reviewAdapter.notifyDataSetChanged()
                  }*/
 
+                val apiData = response.peekContent().data
+                val list = apiData?.activityRating ?: emptyList()
+                val ratingCount = apiData?.ratingCount ?: 0
+
+                // 1️⃣ First rating (if no rating → default 0f)
+                val firstRating = list.firstOrNull()?.rating?.toFloat() ?: 0f
+
+                // 2️⃣ Set TextViews
+                binding.tvAverageRating.text = firstRating.toString()
+                binding.tvTotalReviews.text = "$ratingCount reviews"
+
                 if (!::reviewAdapter.isInitialized) {
                     reviewAdapter = ReviewAdapter(reviews) { selectedReview ->
                         // Yaha se bottom sheet open hoga
@@ -254,10 +265,10 @@ class ProductReviewFragment : Fragment() {
                     }
                     binding.recyclerReviews.layoutManager = LinearLayoutManager(requireContext())
                     binding.recyclerReviews.adapter = reviewAdapter
+
                 } else {
                     reviewAdapter.notifyDataSetChanged()
                 }
-
             }
         }
 

@@ -3,6 +3,7 @@ package com.travel.uzoefuapp.fragment
 import CustomProgressDialog
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.transition.AutoTransition
 import android.transition.TransitionManager
@@ -12,16 +13,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.DecelerateInterpolator
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.travel.uzoefuapp.GetWishlistModel.GetWishlistResponse
@@ -30,7 +26,6 @@ import com.travel.uzoefuapp.R
 import com.travel.uzoefuapp.activities.SupportActivity
 import com.travel.uzoefuapp.activities.TermAndConditionActivity
 import com.travel.uzoefuapp.adapter.OnDeleteWishListListener
-import com.travel.uzoefuapp.adapter.TourAdapter
 import com.travel.uzoefuapp.adapter.WishlistAdapter
 import com.travel.uzoefuapp.addTripModel.AddTripBody
 import com.travel.uzoefuapp.addTripModel.AddTripViewModel
@@ -43,6 +38,8 @@ import com.travel.uzoefuapp.deleteWishlistModel.DeleteWishlistViewModel
 import com.travel.uzoefuapp.notification.NotificationActivity
 import com.travel.uzoefuapp.notificationModel.NotificationCountViewModel
 import com.travel.uzoefuapp.utils.ErrorUtil
+import com.travel.uzoefuapp.wishlistFragment.WishlistActivityFragment
+import com.travel.uzoefuapp.wishlistFragment.WishlistBranchFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -73,14 +70,26 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0)
             insets
         }
-
-        getWishListApi()
-        getWishListObserver()
-        deleteWishListObserver()
-        addTripObserver()
-        getTripListObserver()
+        setSelectedTab(true)
+        replaceTabFragment(WishlistActivityFragment())
+        /*   getWishListApi()
+           getWishListObserver()
+           deleteWishListObserver()
+           addTripObserver()
+           getTripListObserver()*/
         notificationCountApi()
         notificationCountObserver()
+
+
+        binding.btnActivities.setOnClickListener {
+            setSelectedTab(true)
+            replaceTabFragment(WishlistActivityFragment())
+        }
+
+        binding.btnBranches.setOnClickListener {
+            setSelectedTab(false)
+            replaceTabFragment(WishlistBranchFragment())
+        }
 
         binding.deleteIcon.setOnClickListener {
             if (selectedWishlistIds.isNotEmpty()) {
@@ -121,6 +130,31 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
 
         return binding.root
     }
+
+    private fun replaceTabFragment(fragment: Fragment) {
+        parentFragmentManager.beginTransaction()
+            .replace(R.id.fragmentContainer, fragment)
+            .commit()
+    }
+
+
+    private fun setSelectedTab(isActivities: Boolean) {
+        if (isActivities) {
+            binding.btnActivities.background = requireContext().getDrawable(R.drawable.tab_selected)
+            binding.btnActivities.setTextColor(Color.WHITE)
+
+            binding.btnBranches.background = requireContext().getDrawable(R.drawable.tab_unselected)
+            binding.btnBranches.setTextColor(Color.parseColor("#6E6E6E"))
+        } else {
+            binding.btnBranches.background = requireContext().getDrawable(R.drawable.tab_selected)
+            binding.btnBranches.setTextColor(Color.WHITE)
+
+            binding.btnActivities.background =
+                requireContext().getDrawable(R.drawable.tab_unselected)
+            binding.btnActivities.setTextColor(Color.parseColor("#6E6E6E"))
+        }
+    }
+
 
     @SuppressLint("MissingInflatedId")
     private fun showSettingsBottomSheet() {
@@ -211,42 +245,42 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
         bottomSheetDialog.show()
     }
 
-    private fun getTripListObserver() {
-        getTripViewModel.progressIndicator.observe(viewLifecycleOwner) {
+    /*    private fun getTripListObserver() {
+            getTripViewModel.progressIndicator.observe(viewLifecycleOwner) {
 
-        }
-        getTripViewModel.getTripResponse.observe(viewLifecycleOwner) { response ->
-            val success = response.peekContent().success
-            val message = response.peekContent().message
-            getList = response.peekContent().data ?: emptyList()
-            if (success == true) {
-                recyclerView.layoutManager = LinearLayoutManager(requireContext())
-                val adapter = TourAdapter(getList)
-                recyclerView.adapter = adapter
+            }
+            getTripViewModel.getTripResponse.observe(viewLifecycleOwner) { response ->
+                val success = response.peekContent().success
+                val message = response.peekContent().message
+                getList = response.peekContent().data ?: emptyList()
+                if (success == true) {
+                    recyclerView.layoutManager = LinearLayoutManager(requireContext())
+                    val adapter = TourAdapter(getList)
+                    recyclerView.adapter = adapter
+                }
+            }
+            getTripViewModel.errorResponse.observe(viewLifecycleOwner) {
+                ErrorUtil.handlerGeneralError(requireContext(), it)
             }
         }
-        getTripViewModel.errorResponse.observe(viewLifecycleOwner) {
-            ErrorUtil.handlerGeneralError(requireContext(), it)
-        }
-    }
 
-    private fun addTripObserver() {
-        addTripViewModel.progressIndicator.observe(viewLifecycleOwner) {
+        private fun addTripObserver() {
+            addTripViewModel.progressIndicator.observe(viewLifecycleOwner) {
 
-        }
-        addTripViewModel.addTripResponse.observe(viewLifecycleOwner) { response ->
-            val success = response.peekContent().success
-            val message = response.peekContent().message
-
-            if (success == true) {
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                getWishListApi()
             }
-        }
-        addTripViewModel.errorResponse.observe(viewLifecycleOwner) {
-            ErrorUtil.handlerGeneralError(requireContext(), it)
-        }
-    }
+            addTripViewModel.addTripResponse.observe(viewLifecycleOwner) { response ->
+                val success = response.peekContent().success
+                val message = response.peekContent().message
+
+                if (success == true) {
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                    getWishListApi()
+                }
+            }
+            addTripViewModel.errorResponse.observe(viewLifecycleOwner) {
+                ErrorUtil.handlerGeneralError(requireContext(), it)
+            }
+        }*/
 
     private fun deleteWishListApi() {
         val body = DeleteWishlistBody(
@@ -256,61 +290,63 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
 
     }
 
-    private fun deleteWishListObserver() {
-        deleteWishlistViewModel.progressIndicator.observe(viewLifecycleOwner) {
-
-        }
-        deleteWishlistViewModel.mCategoryResponse.observe(viewLifecycleOwner) { response ->
-            val success = response.peekContent().success
-            val message = response.peekContent().message
-
-            if (success == true) {
-                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
-                getWishListApi()
+    /*
+        private fun deleteWishListObserver() {
+            deleteWishlistViewModel.progressIndicator.observe(viewLifecycleOwner) {
 
             }
-        }
-        deleteWishlistViewModel.errorResponse.observe(viewLifecycleOwner) {
-            ErrorUtil.handlerGeneralError(requireContext(), it)
-        }
-    }
+            deleteWishlistViewModel.mCategoryResponse.observe(viewLifecycleOwner) { response ->
+                val success = response.peekContent().success
+                val message = response.peekContent().message
 
-    private fun getWishListObserver() {
-        getWishlistViewModel.progressIndicator.observe(viewLifecycleOwner) {
+                if (success == true) {
+                    Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+                    getWishListApi()
 
-        }
-        getWishlistViewModel.mCategoryResponse.observe(viewLifecycleOwner) { response ->
-            val success = response.peekContent().success
-            val message = response.peekContent().message
-            data = response.peekContent().data ?: emptyList()
-
-            if (success == true) {
-                if (data.isEmpty()) {
-                    binding.editText.visibility = View.GONE
-                    binding.noDataText.visibility = View.VISIBLE
-                    binding.iconLayout.visibility = View.GONE
-                    binding.wishlistRecycler.visibility = View.GONE
-                } else {
-                    binding.iconLayout.visibility = View.GONE
-                    binding.noDataText.visibility = View.GONE
-                    binding.editText.visibility = View.VISIBLE
-                    binding.wishlistRecycler.visibility = View.VISIBLE
-                    binding.wishlistRecycler.layoutManager =
-                        GridLayoutManager(requireContext(), 1, GridLayoutManager.VERTICAL, false)
-                    adapter = WishlistAdapter(requireContext(), data, this)
-                    binding.wishlistRecycler.adapter = adapter
                 }
             }
+            deleteWishlistViewModel.errorResponse.observe(viewLifecycleOwner) {
+                ErrorUtil.handlerGeneralError(requireContext(), it)
+            }
         }
-        getWishlistViewModel.errorResponse.observe(viewLifecycleOwner) {
-            ErrorUtil.handlerGeneralError(requireContext(), it)
+
+        private fun getWishListObserver() {
+            getWishlistViewModel.progressIndicator.observe(viewLifecycleOwner) {
+
+            }
+            getWishlistViewModel.mCategoryResponse.observe(viewLifecycleOwner) { response ->
+                val success = response.peekContent().success
+                val message = response.peekContent().message
+                data = response.peekContent().data ?: emptyList()
+
+                if (success == true) {
+                    if (data.isEmpty()) {
+                        binding.editText.visibility = View.GONE
+                        binding.noDataText.visibility = View.VISIBLE
+                        binding.iconLayout.visibility = View.GONE
+                        binding.wishlistRecycler.visibility = View.GONE
+                    } else {
+                        binding.iconLayout.visibility = View.GONE
+                        binding.noDataText.visibility = View.GONE
+                        binding.editText.visibility = View.VISIBLE
+                        binding.wishlistRecycler.visibility = View.VISIBLE
+                        binding.wishlistRecycler.layoutManager =
+                            GridLayoutManager(requireContext(), 1, GridLayoutManager.VERTICAL, false)
+                        adapter = WishlistAdapter(requireContext(), data, this)
+                        binding.wishlistRecycler.adapter = adapter
+                    }
+                }
+            }
+            getWishlistViewModel.errorResponse.observe(viewLifecycleOwner) {
+                ErrorUtil.handlerGeneralError(requireContext(), it)
+            }
         }
-    }
+    */
 
-    private fun getWishListApi() {
-        getWishlistViewModel.getWishlistApi(progressDialog, requireActivity())
+    /*    private fun getWishListApi() {
+            getWishlistViewModel.getWishlistApi(progressDialog, requireActivity())
 
-    }
+        }*/
 
     private fun notificationCountObserver() {
         notificationCountViewModel.progressIndicator.observe(viewLifecycleOwner) {
@@ -340,55 +376,55 @@ class WishlistFragment : Fragment(), OnDeleteWishListListener {
         notificationCountViewModel.notificationCountApi(requireActivity(), progressDialog)
     }
 
-    private fun openBottomSheetTrip() {
-        val bottomSheetDialog = BottomSheetDialog(requireContext())
-        val view = layoutInflater.inflate(R.layout.bottom_sheet_layout, null)
-        bottomSheetDialog.setContentView(view)
-
-        val closeBtn = view.findViewById<ImageView>(R.id.tvCloseBtn)
-        recyclerView = view.findViewById(R.id.recyclerView)
-        val createNewTrip = view.findViewById<LinearLayout>(R.id.createNewTrip)
-
-        getTripListApi()
-
-        closeBtn.setOnClickListener {
-            bottomSheetDialog.dismiss()
-        }
-
-        createNewTrip.setOnClickListener {
+    /*    private fun openBottomSheetTrip() {
             val bottomSheetDialog = BottomSheetDialog(requireContext())
-            val view = layoutInflater.inflate(R.layout.bottom_sheet_create_trip, null)
+            val view = layoutInflater.inflate(R.layout.bottom_sheet_layout, null)
             bottomSheetDialog.setContentView(view)
 
             val closeBtn = view.findViewById<ImageView>(R.id.tvCloseBtn)
-            val etTripTitle = view.findViewById<EditText>(R.id.etTripTitle)
-            val etTripDestination = view.findViewById<EditText>(R.id.etTripDestination)
-            val btnSaveTrip = view.findViewById<Button>(R.id.btnSaveTrip)
+            recyclerView = view.findViewById(R.id.recyclerView)
+            val createNewTrip = view.findViewById<LinearLayout>(R.id.createNewTrip)
 
-            closeBtn.setOnClickListener { bottomSheetDialog.dismiss() }
+            getTripListApi()
 
-            btnSaveTrip.setOnClickListener {
-                val title = etTripTitle.text.toString().trim()
-                val destination = etTripDestination.text.toString().trim()
+            closeBtn.setOnClickListener {
+                bottomSheetDialog.dismiss()
+            }
 
-                if (title.isEmpty() || destination.isEmpty()) {
-                    Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT)
-                        .show()
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        "Trip Created: $title → $destination",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    addTripApi(title, destination)
+            createNewTrip.setOnClickListener {
+                val bottomSheetDialog = BottomSheetDialog(requireContext())
+                val view = layoutInflater.inflate(R.layout.bottom_sheet_create_trip, null)
+                bottomSheetDialog.setContentView(view)
 
-                    bottomSheetDialog.dismiss()
+                val closeBtn = view.findViewById<ImageView>(R.id.tvCloseBtn)
+                val etTripTitle = view.findViewById<EditText>(R.id.etTripTitle)
+                val etTripDestination = view.findViewById<EditText>(R.id.etTripDestination)
+                val btnSaveTrip = view.findViewById<Button>(R.id.btnSaveTrip)
+
+                closeBtn.setOnClickListener { bottomSheetDialog.dismiss() }
+
+                btnSaveTrip.setOnClickListener {
+                    val title = etTripTitle.text.toString().trim()
+                    val destination = etTripDestination.text.toString().trim()
+
+                    if (title.isEmpty() || destination.isEmpty()) {
+                        Toast.makeText(requireContext(), "Please fill all fields", Toast.LENGTH_SHORT)
+                            .show()
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            "Trip Created: $title → $destination",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        addTripApi(title, destination)
+
+                        bottomSheetDialog.dismiss()
+                    }
                 }
+                bottomSheetDialog.show()
             }
             bottomSheetDialog.show()
-        }
-        bottomSheetDialog.show()
-    }
+        }*/
 
     private fun getTripListApi() {
         getTripViewModel.tripListApi(progressDialog, requireActivity())

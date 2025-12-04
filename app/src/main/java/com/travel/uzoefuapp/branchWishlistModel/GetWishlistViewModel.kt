@@ -1,4 +1,4 @@
-package com.travel.uzoefuapp.deleteWishlistModel
+package com.travel.uzoefuapp.branchWishlistModel
 
 import CustomProgressDialog
 import android.app.Activity
@@ -8,50 +8,45 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.travel.uzoefuapp.branchWishlistModel.DeleteBranchBody
 import com.travel.uzoefuapp.repository.CommonRepository
 import com.travel.uzoefuapp.utils.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-@ExperimentalCoroutinesApi
-class DeleteWishlistViewModel @Inject constructor(
+class GetWishlistViewModel @Inject constructor(
     application: Application, private val repository: CommonRepository
 ) : AndroidViewModel(application) {
     val progressIndicator = MutableLiveData<Boolean>()
     val errorResponse = MutableLiveData<Throwable>()
-    val mCategoryResponse = MutableLiveData<Event<DeleteWishlistResponse>>()
+    val userShareRewardResponse = MutableLiveData<Event<GetWishlistResponse>>()
 
-    fun deleteWishListApi(
-        progressDialog: CustomProgressDialog,
+    fun branchWishlist(
         activity: Activity,
-        body: DeleteWishlistBody
+        progressDialog: CustomProgressDialog,
     ) =
         viewModelScope.launch {
-            deleteWishList(progressDialog, activity, body)
+            branchList(activity, progressDialog)
         }
 
-    private suspend fun deleteWishList(
-        progressDialog: CustomProgressDialog,
+    private suspend fun branchList(
         activity: Activity,
-        body: DeleteWishlistBody
+        progressDialog: CustomProgressDialog,
     ) {
         progressDialog.start("")
         progressIndicator.value = true
-        repository.deleteWishList(body)
+        repository.branchList()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : DisposableObserver<DeleteWishlistResponse>() {
+            .subscribe(object : DisposableObserver<GetWishlistResponse>() {
                 @RequiresApi(Build.VERSION_CODES.S)
-                override fun onNext(value: DeleteWishlistResponse) {
+                override fun onNext(value: GetWishlistResponse) {
                     progressIndicator.value = false
-                    mCategoryResponse.value = Event(value)
+                    userShareRewardResponse.value = Event(value)
                     progressDialog.stop()
                 }
 

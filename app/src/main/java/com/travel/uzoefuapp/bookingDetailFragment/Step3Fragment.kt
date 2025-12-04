@@ -2,6 +2,7 @@ package com.travel.uzoefuapp.bookingDetailFragment
 
 import CustomProgressDialog
 import android.app.DatePickerDialog
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.os.Bundle
