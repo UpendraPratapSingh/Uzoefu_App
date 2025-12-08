@@ -97,7 +97,7 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
     private val searchActivityViewModel: SearchActivityViewModel by viewModels()
     private val branchWishlistViewModel: BranchWishlistViewModel by viewModels()
     private var searchJob: Job? = null
-    var isAllSelected = false
+    private var isAllSelected = false
     private lateinit var categoryAdapter: FilterCategoryAdapter
 
     override fun onCreateView(
@@ -829,10 +829,12 @@ class HomeFragment : Fragment(), OnCategoryClickListener, OnWishlistClickListene
         super.onResume()
         getCategoryApi()
         getActivityApi()
+
         getActivityByCategory(categoryId)
-        categoryId = ""
+        //categoryId = ""
         selectedProvinceId = ""
         selectCategory = ""
+
 
     }
 

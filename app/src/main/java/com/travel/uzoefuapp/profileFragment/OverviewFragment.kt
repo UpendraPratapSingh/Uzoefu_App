@@ -27,7 +27,6 @@ import com.travel.uzoefuapp.activities.ChangePasswordActivity
 import com.travel.uzoefuapp.activities.DeleteAccountActivity
 import com.travel.uzoefuapp.activities.LoginActivity
 import com.travel.uzoefuapp.activities.PermissionActivity
-import com.travel.uzoefuapp.activities.TermAndConditionActivity
 import com.travel.uzoefuapp.application.Uzoefu
 import com.travel.uzoefuapp.bookingActivities.BookListActivity
 import com.travel.uzoefuapp.dashboard.DashboardActivity
@@ -43,7 +42,6 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import java.io.File
-
 
 @AndroidEntryPoint
 class OverviewFragment : Fragment() {
