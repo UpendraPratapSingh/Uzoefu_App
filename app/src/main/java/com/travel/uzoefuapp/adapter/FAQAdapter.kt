@@ -16,7 +16,6 @@ class FAQAdapter(private val faqList: List<DetailPageResponse.Data.Faq>) :
 
     private val expandedPositions = mutableSetOf<Int>()
 
-
     inner class FAQViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvQuestion: TextView = itemView.findViewById(R.id.tvQuestion)
         val faqLayout: LinearLayout = itemView.findViewById(R.id.faqLayout)

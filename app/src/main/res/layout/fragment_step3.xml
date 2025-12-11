@@ -84,18 +84,6 @@
                 android:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@+id/signingCons">
 
-                <!-- Add Participant -->
-                <TextView
-                    android:id="@+id/tvAddParticipant"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="Add Participant"
-                    android:textColor="@android:color/holo_green_dark"
-                    android:textStyle="bold"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
                 <!-- Client Name -->
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/tilClientName"
@@ -107,7 +95,7 @@
                     android:hint="Client Name"
                     app:layout_constraintEnd_toStartOf="@id/tilIdNumber"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tvAddParticipant">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etClientName"
@@ -127,7 +115,7 @@
                     android:hint="ID Number"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tilClientName"
-                    app:layout_constraintTop_toBottomOf="@id/tvAddParticipant">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/etIdNumber"
@@ -209,11 +197,29 @@
                     android:id="@+id/btnClearSignature"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/button_rounded"
                     android:padding="10dp"
                     android:text="Clear"
-                    android:textColor="@color/dark_cyan"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/signaturePad" />
+
+
+                <!-- Add Participant -->
+                <TextView
+                    android:id="@+id/tvAddParticipant"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/button_rounded"
+                    android:padding="10dp"
+                    android:text="Add this Participant"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/signaturePad" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 

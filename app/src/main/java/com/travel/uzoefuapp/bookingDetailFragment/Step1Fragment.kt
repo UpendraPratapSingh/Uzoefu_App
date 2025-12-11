@@ -131,6 +131,8 @@ class Step1Fragment() :
             val sharedPref =
                 requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
             sharedPref.edit().putString("selected_time", selectedTime).apply()
+            sharedPref.edit().putString("selected_date", selectedDate).apply()
+            sharedPref.edit().putString("selected_date", selectedDatePre).apply()
         }
 
         activityId?.let { saveActivityIdLocally(it) }

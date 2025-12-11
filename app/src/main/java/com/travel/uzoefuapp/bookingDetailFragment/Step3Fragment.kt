@@ -47,9 +47,23 @@ class Step3Fragment(val activityId: String, val booking: String) : Fragment() {
     ): View? {
         _binding = FragmentStep3Binding.inflate(inflater, container, false)
 
-        ///  clearPreviousParticipants()
+        //  clearPreviousParticipants()
 
         val savedParticipants = getParticipantsFromPrefs()
+
+        val pref = requireContext().getSharedPreferences("profile_pref", Context.MODE_PRIVATE)
+        val prefs = requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
+        //  val savedDate = prefs.getString("selected_date", "")
+
+        val sharedPref = requireContext().getSharedPreferences("booking_pref", Context.MODE_PRIVATE)
+        val savedDate = sharedPref.getString("date", "")
+        binding.etDateSigned.setText(savedDate)
+
+        val username = pref.getString("username", "")
+        val mobile = pref.getString("mobile", "")
+
+        binding.etClientName.setText(username)
+        binding.etContactNumber.setText(mobile)
 
         if (savedParticipants.isEmpty()) {
             clearPreviousParticipants()
@@ -80,14 +94,13 @@ class Step3Fragment(val activityId: String, val booking: String) : Fragment() {
             binding.signaturePad.clear()
         }
 
-        binding.tvAddParticipant.setOnClickListener {
-            addParticipant()
-        }
+        binding.tvAddParticipant.setOnClickListener { addParticipant() }
 
         binding.etDateSigned.setOnClickListener {
             showDatePicker(binding.etDateSigned)
         }
 
+        //call api and observer
         getDetailApi()
         getDetailObserver()
 
