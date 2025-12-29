@@ -53,7 +53,6 @@ class Step3Fragment(val activityId: String, val booking: String) : Fragment() {
 
         val pref = requireContext().getSharedPreferences("profile_pref", Context.MODE_PRIVATE)
         val prefs = requireContext().getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
-        //  val savedDate = prefs.getString("selected_date", "")
 
         val sharedPref = requireContext().getSharedPreferences("booking_pref", Context.MODE_PRIVATE)
         val savedDate = sharedPref.getString("date", "")

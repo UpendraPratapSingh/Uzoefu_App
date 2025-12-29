@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
+import android.webkit.WebResourceRequest
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -26,19 +28,25 @@ class Step4Fragment : Fragment() {
     private var activityId: String? = null
     private var productName: String? = null
     private var paymentUrl: String? = null
+    private var payRequestId: String? = null
+    private var checksum: String? = null
     private val progressDialog by lazy { CustomProgressDialog(requireContext()) }
 
     companion object {
         fun newInstance(
             activityId: String,
             productName: String,
-            paymentUrl: String?
+            paymentUrl: String?,
+            payRequestId: String,
+            checksum: String
         ): Step4Fragment {
             val fragment = Step4Fragment()
             val args = Bundle().apply {
                 putString("activityId", activityId)
                 putString("productName", productName)
                 putString("paymentUrl", paymentUrl)
+                putString("payRequestId", payRequestId)
+                putString("checksum", checksum)
             }
             fragment.arguments = args
             return fragment
@@ -56,6 +64,8 @@ class Step4Fragment : Fragment() {
             activityId = it.getString("activityId")
             productName = it.getString("productName")
             paymentUrl = it.getString("paymentUrl")
+            payRequestId = it.getString("payRequestId")
+            checksum = it.getString("checksum")
             saveDataToPrefs()
         }
 
@@ -66,165 +76,113 @@ class Step4Fragment : Fragment() {
     }
 
     private fun setupWebView() {
-        val webView: WebView = binding.paymentWebView
+
+        val webView = binding.paymentWebView
+
         webView.settings.apply {
             javaScriptEnabled = true
-            domStorageEnabled = true
-            loadWithOverviewMode = true
-            useWideViewPort = true
             domStorageEnabled = true
             loadWithOverviewMode = true
             useWideViewPort = true
             builtInZoomControls = true
             displayZoomControls = false
             mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
-            setSupportZoom(true)
-
-            webView.scrollBarStyle = View.SCROLLBARS_INSIDE_OVERLAY
-            webView.isVerticalScrollBarEnabled = true
-            webView.isHorizontalScrollBarEnabled = true
-
-            // Enable Chrome features (important for PayFast header rendering)
-            webView.webChromeClient = WebChromeClient()
-        }
-
-        progressDialog.start("")
-
-        webView.webViewClient = object : WebViewClient() {
-            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
-                if (isAdded && activity != null && !requireActivity().isFinishing) {
-                    progressDialog.start()
-                }
-            }
-
-            override fun onPageFinished(view: WebView?, url: String?) {
-                super.onPageFinished(view, url)
-                progressDialog.stop()
-                Log.d("PaymentWebView", "✅ WebView finished loading")
-
-                url?.let { currentUrl ->
-                    Log.d("PaymentWebView", "📍 Current URL: $currentUrl")
-
-                    // Check payment result from URL
-                    if (currentUrl.contains("check_status", true)) {
-                        when {
-                            currentUrl.contains("success=true", true) -> {
-                                Log.d("PaymentWebView", "🎉 Payment SUCCESS detected")
-
-                                // Show success message
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Payment Successful!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-
-                                // Navigate after 3 seconds
-                                view?.postDelayed({
-                                    if (isAdded && isResumed) {
-                                        val intent =
-                                            Intent(requireContext(), DashboardActivity::class.java)
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                                        startActivity(intent)
-                                        requireActivity().finish()
-                                    }
-                                }, 3000)
-                            }
-
-                            currentUrl.contains("success=false", true) -> {
-                                Log.d("PaymentWebView", "❌ Payment FAILED detected")
-
-                                // Show failure message
-                                Toast.makeText(
-                                    requireContext(),
-                                    "Payment Failed. Please try again.",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-
-                                // Navigate after 3 seconds
-                                view?.postDelayed({
-                                    if (isAdded && isResumed) {
-                                        val intent = Intent(
-                                            requireContext(),
-                                            BookingProductActivity::class.java
-                                        )
-                                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                                        startActivity(intent)
-                                        requireActivity().finish()
-                                    }
-                                }, 3000)
-                            }
-                        }
-                    }
-                }
-            }
-
-            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                url?.let {
-                    Log.d("PaymentWebView", "Loading URL: $it")
-
-                    when {
-                        it.contains("check_status", true) ||
-                                it.contains("success=true", true) -> {
-                            progressDialog.stop()
-                            Log.e("Success", "Payment success detected")
-
-                            // ✅ Add 2-second delay before navigating to Step5
-                            view?.postDelayed({
-                                if (isAdded && isResumed) {
-                                    goToStep5()
-                                }
-                            }, 2000)
-
-                            return true
-                        }
-
-                        it.contains("failure", true) ||
-                                it.contains("cancel", true) ||
-                                it.contains("payment/failed", true) -> {
-                            progressDialog.stop()
-                            Toast.makeText(
-                                requireContext(),
-                                "Payment failed or cancelled",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            val intent =
-                                Intent(requireContext(), BookingProductActivity::class.java)
-                            startActivity(intent)
-                            return true
-                        }
-
-                        else -> view?.loadUrl(it)
-                    }
-                }
-                return true
-            }
-
-            override fun onReceivedError(
-                view: WebView?,
-                errorCode: Int,
-                description: String?,
-                failingUrl: String?
-            ) {
-                progressDialog.stop()
-                Log.e("PaymentWebView", "Error: $description, URL: $failingUrl")
-                super.onReceivedError(view, errorCode, description, failingUrl)
-            }
         }
 
         webView.webChromeClient = WebChromeClient()
 
-        paymentUrl?.let {
-            Log.d("PaymentURL", "Loading Payment URL: $it")
-            webView.loadUrl(it)
-        } ?: run {
-            Log.e("PaymentURL", "Invalid or empty payment URL")
+        progressDialog.start("")
+
+        webView.webViewClient = object : WebViewClient() {
+
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                progressDialog.start("")
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                progressDialog.stop()
+                Log.d("PaymentWebView", "Loaded: $url")
+
+                url?.let {
+                    when {
+                        it.contains("success", true) -> {
+                            Toast.makeText(
+                                requireContext(),
+                                "Payment Successful",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            view?.postDelayed({
+                                goToDashboard()
+                            }, 2000)
+                        }
+
+                        it.contains("cancel", true) ||
+                                it.contains("failed", true) -> {
+                            Toast.makeText(
+                                requireContext(),
+                                "Payment Failed or Cancelled",
+                                Toast.LENGTH_SHORT
+                            ).show()
+
+                            view?.postDelayed({
+                                goBackToBooking()
+                            }, 2000)
+                        }
+
+                        else -> {}
+                    }
+                }
+            }
+
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): Boolean {
+                return false
+            }
+
+            override fun onReceivedError(
+                view: WebView?,
+                request: WebResourceRequest?,
+                error: WebResourceError?
+            ) {
+                progressDialog.stop()
+                Log.e("PaymentWebView", "Error: ${error?.description}")
+            }
+        }
+
+        // ✅ POST REQUEST (MOST IMPORTANT PART)
+        if (!paymentUrl.isNullOrEmpty()
+            && !payRequestId.isNullOrEmpty()
+            && !checksum.isNullOrEmpty()
+        ) {
+
+            val postData =
+                "PAY_REQUEST_ID=$payRequestId&CHECKSUM=$checksum"
+
+            Log.d("PaymentPOST", "POST → $paymentUrl")
+            Log.d("PaymentPOST", postData)
+
+            webView.postUrl(
+                paymentUrl!!,
+                postData.toByteArray(Charsets.UTF_8)
+            )
+
+        } else {
+            Toast.makeText(requireContext(), "Invalid payment data", Toast.LENGTH_SHORT).show()
         }
     }
 
-    private fun goToStep5() {
+    private fun goToDashboard() {
         val intent = Intent(requireContext(), DashboardActivity::class.java)
-        intent.putExtra("goToStep", 5)
-        intent.putExtra("productName", productName)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        requireActivity().finishAffinity()
+    }
+
+    private fun goBackToBooking() {
+        val intent = Intent(requireContext(), BookingProductActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         requireActivity().finishAffinity()
@@ -241,7 +199,7 @@ class Step4Fragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
         progressDialog.stop()
+        _binding = null
     }
 }

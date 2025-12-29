@@ -52,6 +52,7 @@ class NotificationAdapter(
         }
 
     }
+
     fun updateList(newList: List<NotificationListResponse.Datum>) {
         notificationList = newList
         notifyDataSetChanged()
@@ -75,8 +76,7 @@ class NotificationAdapter(
 
     override fun getItemCount(): Int = notificationList.size
 
-    class NormalViewHolder(itemView: View,
-                           private val deleteListener: NotificationDeleteListener
+    class NormalViewHolder(itemView: View, private val deleteListener: NotificationDeleteListener
     ) : RecyclerView.ViewHolder(itemView) {
         private val title = itemView.findViewById<TextView>(R.id.notificationText)
         private val notificationSee = itemView.findViewById<View>(R.id.notificationSeen)

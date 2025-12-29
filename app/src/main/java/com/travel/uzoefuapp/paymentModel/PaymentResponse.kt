@@ -11,7 +11,15 @@ class PaymentResponse : Serializable {
     @Expose
     var success: Boolean? = null
 
-    @SerializedName("payment_url")
+    @SerializedName("PAY_REQUEST_ID")
     @Expose
-    var paymentUrl: String? = null
+    var payRequestId: String? = null
+
+    @SerializedName("CHECKSUM")
+    @Expose
+    var checksum: String? = null
+
+    @SerializedName("process_url")
+    @Expose
+    var processUrl: String? = null
 }

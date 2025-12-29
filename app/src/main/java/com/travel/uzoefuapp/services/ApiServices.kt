@@ -189,7 +189,7 @@ interface ApiServices {
     ): Observable<BookingCompleteResponse>
 
     @Multipart
-    @POST("payfast/payment")
+    @POST("initialpayment")
     suspend fun paymentBooking(
         @Part("device_type") device_type: RequestBody,
         @Part("user_id") userId: RequestBody,

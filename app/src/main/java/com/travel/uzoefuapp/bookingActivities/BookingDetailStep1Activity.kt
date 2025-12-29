@@ -137,9 +137,7 @@ class BookingDetailStep1Activity : AppCompatActivity() {
 
         binding.btnBack.setOnClickListener { finish() }
 
-        binding.menuIcon.setOnClickListener {
-            showSettingsBottomSheet()
-        }
+        binding.menuIcon.setOnClickListener { showSettingsBottomSheet() }
 
         openFragment(
             Step1Fragment.newInstance(
@@ -357,7 +355,6 @@ class BookingDetailStep1Activity : AppCompatActivity() {
 
     private fun validateStep3Fields(): Boolean {
         val participants = getParticipantsFromPrefs()
-
 
         if (participants.isEmpty()) {
             Toast.makeText(this, "Add at least one participant", Toast.LENGTH_SHORT).show()
@@ -649,30 +646,35 @@ class BookingDetailStep1Activity : AppCompatActivity() {
 
     private fun paymentObserver() {
         paymentViewModel.progressIndicator.observe(this) {}
-        paymentViewModel.paymentResponse.observe(this) { response ->
-            val success = response.peekContent().success
-            if (success == true) {
-                //  Toast.makeText(this, message ?: "Booking successful", Toast.LENGTH_SHORT).show()
 
-                // ✅ Clear previously saved selected_time when API is successful
+        paymentViewModel.paymentResponse.observe(this) { response ->
+            val data = response.peekContent()
+
+            if (data.success == true) {
+
+                // ✅ Clear selected time
                 val sharedPrefTime = getSharedPreferences("ActivityPrefs", Context.MODE_PRIVATE)
                 sharedPrefTime.edit().remove("selected_time").apply()
 
-
-                val paymentUrl = response.peekContent().paymentUrl
-
-                /*currentStep = 5
-                openFragment(Step5Fragment.newInstance(activityId, productName))
-                updateStepper()*/
+                val processUrl = data.processUrl
+                val payRequestId = data.payRequestId
+                val checksum = data.checksum
 
                 currentStep = 4
-                openFragment(Step4Fragment.newInstance(activityId, productName, paymentUrl))
+                openFragment(
+                    Step4Fragment.newInstance(
+                        activityId,
+                        productName,
+                        processUrl,
+                        payRequestId.toString(),
+                        checksum.toString()
+                    )
+                )
                 updateStepper()
 
-            } else {
-                //Toast.makeText(this, message ?: "Booking failed", Toast.LENGTH_SHORT).show()
             }
         }
+
         paymentViewModel.errorResponse.observe(this) {
             ErrorUtil.handlerGeneralError(this, it)
         }
